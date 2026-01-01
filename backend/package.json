@@ -1,0 +1,16 @@
+{
+    "name": "match-auto-backend",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "wrangler dev src/index.ts",
+        "deploy": "wrangler deploy --minify src/index.ts"
+    },
+    "dependencies": {
+        "hono": "^4.6.14"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "^4.20241218.0",
+        "wrangler": "^3.99.0"
+    }
+}

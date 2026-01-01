@@ -1,0 +1,16 @@
+name = "match-auto-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-30"
+
+[vars]
+# Define your environment variables here
+# VIRAL_THRESHOLD = "5.0"
+
+[[kv_namespaces]]
+binding = "MATCH_AUTO_CACHE"
+id = "your-kv-id-here"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "match-auto-db"
+database_id = "your-d1-id-here"
