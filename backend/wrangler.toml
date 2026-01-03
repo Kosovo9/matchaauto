@@ -1,5 +1,6 @@
 name = "match-auto-api"
-compatibility_date = "2024-01-01"
+main = "src/index.ts"
+compatibility_date = "2024-12-30"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
@@ -13,4 +14,17 @@ headers = { "X-Sentinel-Enabled" = "true" }
 [[kv_namespaces]]
 binding = "VIRAL_DATA"
 id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-preview_id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "match-auto-db"
+database_id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+[[durable_objects]]
+bindings = [
+  { name = "CHAT_ROOM", class_name = "ChatRoom" }
+]
+
+[[migrations]]
+tag = "v1" # Migración para crear el objeto Durable
+new_classes = ["ChatRoom"]
