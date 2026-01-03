@@ -4,6 +4,8 @@ import { ImpactTracker } from '@/components/features/social/ImpactTracker';
 import { AffiliateDashboard } from '@/components/features/admin/AffiliateDashboard';
 import { NegotiationTester } from '@/components/features/admin/NegotiationTester';
 import { ARVehicleInspector } from '@/features/05_experience/ar-vehicle-inspector';
+import { PassiveIncomeDashboard } from '@/components/features/admin/PassiveIncomeDashboard';
+import { EscrowDashboard } from '@/components/features/payments/EscrowDashboard';
 
 export default function HomePage() {
     return (
@@ -23,25 +25,37 @@ export default function HomePage() {
                 </div>
             </div>
 
-            <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="w-full max-w-7xl space-y-12">
                 <section className="space-y-6">
-                    <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-nasa-blue pl-4">Laboratorio & Misión</h2>
-                    <NegotiationTester />
-                    <ImpactTracker />
-                    <AffiliateDashboard />
+                    <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-nasa-blue pl-4">Centro de Mando del Imperio</h2>
+                    <PassiveIncomeDashboard />
                 </section>
 
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <section className="space-y-6">
+                        <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-nasa-red pl-4">Finanzas & Escrow</h2>
+                        <EscrowDashboard />
+                        <NegotiationTester />
+                    </section>
+
+                    <section className="space-y-6">
+                        <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-emerald-500 pl-4">Misión & Viralidad</h2>
+                        <ImpactTracker />
+                        <AffiliateDashboard />
+                        <ViralDashboard />
+                    </section>
+                </div>
+
                 <section className="space-y-6">
-                    <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-nasa-red pl-4">Control & Operaciones</h2>
-                    <ViralDashboard />
+                    <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-orange-500 pl-4">Seguridad Sentinel X</h2>
                     <SecurityPanel />
                 </section>
-            </div>
 
-            <div className="w-full max-w-7xl pt-12">
-                <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-purple-500 pl-4 mb-8">Experiencia Next-Gen</h2>
-                <div className="grid grid-cols-1 gap-12">
-                    <ARVehicleInspector vehicle={{ make: 'Tesla', model: 'Model S' }} />
+                <div className="w-full pt-12">
+                    <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-purple-500 pl-4 mb-8">Experiencia Next-Gen</h2>
+                    <div className="grid grid-cols-1 gap-12">
+                        <ARVehicleInspector vehicle={{ make: 'Tesla', model: 'Model S' }} />
+                    </div>
                 </div>
             </div>
 
