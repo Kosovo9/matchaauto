@@ -6,6 +6,7 @@ import { NegotiationTester } from '@/components/features/admin/NegotiationTester
 import { ARVehicleInspector } from '@/features/05_experience/ar-vehicle-inspector';
 import { PassiveIncomeDashboard } from '@/components/features/admin/PassiveIncomeDashboard';
 import { EscrowDashboard } from '@/components/features/payments/EscrowDashboard';
+import { CryptoEmpireWallet } from '@/components/features/payments/CryptoEmpireWallet';
 
 export default function HomePage() {
     return (
@@ -33,13 +34,14 @@ export default function HomePage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     <section className="space-y-6">
-                        <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-nasa-red pl-4">Finanzas & Escrow</h2>
+                        <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-nasa-red pl-4">Finanzas & Bóveda</h2>
                         <EscrowDashboard />
-                        <NegotiationTester />
+                        <CryptoEmpireWallet />
                     </section>
 
                     <section className="space-y-6">
-                        <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-emerald-500 pl-4">Misión & Viralidad</h2>
+                        <h2 className="text-2xl font-bold text-white uppercase tracking-widest border-l-4 border-emerald-500 pl-4">Inteligencia & Mercado</h2>
+                        <NegotiationTester />
                         <ImpactTracker />
                         <AffiliateDashboard />
                         <ViralDashboard />
