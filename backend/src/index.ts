@@ -108,23 +108,21 @@ import { GhostNegotiator } from './services/secret/GhostNegotiator'
 import { HyperCrawler } from './services/secret/HyperCrawler'
 import { DopamineEngine } from './services/secret/DopamineEngine'
 
-// Antigravity 20x Hyper-Crawler
+// Antigravity 20x Hyper-Crawler (Turbo Mode)
 app.post('/api/secret/crawl', async (c) => {
-    const result = await HyperCrawler.initiateGlobalCrawl(c.env)
+    const { isTurbo } = await c.req.json().catch(() => ({ isTurbo: false }))
+    const result = await HyperCrawler.initiateGlobalCrawl(c.env, isTurbo)
     return c.json(result)
 })
 
-// Antigravity 20x Dopamine Feed
-app.get('/api/secret/feed', async (c) => {
+// Antigravity 20x Dopamine Notification
+app.get('/api/secret/notification', async (c) => {
     const userId = c.req.query('userId') || 'anon'
-    const feed = await DopamineEngine.getDopamineFeed(userId, {})
+    const notification = await DopamineEngine.getIrresistibleNotification(userId)
     return c.json({
         success: true,
-        data: feed,
-        meta: {
-            algorithm: 'Antigravity-Dopamine-v2',
-            optimization: '20x real'
-        }
+        notification,
+        engine: 'Dopamine-v2-Atomic'
     })
 })
 
