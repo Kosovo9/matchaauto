@@ -1,187 +1,232 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
+import { secureHeaders } from 'hono/secure-headers'
+import { HTTPException } from 'hono/http-exception'
+import { z } from 'zod'
+import { zValidator } from '@hono/zod-validator'
+
+// Internal Imports
 import { sentinelMiddleware } from './middleware/security'
+import { protectRoute } from './middleware/auth'
 import { PaymentOrchestrator } from './services/payments/engine'
 import { AIOrchestrator } from './services/ai/engine'
 import { EdgeCacheSupercharger } from './features/01_performance/edge-cache-supercharger'
 import { SelfHealingSystem } from './features/04_automation/self-healing-system'
+import { Env, ApiResponse } from '../../shared/types'
+
+// Advanced Middlewares
+import { rateLimit, rateLimitConfigs, RateLimitStore } from './middleware/rateLimiter'
+import { createMonitor } from './lib/monitoring'
+import { compression } from './middleware/compression'
+
+// Route Imports
 import listings from './routes/listings'
 import viral from './routes/viral'
+import b2b from './routes/b2b'
 
-// Exporting ChatRoom for Durable Objects
+// Secret & Specialized Services
+import { PulseEngine } from './services/secret/Pulse'
+import { HeatmapGenerator } from './services/secret/Heatmap'
+import { HyperCrawler } from './services/secret/HyperCrawler'
+import { DopamineEngine } from './services/secret/DopamineEngine'
+import { GhostNegotiator } from './services/secret/GhostNegotiator'
+import { OnChainReputation } from './services/secret/GlobalIntelligence'
+import { createCryptoWallet } from './services/CryptoWallet'
+
+// Exporting Durable Objects
 export { ChatRoom } from './chat/durable'
+export { RateLimitStore }
 
-type Bindings = {
-    DB: D1Database;
-    VIRAL_DATA: KVNamespace;
-    HF_TOKEN: string;
-    STRIPE_SECRET_KEY: string;
-    CHAT_ROOM: DurableObjectNamespace;
-};
+const app = new Hono<{ Bindings: Env & { RATE_LIMIT_STORE: DurableObjectNamespace } }>()
 
-const app = new Hono<{ Bindings: Bindings }>()
-
-// Inicialización de Sistemas 10x
-const cache = new EdgeCacheSupercharger()
-const selfHealing = new SelfHealingSystem()
-
-app.use('*', logger())
+// 1. Core Security & Middleware
+app.use('*', secureHeaders())
 app.use('*', cors({
-    origin: '*', // Adjust for production
+    origin: (origin) => {
+        const allowedOrigins = [
+            'https://match-auto.pages.dev',
+            'https://match-auto.com',
+            'http://localhost:3000'
+        ]
+        return allowedOrigins.includes(origin) ? origin : allowedOrigins[0]
+    },
     credentials: true,
 }))
 
-// Apply Security Shield
+// Tracing & Monitoring Middleware
+app.use('*', async (c, next) => {
+    const traceId = `trace_${Date.now()}_${crypto.randomUUID().slice(0, 8)}`;
+    c.set('traceId' as any, traceId);
+    c.header('X-Trace-ID', traceId);
+
+    const monitor = createMonitor(c);
+    c.set('monitor' as any, monitor);
+
+    const startTime = Date.now();
+    await next();
+
+    const duration = Date.now() - startTime;
+    c.header('X-Response-Time', `${duration}ms`);
+})
+
+app.use('*', logger())
+app.use('*', compression())
+app.use('*', rateLimit(rateLimitConfigs.moderate))
 app.use('*', sentinelMiddleware)
 
+// 2. Systems Initializers
+const cache = new EdgeCacheSupercharger()
+const selfHealing = new SelfHealingSystem()
+
+// 3. API Routes
+
+// Health Check
 app.get('/', (c) => {
     return c.json({
         message: 'Match-Auto API 10x Operational',
         status: 'online',
-        engine: 'Billion Dollar Cloudflare Stack',
-        performance: 'Edge Cache Active',
-        automation: 'Self-Healing Active'
+        timestamp: new Date().toISOString(),
+        traceId: c.get('traceId' as any)
     })
 })
 
-// Rutas de Listings con Optimización 10x (Cache Estratificado)
-app.get('/api/listings/search', async (c) => {
-    const query = c.req.query()
-    const cacheKey = `search:${JSON.stringify(query)}`
+// Search with Stratified Cache
+app.get('/api/listings/search',
+    zValidator('query', z.object({
+        q: z.string().optional(),
+        make: z.string().optional(),
+        minPrice: z.string().transform(Number).optional(),
+        maxPrice: z.string().transform(Number).optional()
+    })),
+    async (c) => {
+        const query = c.req.valid('query')
+        const cacheKey = `search:${JSON.stringify(query)}`
 
-    return cache.getWithStratifiedCache(cacheKey, async () => {
-        // En un escenario real, esto llamaría al servicio de listings
-        return {
-            message: "Cache Miss - Result fetched from DB",
-            timestamp: Date.now(),
-            results: []
-        }
-    }, '30s')
-})
+        return cache.getWithStratifiedCache(cacheKey, async () => {
+            return {
+                message: "Results from Edge Search",
+                results: []
+            }
+        }, '30s')
+    }
+)
 
-// Payments Routes
-app.post('/api/payments/create-intent', async (c) => {
-    const { planId, userId, userEmail } = await c.req.json()
-    const orchestrator = new PaymentOrchestrator(c.env)
-    const result = await orchestrator.createPaymentIntent(planId, userId, userEmail)
-    return c.json(result)
-})
+// Payments (Protected)
+app.post('/api/payments/create-intent',
+    protectRoute,
+    zValidator('json', z.object({
+        planId: z.enum(['featured', 'premium', 'agency']),
+        userId: z.string(),
+        userEmail: z.string().email()
+    })),
+    async (c) => {
+        const { planId, userId, userEmail } = c.req.valid('json')
+        const orchestrator = new PaymentOrchestrator(c.env)
+        const result = await orchestrator.createPaymentIntent(planId, userId, userEmail)
+        return c.json(result)
+    }
+)
 
-// AI Routes
-app.post('/api/ai/moderate', async (c) => {
-    const { text } = await c.req.json()
-    const orchestrator = new AIOrchestrator(c.env)
-    const result = await orchestrator.moderateText(text)
-    return c.json(result)
-})
+// AI Moderation (Protected)
+app.post('/api/ai/moderate',
+    protectRoute,
+    zValidator('json', z.object({
+        text: z.string().min(1)
+    })),
+    async (c) => {
+        const { text } = c.req.valid('json')
+        const orchestrator = new AIOrchestrator(c.env)
+        const result = await orchestrator.moderateText(text)
+        return c.json(result)
+    }
+)
 
-// Chat Routing (WebSocket to Durable Object)
-app.get('/api/chat/ws/:roomId', async (c) => {
-    const roomId = c.req.param('roomId')
-    const id = c.env.CHAT_ROOM.idFromName(roomId)
-    const obj = c.env.CHAT_ROOM.get(id)
-    return obj.fetch(c.req.raw)
-})
+// B2B & Core Modules
+app.route('/api/b2b', b2b)
+app.route('/api/listings', listings)
+app.route('/api/viral', viral)
 
-import { honeypotTrap } from './services/secret/Honeypot'
+// --- Secret & Intelligence Routes (Protected) ---
+const secret = new Hono<{ Bindings: Env }>()
+secret.use('*', protectRoute)
 
-// ... (existing imports)
-
-// Honeypot Traps for Scrapers
-app.get('/wp-admin', honeypotTrap)
-app.get('/.env', honeypotTrap)
-app.get('/config.php', honeypotTrap)
-
-// Pulse & Heatmap endpoints
-app.get('/api/secret/pulse', async (c) => {
-    const { PulseEngine } = await import('./services/secret/Pulse')
-    return c.json(await PulseEngine.getGlobalEvents(c.env))
-})
-
-app.get('/api/secret/heatmap', async (c) => {
-    const { HeatmapGenerator } = await import('./services/secret/Heatmap')
-    return c.json(await HeatmapGenerator.getHeatEntries(c.env))
-})
-
-import { GhostNegotiator } from './services/secret/GhostNegotiator'
-import { HyperCrawler } from './services/secret/HyperCrawler'
-import { DopamineEngine } from './services/secret/DopamineEngine'
-
-// Antigravity 20x Hyper-Crawler (Turbo Mode)
-app.post('/api/secret/crawl', async (c) => {
+secret.get('/pulse', async (c) => c.json(await PulseEngine.getGlobalEvents(c.env)))
+secret.get('/heatmap', async (c) => c.json(await HeatmapGenerator.getHeatEntries(c.env)))
+secret.post('/crawl', async (c) => {
     const { isTurbo } = await c.req.json().catch(() => ({ isTurbo: false }))
-    const result = await HyperCrawler.enqueueCrawl(c.env, isTurbo)
-    return c.json(result)
+    return c.json(await HyperCrawler.enqueueCrawl(c.env, isTurbo))
 })
-
-// Antigravity 20x Dopamine Notification
-app.get('/api/secret/notification', async (c) => {
+secret.get('/notification', async (c) => {
     const userId = c.req.query('userId') || 'anon'
-    const notification = await DopamineEngine.getIrresistibleNotification(userId)
-    return c.json({
-        success: true,
-        notification,
-        engine: 'Dopamine-v2-Atomic'
-    })
+    return c.json({ success: true, notification: await DopamineEngine.getIrresistibleNotification(userId) })
 })
-
-import { AntigravityCryptoWallet } from './services/secret/CryptoWallet'
-
-// ... (existing secret endpoints)
-
-// Antigravity Crypto-Wallet Routes
-app.post('/api/secret/crypto/withdraw', async (c) => {
-    const { address, amount, securityToken } = await c.req.json()
-    if (securityToken !== 'BUNKER_SECURE_AUTH_TOKEN') {
-        return c.json({ error: 'Security Breach Attempt Blocked by Sentinel X' }, 403)
-    }
-    const wallet = new AntigravityCryptoWallet()
-    const txId = await wallet.processCommissionWithdrawal(address, amount)
-    return c.json({ success: true, txId, message: 'Pago distribuido de forma segura en Solana' })
-})
-
-app.get('/api/secret/crypto/balance', async (c) => {
-    const address = c.req.query('address') || '8xMAut...NASA69'
-    const wallet = new AntigravityCryptoWallet()
-    const balance = await wallet.getBalance(address).catch(() => 45.82)
-    return c.json({ success: true, balance, unit: 'SOL' })
-})
-
-// Test Negotiation Endpoint
-app.post('/api/test/negotiate', async (c) => {
-    const { offer, askingPrice } = await c.req.json()
-    const result = GhostNegotiator.shouldFilter(offer, askingPrice)
-
-    if (result.shouldReject) {
-        return c.json({
-            success: false,
-            message: result.aiResponse,
-            status: 'BLOCKED_BY_GHOST'
-        }, 403)
-    }
-
-    return c.json({
-        success: true,
-        message: 'Oferta enviada al vendedor exitosamente.',
-        status: 'ACCEPTED'
-    })
-})
-
-import b2b from './routes/b2b'
-import { OnChainReputation } from './services/secret/GlobalIntelligence'
-
-// ... (existing secret endpoints)
-
-// Empire Intelligence Endpoints
-app.get('/api/secret/reputation/:userId', async (c) => {
+secret.get('/reputation/:userId', async (c) => {
     const userId = c.req.param('userId')
     return c.json(await OnChainReputation.getUserReputation(userId, c.env))
 })
 
-// Standard & B2B Routes
-app.route('/api/b2b', b2b)
-app.route('/listings', listings)
-app.route('/viral', viral)
+// Crypto Wallet Routes
+secret.get('/crypto/balance', async (c) => {
+    const address = c.req.query('address') || '8xMAut...NASA69'
+    const wallet = createCryptoWallet(c.env)
+    return c.json({ success: true, balance: await wallet.getBalance(address) })
+})
+
+app.route('/api/secret', secret)
+
+// Negotiation (Test/Semi-Public)
+app.post('/api/test/negotiate', async (c) => {
+    const { offer, askingPrice } = await c.req.json()
+    const result = GhostNegotiator.shouldFilter(offer, askingPrice)
+    return c.json({
+        success: !result.shouldReject,
+        message: result.aiResponse,
+        status: result.shouldReject ? 'BLOCKED_BY_GHOST' : 'ACCEPTED'
+    }, result.shouldReject ? 403 : 200)
+})
+
+// 4. Global Error Handling
+app.onError((err, c) => {
+    const traceId = c.get('traceId' as any);
+    const monitor = c.get('monitor' as any);
+
+    if (monitor) {
+        monitor.captureError(err, { path: c.req.path, traceId });
+    } else {
+        console.error(`[ERROR][${traceId}]`, err);
+    }
+
+    let status = 500;
+    let message = 'Internal Server Error';
+    let code = 'INTERNAL_ERROR';
+
+    if (err instanceof HTTPException) {
+        status = err.status;
+        message = err.message;
+        code = 'HTTP_EXCEPTION';
+    } else if (err instanceof z.ZodError) {
+        status = 422;
+        message = 'Validation Failed';
+        code = 'VALIDATION_ERROR';
+        return c.json({
+            success: false,
+            error: message,
+            code,
+            details: err.errors,
+            traceId
+        }, status);
+    }
+
+    const response: ApiResponse = {
+        success: false,
+        error: message,
+        code,
+        traceId,
+        timestamp: new Date().toISOString()
+    };
+
+    return c.json(response, status as any);
+})
 
 export default app

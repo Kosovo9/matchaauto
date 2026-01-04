@@ -22,9 +22,10 @@ database_id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 [[durable_objects]]
 bindings = [
-  { name = "CHAT_ROOM", class_name = "ChatRoom" }
+  { name = "CHAT_ROOM", class_name = "ChatRoom" },
+  { name = "RATE_LIMIT_STORE", class_name = "RateLimitStore" }
 ]
 
 [[migrations]]
-tag = "v1" # Migración para crear el objeto Durable
-new_classes = ["ChatRoom"]
+tag = "v1"
+new_classes = ["ChatRoom", "RateLimitStore"]

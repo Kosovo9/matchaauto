@@ -90,12 +90,12 @@ export const sentinelMiddleware = async (c: Context, next: Next) => {
             await c.env.VIRAL_DATA.put('threat_logs', JSON.stringify(logs.slice(0, 50)))
         }
 
-        // Respuesta engañosa para scrapers
+        // Respuesta genérica para scrapers (evita disclosure)
         if (analysis.threatLevel === 'high') {
             return c.json({
-                error: 'Security Breach Detected - IP Blacklisted',
+                error: 'Forbidden',
                 code: 403,
-                sentinel_id: crypto.randomUUID()
+                request_id: crypto.randomUUID()
             }, 403)
         }
 
