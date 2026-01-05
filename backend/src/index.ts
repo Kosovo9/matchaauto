@@ -25,6 +25,12 @@ import { validateEnv } from './lib/env'
 import listings from './routes/listings'
 import viral from './routes/viral'
 import b2b from './routes/b2b'
+import search from './routes/search'
+import ads from './routes/ads'
+import system from './routes/system'
+
+// Middleware Imports
+import { sentinelXMiddleware } from './middleware/sentinel-x-tii'
 
 // Admiral & Auction System
 import { getRegionalConfig } from './services/ads/config'
@@ -87,6 +93,7 @@ app.use('*', logger())
 app.use('*', compression())
 app.use('*', rateLimit(rateLimitConfigs.moderate))
 app.use('*', sentinelMiddleware)
+app.use('*', sentinelXMiddleware())
 
 const auctionEngine = new AuctionEngine()
 
@@ -169,10 +176,12 @@ app.post('/api/ai/moderate',
     }
 )
 
-// B2B & Core Modules
 app.route('/api/b2b', b2b)
 app.route('/api/listings', listings)
 app.route('/api/viral', viral)
+app.route('/api/search', search)
+app.route('/api/ads', ads)
+app.route('/api/system', system)
 
 // --- Secret & Intelligence Routes (Protected) ---
 const secret = new Hono<{ Bindings: Env }>()
