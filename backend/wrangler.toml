@@ -12,6 +12,8 @@ CLERK_SECRET_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 CLERK_PUBLISHABLE_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 AI_TOXICITY_THRESHOLD = "0.8"
 DAILY_BUDGET = "10.00"
+SUPABASE_URL = "https://your-project.supabase.co"
+SUPABASE_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 [[kv_namespaces]]
 binding = "CRYPTO_CACHE"
@@ -53,12 +55,17 @@ bucket_name = "match-auto-media"
 [durable_objects]
 bindings = [
   { name = "RATE_LIMIT_STORE", class_name = "RateLimitStore" },
-  { name = "CHAT_ROOM", class_name = "ChatRoom" }
+  { name = "CHAT_ROOM", class_name = "ChatRoom" },
+  { name = "BID_STREAM", class_name = "BidStreamDO" }
 ]
 
 [[migrations]]
 tag = "v1"
-new_classes = ["RateLimitStore", "ChatRoom"]
+new_sqlite_classes = ["RateLimitStore", "ChatRoom"]
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["BidStreamDO"]
 
 [triggers]
 crons = [

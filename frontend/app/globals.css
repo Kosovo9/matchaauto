@@ -1,145 +1,16 @@
-@import "tailwindcss";
-
-@theme {
-  --color-space-950: #020617;
-  --color-space-900: #0f172a;
-  --color-cyan-vibrant: #22d3ee;
-  --color-purple-quantum: #c084fc;
-
-  --animate-orbit: orbit 20s linear infinite;
-  --animate-scan: scan 3s linear infinite;
-  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
-  --animate-float-quantum: float-quantum 6s ease-in-out infinite;
-
-  @keyframes orbit {
-    from {
-      transform: rotate(0deg) translateX(100px) rotate(0deg);
-    }
-
-    to {
-      transform: rotate(360deg) translateX(100px) rotate(-360deg);
-    }
-  }
-
-  @keyframes scan {
-    0% {
-      top: -10%;
-      opacity: 0;
-    }
-
-    50% {
-      opacity: 0.5;
-    }
-
-    100% {
-      top: 110%;
-      opacity: 0;
-    }
-  }
-
-  @keyframes pulse-glow {
-
-    0%,
-    100% {
-      opacity: 0.5;
-      filter: blur(8px);
-    }
-
-    50% {
-      opacity: 1;
-      filter: blur(12px);
-    }
-  }
-
-  @keyframes float-quantum {
-
-    0%,
-    100% {
-      transform: translateY(0) rotate(0deg);
-    }
-
-    50% {
-      transform: translateY(-20px) rotate(2deg);
-    }
-  }
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: 222 47% 4%;
-  --foreground: 213 31% 91%;
-  --card: 222 47% 6%;
-  --card-foreground: 213 31% 91%;
-  --popover: 222 47% 4%;
-  --popover-foreground: 213 31% 91%;
-  --primary: 199 89% 48%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 222 47% 12%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 222 47% 12%;
-  --muted-foreground: 215.4 16.3% 56.9%;
-  --accent: 222 47% 12%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 63% 31%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 222 47% 12%;
-  --input: 222 47% 12%;
-  --ring: 199 89% 48%;
-  --radius: 0.75rem;
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-
-  body {
-    @apply bg-[#020617] text-foreground font-sans selection:bg-cyan-500/30;
-    background-image:
-      radial-gradient(circle at 50% -20%, rgba(34, 211, 238, 0.1), transparent 50%),
-      radial-gradient(circle at 0% 100%, rgba(192, 132, 252, 0.05), transparent 40%);
-    background-attachment: fixed;
-  }
-}
-
-.glass-panel {
-  @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_0_30px_rgba(0, 0, 0, 0.5)];
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-}
-
-.nasa-grid {
-  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
-  background-size: 40px 40px;
-}
-
-.glow-text {
-  text-shadow: 0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(34, 211, 238, 0.2);
-}
-
-.quantum-border {
-  position: relative;
-  border-radius: inherit;
-}
-
-.quantum-border::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  background: linear-gradient(90deg, transparent, #22d3ee, #c084fc, transparent);
-  background-size: 200% 100%;
-  animation: border-flow 4s linear infinite;
-  border-radius: inherit;
-  z-index: -1;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  -webkit-mask-composite: xor;
-}
-
-@keyframes border-flow {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 200% 50%;
-  }
+body {
+    color: rgb(var(--foreground-rgb));
+    background: linear-gradient(to bottom,
+            transparent,
+            rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }

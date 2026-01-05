@@ -1,38 +1,33 @@
-# INSTRUCCIONES PARA DEEPSEEK: GENERACIÓN DE CÓDIGO MATCH-AUTO 1000X 🚀 (ULTIMATE BUNDLE EDITION)
+# 🚀 DeepSeek 10x Instructions: Match-Auto Global Domination
 
-Socio, hemos integrado el **Ultimate Bundle 100x**. Queremos que DeepSeek genere el código para el ecosistema completo de **Match-Auto**, incluyendo el nuevo **Admin Dashboard** y los **Specialized Workers**.
+Basado en el análisis profundo y la arquitectura optimizada, estos son los pilares para transformar Match-Auto en el marketplace líder mundial.
 
-## 1. CONTEXTO TÉCNICO ACTUALIZADO
-- **Backend:** Hono.js en Cloudflare Workers (Capa de Inteligencia y Seguridad).
-- **Admin Dashboard:** Cloudflare Pages + Functions (PagerDuty Integration).
-- **Frontend:** Next.js 15 (RSC) + TailwindCSS 4.0.
-- **Bases de Datos:** D1 (Cities/Cats), Supabase (Relational), KV (Threats/Cache).
-- **Seguridad:** Sentinel-X (TII Logic) + Clerk Auth.
+## 🏗️ 1. Arquitectura Monorepo (Implementada)
+Hemos migrado a una estructura de microservicios dentro de un monorepo para máxima escalabilidad:
+- `/apps/api-gateway`: El cerebro de entrada (Hono.js + Cloudflare Workers).
+- `/packages/core-logic`: El motor VIN-to-Part y validaciones críticas.
+- `/packages/solana-service`: Escrow criptográfico y pagos Web3.
+- `/packages/ai-engine`: Análisis de daños por IA y moderación automática.
+- `/packages/database`: Esquema relacional 10x con Drizzle ORM.
 
-## 2. REGLAS DE ORO ACTUALIZADAS (100X)
-1. **Zero Trust Admin:** El Dashboard de Alertas debe usar Cloudflare Access.
-2. **Sentinel-X Integration:** Los Workers deben reportar al Sentinel-X Threat Intensity Index (TII).
-3. **Resiliencia Extrema:** Circuit Breaker en cada integración (Solana, Clerk, HuggingFace).
-4. **Caching Estratégico:** Uso de KV para balances de Solana y D1 para geo-consultas.
+## 🛡️ 2. Sistema de Escrow Solana (Anchor)
+Se ha implementado el contrato inteligente en Rust que garantiza la seguridad en transacciones internacionales:
+- **Depósito Seguro**: Los fondos se bloquean en una PDA de Solana.
+- **Liberación por Oráculo**: Solo el Oráculo de Logística puede confirmar la entrega para liberar fondos.
+- **Protección al Comprador**: Timelock para cancelaciones si el producto no se envía.
 
-## 3. COMPONENTES CLAVE A GENERAR
+## 🚗 3. Motor VIN Precision (vPIC)
+El diferenciador clave:
+- **Decodificación Automática**: Cada VIN se mapea a año, marca y modelo exactos.
+- **CompatibilityKey**: Un identificador único que cruza compatibilidad de refacciones con el inventario global.
 
-### A. DASHBOARD DE ALERTAS (Admin)
-- **`match-auto-admin/public/index.html`**: Interfaz premium para visualizar incidentes de PagerDuty y Sentinel-X.
-- **`match-auto-admin/functions/api/alerts.js`**: Proxy seguro entre el Dashboard y la API de PagerDuty.
+## 🛠️ 4. Próximos Pasos (DeepSeek Roadmap)
+1. **Integración de Logística**: Conectar el Oráculo con APIs de DHL/FedEx para automatizar el estado del Escrow.
+2. **IA de Daños**: Implementar el módulo de visión para sugerir piezas basadas en fotos de colisión.
+3. **Escalabilidad de Datos**: Migrar a TiDB o CockroachDB en el backend para soportar millones de registros de compatibilidad.
 
-### B. SPECIALIZED WORKERS (Backend)
-- **`sentinel_x_tii_worker.js`**: Motor de análisis de amenazas en tiempo real.
-- **`cost_tracker_worker.js`**: Monitoreo de consumo de recursos y costos operativos.
-- **`golden_metrics_worker.js`**: Tracking de K-Factor y crecimiento viral.
+## 📝 Instrucciones de Ejecución
+Para continuar la implementación, usa este prompt en Antigravity:
+> "Sigue la Tarea 3 de `match_auto_10x_antigravity_tasks.md`: Implementa el routing completo en `/apps/api-gateway/src/index.ts` integrando los paquetes `core-logic` y `solana-service`."
 
-### C. CORE SERVICES (Refactor)
-- **`src/services/CryptoWallet.ts`**: Integrar con el KV de Cache y el Circuit Breaker Manager.
-- **`src/middleware/security.ts`**: Implementar el Sentinel Middleware que bloquee IPs basado en su Threat Score.
-
-## 4. PROMPT MAESTRO PARA DEEPSEEK
-> "Utilizando como base los documentos en `docs/ultimate_bundle/`, genera el código completo del componente [NOMBRE_COMPONENTE] siguiendo los estándares de **Match-Auto 1000x**. Asegúrate de que use Zod para validación, incluya manejo de errores con TraceID, y esté optimizado para latencia cero en el Edge."
-
----
-**Objetivo Final:** Dominación global. Despliegue relámpago. Seguridad nivel Dios.
-🚀 **¡A EJECUTAR!**
+**Sistemas listos y optimizados para el hiper-crecimiento 1000X.**

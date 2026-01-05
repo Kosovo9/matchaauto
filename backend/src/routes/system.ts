@@ -1,22 +1,18 @@
 import { Hono } from 'hono';
-import { PhilanthropyLedger } from '../services/philanthropy/ledger';
-import { migrateToSupabase } from '../scripts/migrate-to-supabase';
-import { Env } from '../../../shared/types';
 
-const router = new Hono<{ Bindings: Env }>();
+const router = new Hono();
 
-router.get('/report', async (c) => {
-    const ledger = new PhilanthropyLedger({
-        SUPABASE_URL: c.env.SUPABASE_URL,
-        SUPABASE_KEY: c.env.SUPABASE_KEY
-    });
-    const report = await ledger.getImpactReport();
-    return c.json({ success: true, data: report });
-});
+router.get('/ping', (c) => c.text('pong'));
 
-router.post('/migrate', async (c) => {
-    const result = await migrateToSupabase(c.env);
-    return c.json(result);
+router.get('/db-check', async (c) => {
+    const db = (c.env as any).DB;
+    if (!db) return c.json({ error: 'DB NOT BOUND' });
+    try {
+        const tables = await db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+        return c.json({ success: true, tables: tables.results });
+    } catch (e: any) {
+        return c.json({ success: false, error: e.message });
+    }
 });
 
 export default router;

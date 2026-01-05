@@ -14,13 +14,13 @@
         "@hono/zod-validator": "^0.7.6",
         "@huggingface/inference": "^4.13.5",
         "@solana/web3.js": "^1.98.4",
+        "@supabase/supabase-js": "^2.89.0",
         "@upstash/qstash": "^2.8.4",
         "@upstash/redis": "^1.36.0",
         "crypto-js": "^4.2.0",
         "hono": "^4.11.3",
         "jwt-simple": "^0.5.6",
         "mercadopago": "^2.11.0",
-        "stripe": "^20.1.0",
         "zod": "^4.3.5"
     },
     "devDependencies": {

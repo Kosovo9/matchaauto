@@ -389,6 +389,8 @@ export interface Env {
     // Environment variables
     SOLANA_RPC_URL: string;
     SOLANA_NETWORK: string;
+    SUPABASE_URL: string;
+    SUPABASE_KEY: string;
     AI_TOXICITY_THRESHOLD: string;
     CLERK_SECRET_KEY: string;
     CLERK_PUBLISHABLE_KEY: string;

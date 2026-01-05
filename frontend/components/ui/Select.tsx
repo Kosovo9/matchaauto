@@ -16,12 +16,12 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
                 )}
                 ref={ref}
                 onChange={(e) => onValueChange?.(e.target.value)}
-        ...props
-    >
-    { children }
-      </select >
-    )
-  }
+                {...props}
+            >
+                {children}
+            </select>
+        )
+    }
 )
 Select.displayName = "Select"
 

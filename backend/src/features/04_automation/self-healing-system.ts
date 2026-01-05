@@ -1,10 +1,10 @@
 export class SelfHealingSystem {
     constructor() {
-        this.startHealthMonitoring();
+        // No auto-start in global scope for Cloudflare Workers
     }
 
-    private startHealthMonitoring() {
-        setInterval(() => this.healthCheck(), 30000);
+    public async runDiagnostic() {
+        await this.healthCheck();
     }
 
     async healthCheck() {

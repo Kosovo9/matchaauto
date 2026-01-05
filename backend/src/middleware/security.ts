@@ -11,7 +11,6 @@ class SentinelSecurity {
     private threatsBlocked = 0
     private knownBotPatterns = [
         /bot|spider|crawler|scraper/i,
-        /curl|wget|python-requests/i,
         /HeadlessChrome|PhantomJS/i
     ]
 
