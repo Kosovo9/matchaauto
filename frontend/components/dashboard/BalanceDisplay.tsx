@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Wallet, RefreshCw, TrendingUp } from 'lucide-react';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Wallet, RefreshCw, TrendingUp, Zap, Radio, Database } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/hooks/useToast';
 
@@ -16,11 +15,7 @@ interface BalanceData {
     cacheHit: boolean;
 }
 
-interface BalanceDisplayProps {
-    userId: string;
-}
-
-export function BalanceDisplay({ userId }: BalanceDisplayProps) {
+export function BalanceDisplay({ userId }: { userId: string }) {
     const [balance, setBalance] = useState<BalanceData | null>(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -28,139 +23,78 @@ export function BalanceDisplay({ userId }: BalanceDisplayProps) {
 
     const fetchBalance = async (forceRefresh = false) => {
         try {
-            const traceId = `balance_${Date.now()}_${userId}`;
-            const response = await fetch(`/api/wallet/balance?userId=${userId}&forceRefresh=${forceRefresh}`, {
-                headers: {
-                    'X-Trace-ID': traceId,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch balance');
-            }
-
+            const response = await fetch(`/api/wallet/balance?userId=${userId}&forceRefresh=${forceRefresh}`);
+            if (!response.ok) throw new Error('API Sync Error');
             const data = await response.json();
             setBalance(data.data);
-
-            if (data.data.cacheHit && forceRefresh) {
-                toast({
-                    title: 'Balance Updated',
-                    description: 'Latest balance fetched from blockchain',
-                });
-            }
         } catch (error) {
-            console.error('Error fetching balance:', error);
-            toast({
-                title: 'Error',
-                description: 'Failed to fetch balance',
-                variant: 'destructive',
-            });
+            toast({ title: 'Critical Error', description: 'Blockchain Sync Interrupted', variant: 'destructive' });
         } finally {
             setLoading(false);
             setRefreshing(false);
         }
     };
 
-    useEffect(() => {
-        fetchBalance();
-    }, [userId]);
+    useEffect(() => { fetchBalance(); }, [userId]);
 
-    const handleRefresh = () => {
-        setRefreshing(true);
-        fetchBalance(true);
-    };
-
-    const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        }).format(amount);
-    };
-
-    // Estimated USD value (simplified - in production use actual rate)
-    const estimatedUSD = balance ? balance.sol * 100 : 0;
-
-    if (loading) {
-        return (
-            <div className="animate-pulse">
-                <div className="h-8 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded mt-2"></div>
-            </div>
-        );
-    }
+    if (loading) return <div className="animate-pulse h-24 w-full bg-white/5 rounded-2xl" />;
 
     return (
-        <div className="space-y-4">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-500">
-                        <Wallet className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                        <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                            {balance?.formatted || '0 SOL'}
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <TrendingUp className="h-3 w-3" />
-                            {formatCurrency(estimatedUSD)}
-                        </div>
-                    </div>
-                </div>
-                <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={handleRefresh}
-                    disabled={refreshing}
-                    className="gap-2"
-                >
-                    <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-                    Refresh
-                </Button>
+        <div className="relative overflow-hidden glass-panel rounded-3xl p-6 group">
+            {/* Background Pulse */}
+            <div className="absolute top-0 right-0 p-8 opacity-20 group-hover:opacity-40 transition-opacity">
+                <Zap className="h-24 w-24 text-cyan-400 rotate-12" />
             </div>
 
-            <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Source</span>
-                    <span className={`inline-flex items-center gap-1 ${balance?.cacheHit ? 'text-green-600' : 'text-blue-600'}`}>
-                        {balance?.cacheHit ? (
-                            <>
-                                <div className="h-2 w-2 rounded-full bg-green-500" />
-                                Edge Cache
-                            </>
-                        ) : (
-                            <>
-                                <div className="h-2 w-2 rounded-full bg-blue-500" />
-                                Live RPC
-                            </>
-                        )}
-                    </span>
+            <div className="relative z-10">
+                <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full">
+                        <Radio className="h-3 w-3 text-cyan-400 animate-pulse" />
+                        <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Mainnet Live</span>
+                    </div>
+                    <motion.button
+                        whileTap={{ rotate: 180 }}
+                        onClick={() => { setRefreshing(true); fetchBalance(true); }}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                    >
+                        <RefreshCw className={`h-4 w-4 text-gray-400 ${refreshing ? 'animate-spin' : ''}`} />
+                    </motion.button>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Last Updated</span>
-                    <span className="text-gray-900 dark:text-white">
-                        {balance?.lastUpdated ? new Date(balance.lastUpdated).toLocaleTimeString() : 'Never'}
-                    </span>
+
+                <div className="space-y-1">
+                    <div className="text-gray-500 text-xs font-mono">AVAILABLE_SOLANA</div>
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-5xl font-black text-white glow-text tracking-tighter">
+                            {balance?.sol.toFixed(3) || '0.000'}
+                        </span>
+                        <span className="text-xl font-bold text-cyan-500">SOL</span>
+                    </div>
+                    <div className="text-sm text-gray-400 font-mono">
+                        ≈ ${(balance?.sol ? balance.sol * 110 : 0).toLocaleString()} USD
+                    </div>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-white/5 grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-1 text-[10px] text-gray-500">
+                            <Database className="h-3 w-3" />
+                            DATALAYER
+                        </div>
+                        <div className={`text-xs font-bold ${balance?.cacheHit ? 'text-green-400' : 'text-blue-400'}`}>
+                            {balance?.cacheHit ? 'EDGE_CACHED' : 'BLOCKCHAIN_DIRECT'}
+                        </div>
+                    </div>
+                    <div className="space-y-1 text-right">
+                        <div className="text-[10px] text-gray-500 uppercase tracking-tight">Sync Interval</div>
+                        <div className="text-xs font-bold text-white">
+                            {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Animated background effect */}
-            <motion.div
-                className="absolute inset-0 -z-10 opacity-10"
-                animate={{
-                    background: [
-                        'radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.2) 0%, transparent 50%)',
-                        'radial-gradient(circle at 80% 50%, rgba(255, 215, 0, 0.2) 0%, transparent 50%)',
-                        'radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.2) 0%, transparent 50%)',
-                    ],
-                }}
-                transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    repeatType: 'reverse',
-                }}
-            />
+            {/* Decorative scanning line */}
+            <div className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent animate-scan" style={{ animationDelay: '1s' }} />
         </div>
     );
 }
