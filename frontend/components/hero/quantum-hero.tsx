@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Zap, Globe, ChevronDown, CheckCircle, Car, Wrench, ShieldCheck, Banknote, Truck, ArrowRight, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import backend, { backendClient } from "@/lib/backend-client";
 
 // --- MOCK DATA WITH MULTI-IMAGE GALLERIES ---
 const CAR_RESULTS = [
