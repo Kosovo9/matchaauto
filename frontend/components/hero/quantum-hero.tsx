@@ -220,13 +220,30 @@ export default function QuantumHero() {
         else setIsSearching(false);
     }, [searchQuery]);
 
-    const handlePayment = (item: any, provider: 'PayPal' | 'MercadoPago') => {
+    const handlePayment = async (item: any, provider: 'PayPal' | 'MercadoPago') => {
         setShowPaymentModal({ item, provider });
-        // Simulation of process
-        setTimeout(() => {
-            alert(`✅ Conexión con ${provider} establecida.\n\nSimulación de pago: Iniciando transacción segura para ${item.title} (${item.price})\n\n[API Endpoint: POST /api/checkout/v1/init]`);
+
+        try {
+            const response = await backendClient.post('/api/payments/create-preference', {
+                itemId: item.id,
+                provider: provider,
+                amount: typeof item.price === 'string' ? parseInt(item.price.replace(/[^0-9]/g, '')) : item.price,
+                title: item.title,
+                currency: 'MXN'
+            });
+
+            if (response.data.success) {
+                // REDIRECCIÓN REAL A PASARELA
+                window.location.href = response.data.data.redirectUrl;
+            } else {
+                alert("Error al iniciar pago. Intente más tarde.");
+                setShowPaymentModal(null);
+            }
+        } catch (e) {
+            console.error("Payment initiation error:", e);
             setShowPaymentModal(null);
-        }, 2000);
+            alert("Error de conexión con la pasarela.");
+        }
     }
 
     const results = activeTab === "CARS" ? CAR_RESULTS : SERVICE_RESULTS;
