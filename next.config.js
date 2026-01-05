@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    swcMinify: true,
     images: {
         remotePatterns: [
             {
@@ -19,6 +18,14 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: '**.cloudflare.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'res.cloudinary.com',
+            },
+            {
+                protocol: 'https',
+                hostname: '**.netlify.app',
             },
         ],
     },

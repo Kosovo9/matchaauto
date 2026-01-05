@@ -3,6 +3,7 @@ export interface VisionResult {
     model: string;
     yearRange: string;
     color: string;
+    plateNumber?: string;
     conditionScore: number;
     features: string[];
     provider: string;
@@ -16,23 +17,23 @@ export class VisionOrchestrator {
     }
 
     async analyze(imageUrl: string): Promise<VisionResult> {
-        console.log("🚀 Starting 3-Tier Vision Orchestration...");
+        console.log("🚀 Starting 3-Tier Vision + ALPR Orchestration...");
 
-        // TIER 1: GEMINI 1.5 FLASH (Premium API)
+        // TIER 1: GEMINI 1.5 FLASH (Premium API + Plate Recognition)
         try {
             return await this.tier1Gemini(imageUrl);
         } catch (error) {
             console.error("⚠️ Tier 1 (Gemini) Failed. Falling back to Tier 2...", error);
         }
 
-        // TIER 2: HUGGING FACE (Open Source - LLaVA / ViT)
+        // TIER 2: HUGGING FACE (Open Source)
         try {
             return await this.tier2HuggingFace(imageUrl);
         } catch (error) {
             console.error("⚠️ Tier 2 (HuggingFace) Failed. Falling back to Tier 3...", error);
         }
 
-        // TIER 3: BASIC METADATA EXTRACTION (Fail-safe)
+        // TIER 3: BASIC METADATA EXTRACTION
         return this.tier3Emergency(imageUrl);
     }
 
@@ -44,7 +45,7 @@ export class VisionOrchestrator {
             body: JSON.stringify({
                 contents: [{
                     parts: [
-                        { text: "Analyze car image and return JSON: {make, model, yearRange, color, conditionScore, features: string[]}. Be precise." },
+                        { text: "Analyze car image and return JSON: {make, model, yearRange, color, plateNumber (if visible), conditionScore, features: string[]}. Be extremely precise with the license plate." },
                         { inline_data: { mime_type: "image/jpeg", data: await this.imageToBase64(imageUrl) } }
                     ]
                 }]
@@ -54,7 +55,7 @@ export class VisionOrchestrator {
         const data: any = await response.json();
         const aiText = data.candidates[0].content.parts[0].text;
         const cleanJson = aiText.replace(/```json|```/g, '').trim();
-        return { ...JSON.parse(cleanJson), provider: 'Gemini 1.5 Flash' };
+        return { ...JSON.parse(cleanJson), provider: 'Gemini 1.5 Flash + ALPR' };
     }
 
     private async tier2HuggingFace(imageUrl: string): Promise<VisionResult> {

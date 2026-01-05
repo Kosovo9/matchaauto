@@ -220,7 +220,7 @@ export default function QuantumHero() {
         else setIsSearching(false);
     }, [searchQuery]);
 
-    const handlePayment = async (item: any, provider: 'PayPal' | 'MercadoPago') => {
+    const handlePayment = async (item: any, provider: 'PayPal' | 'MercadoPago' | 'Solana') => {
         setShowPaymentModal({ item, provider });
 
         try {
@@ -233,7 +233,7 @@ export default function QuantumHero() {
             });
 
             if (response.data.success) {
-                // REDIRECCIÓN REAL A PASARELA
+                // REDIRECCIÓN REAL A PASARELA (O FLUJO WEB3)
                 window.location.href = response.data.data.redirectUrl;
             } else {
                 alert("Error al iniciar pago. Intente más tarde.");

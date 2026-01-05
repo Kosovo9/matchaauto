@@ -25,6 +25,7 @@ export default function QuantumUpload() {
         currency: 'MXN',
         make: 'Cadillac',
         model: 'Suburban',
+        plate: '',
         year: 2021,
         trim: 'LTZ',
         mileage: 117000,
@@ -44,11 +45,12 @@ export default function QuantumUpload() {
                     ...prev,
                     make: aiData.make || prev.make,
                     model: aiData.model || prev.model,
+                    plate: aiData.plateNumber || prev.plate,
                     year: parseInt(aiData.yearRange?.split('-')[0]) || prev.year,
                     features: aiData.features || prev.features,
-                    description: `Análisis AI: ${aiData.make} ${aiData.model} en excelentes condiciones (${aiData.conditionScore}/10). ${aiData.features?.join(', ')}.`
+                    description: `Análisis AI (ALPR): ${aiData.make} ${aiData.model}. Placa: ${aiData.plateNumber || 'No detectada'}. Condición: ${aiData.conditionScore}/10. ${aiData.features?.join(', ')}.`
                 }));
-                console.log("AI Analysis Success:", aiData);
+                console.log("AI Analysis + ALPR Success:", aiData);
             }
         } catch (e) {
             console.error("AI Analysis Failed:", e);
