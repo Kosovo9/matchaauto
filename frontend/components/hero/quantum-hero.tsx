@@ -168,18 +168,18 @@ const QuantumCard = ({ item, mode, accentColor, accentBg, handlePayment }: any) 
                 {/* ACTION BUTTONS */}
                 <div className="grid grid-cols-2 gap-2">
                     <button
-                        onClick={(e) => { e.stopPropagation(); handlePayment(item, 'MercadoPago'); }}
+                        onClick={(e) => { e.stopPropagation(); window.location.href = `/sell?mode=rent&item=${item.id}`; }}
                         className="py-2 rounded-xl bg-white/5 hover:bg-blue-500/20 text-[10px] font-bold text-blue-400 border border-white/5 transition-all flex flex-col items-center justify-center gap-1"
                     >
                         <Banknote className="w-3 h-3" />
-                        MPAGO
+                        PRE-RENT
                     </button>
                     <button
-                        onClick={(e) => { e.stopPropagation(); handlePayment(item, 'PayPal'); }}
+                        onClick={(e) => { e.stopPropagation(); window.location.href = `/sell?mode=buy&item=${item.id}`; }}
                         className={cn("py-2 rounded-xl text-[10px] font-bold text-black flex flex-col items-center justify-center gap-1 transition-all shadow-lg hover:brightness-110", accentBg)}
                     >
                         <Zap className="w-3 h-3 fill-black" />
-                        {mode === "BUY" ? "BUY" : "RENT"}
+                        {mode === "BUY" ? "QUICK-SELL" : "LIST NOW"}
                     </button>
                 </div>
             </div>
