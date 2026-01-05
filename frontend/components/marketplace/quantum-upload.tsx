@@ -34,6 +34,29 @@ export default function QuantumUpload() {
     });
 
     // --- HANDLERS ---
+    const handleAIAnalysis = async (imgUrl: string) => {
+        setIsLoading(true);
+        try {
+            const response = await backendClient.post('/api/ai/analyze-auto', { imageUrl: imgUrl });
+            if (response.data.success) {
+                const aiData = response.data.data;
+                setFormData(prev => ({
+                    ...prev,
+                    make: aiData.make || prev.make,
+                    model: aiData.model || prev.model,
+                    year: parseInt(aiData.yearRange?.split('-')[0]) || prev.year,
+                    features: aiData.features || prev.features,
+                    description: `Análisis AI: ${aiData.make} ${aiData.model} en excelentes condiciones (${aiData.conditionScore}/10). ${aiData.features?.join(', ')}.`
+                }));
+                console.log("AI Analysis Success:", aiData);
+            }
+        } catch (e) {
+            console.error("AI Analysis Failed:", e);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const handleSubmit = async () => {
         setIsLoading(true);
         try {
@@ -192,9 +215,15 @@ export default function QuantumUpload() {
                             </div>
                             {/* MOCK PREVIEW FOR SUBURBAN */}
                             <div className="mt-4 grid grid-cols-4 gap-4">
-                                <div className="relative aspect-video rounded-xl overflow-hidden border border-[#39FF14]/50 shadow-[0_0_15px_rgba(57,255,20,0.2)]">
-                                    <img src="https://images.unsplash.com/photo-1633502263884-6352934c9c48?auto=format&fit=crop&q=80" className="object-cover w-full h-full" />
-                                    <div className="absolute top-2 right-2 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded-md backdrop-blur-md">PORTADA</div>
+                                <div
+                                    onClick={() => handleAIAnalysis("https://images.unsplash.com/photo-1633502263884-6352934c9c48?auto=format&fit=crop&q=80")}
+                                    className="relative aspect-video rounded-xl overflow-hidden border border-[#39FF14]/50 shadow-[0_0_15px_rgba(57,255,20,0.2)] cursor-help group"
+                                >
+                                    <img src="https://images.unsplash.com/photo-1633502263884-6352934c9c48?auto=format&fit=crop&q=80" className="object-cover w-full h-full group-hover:scale-105 transition-transform" />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                        <Zap className="w-8 h-8 text-[#39FF14]" />
+                                    </div>
+                                    <div className="absolute top-2 right-2 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded-md backdrop-blur-md">TEST AI</div>
                                 </div>
                                 {[1, 2, 3].map(i => (
                                     <div key={i} className="aspect-video rounded-xl bg-white/5 border border-white/5 animate-pulse" />
