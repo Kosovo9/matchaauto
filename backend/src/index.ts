@@ -7,6 +7,7 @@ import payments from './routes/payments';
 import ai from './routes/ai';
 import system from './routes/system';
 import affiliates from './routes/affiliates';
+import notifications from './routes/notifications';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -26,6 +27,7 @@ app.route('/api/payments', payments);
 app.route('/api/ai', ai);
 app.route('/api/system', system);
 app.route('/api/affiliates', affiliates);
+app.route('/api/notifications', notifications);
 
 export default {
     fetch: app.fetch

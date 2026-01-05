@@ -5,6 +5,7 @@ import { AnimatePresence } from 'framer-motion';
 import { MessageSquare } from 'lucide-react';
 import QuantumHero from "@/components/hero/quantum-hero";
 import QuantumChat from "@/components/chat/quantum-chat";
+import QuantumAppSection from "@/components/mobile-app-cta";
 
 export default function Home() {
     const [isChatOpen, setIsChatOpen] = useState(false);
@@ -13,6 +14,9 @@ export default function Home() {
         <main className="relative">
             {/* Componente Hero Principal */}
             <QuantumHero />
+
+            {/* Módulo de Descarga App 1000x */}
+            <QuantumAppSection />
 
             {/* Sistema Nervioso: Quantum Chat Global */}
             <AnimatePresence>
