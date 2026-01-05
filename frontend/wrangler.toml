@@ -1,8 +1,0 @@
-name = "match-auto-frontend"
-compatibility_date = "2024-11-01"
-compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".vercel/output/static"
-
-[vars]
-NEXT_PUBLIC_API_URL = "https://match-auto-backend.neocwolf.workers.dev"
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
