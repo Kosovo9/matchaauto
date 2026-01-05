@@ -14,7 +14,10 @@ import {
     Zap,
     ArrowUpRight,
     TrendingUp,
-    Lock
+    Lock,
+    Wallet,
+    Video,
+    Smartphone
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
@@ -22,11 +25,14 @@ import { redirect } from 'next/navigation';
 import { usePushNotifications } from '@/hooks/use-notifications';
 import toast from 'react-hot-toast';
 import { backendClient } from '@/lib/backend-client';
+import { getTreasuryStatus } from '@/lib/treasury-service';
 
 export default function AdminNexus() {
     const { data: session, status } = useSession();
     const [activeTab, setActiveTab] = useState('OVERVIEW');
     const [margin, setMargin] = useState(10);
+    const [treasuryData, setTreasuryData] = useState<any>(null);
+    const [marketingPacks, setMarketingPacks] = useState<any[]>([]);
 
     // Presidential Protection
     /* 
@@ -37,14 +43,20 @@ export default function AdminNexus() {
     }, [status]);
     */
 
+    useEffect(() => {
+        if (activeTab === 'PAYMENTS') {
+            getTreasuryStatus().then(data => setTreasuryData(data));
+        }
+    }, [activeTab]);
+
     const { notifySale } = usePushNotifications();
 
     const handleSeedInventory = async () => {
         try {
             const response = await backendClient.post('/api/system/seed-inventory');
             if (response.data.success) {
-                alert(`✅ Imperio Poblado: ${response.data.count} items inyectados.`);
-                notifySale(2450000, 'Tesla Model S Plaid');
+                toast.success(`Imperio Poblado: ${response.data.count} items inyectados.`);
+                notifySale(2.5, 'Tesla Model S (Solana Transaction)');
             }
         } catch (e) {
             console.error("Seed failed:", e);
@@ -65,8 +77,28 @@ export default function AdminNexus() {
         }
     };
 
+    const generateBlast = async () => {
+        toast.promise(
+            backendClient.post('/api/marketing/generate-blast', {
+                make: 'Porsche',
+                model: '911 Carrera',
+                year: 2024,
+                price: 2500000,
+                features: ['Turbo', 'Agate Grey', 'Sport Chrono']
+            }),
+            {
+                loading: 'Diseñando Campaña Viral...',
+                success: (res) => {
+                    setMarketingPacks(prev => [res.data.data, ...prev]);
+                    return 'Marketing Blast Listo! 🔥';
+                },
+                error: 'Error al generar contenido.'
+            }
+        );
+    };
+
     const stats = [
-        { label: 'Revenue Total', value: '$84,200', trend: '+12.5%', icon: DollarSign, color: 'text-[#39FF14]' },
+        { label: 'Revenue Total (SOL)', value: treasuryData?.balance?.toFixed(2) || '---', trend: '+12.5%', icon: DollarSign, color: 'text-[#39FF14]' },
         { label: 'Active Users', value: '1,240', trend: '+5.2%', icon: Users, color: 'text-blue-400' },
         { label: 'Conversion Rate', value: '3.8%', trend: '+0.8%', icon: TrendingUp, color: 'text-purple-400' },
         { label: 'Server Status', value: '99.9%', trend: 'Optimum', icon: Activity, color: 'text-orange-400' },
@@ -88,9 +120,8 @@ export default function AdminNexus() {
                 <nav className="flex-1 space-y-2">
                     {[
                         { id: 'OVERVIEW', label: 'Monitor Global', icon: BarChart3 },
-                        { id: 'USERS', label: 'Gestión Usuarios', icon: Users },
-                        { id: 'PAYMENTS', label: 'Finanzas Edge', icon: DollarSign },
-                        { id: 'SYSTEM', label: 'Estado Sistema', icon: Activity },
+                        { id: 'MARKETING', label: 'Marketing Blast', icon: Zap },
+                        { id: 'PAYMENTS', label: 'Tesorería SOL', icon: Wallet },
                         { id: 'SETTINGS', label: 'Protocolos', icon: Settings },
                     ].map((item) => (
                         <button
@@ -107,41 +138,30 @@ export default function AdminNexus() {
                             {item.label}
                         </button>
                     ))}
-
-                    <div className="pt-8 opacity-50">
-                        <button
-                            onClick={handleSeedInventory}
-                            className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-[10px] font-black tracking-widest bg-white/5 border border-dashed border-white/20 hover:border-[#39FF14] hover:text-[#39FF14] transition-all"
-                        >
-                            <Zap className="w-3 h-3" /> INYECTAR INVENTARIO
-                        </button>
-                    </div>
                 </nav>
 
-                <div className="mt-auto pt-8 border-t border-white/5">
-                    <div className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/10">
-                        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-bold">AD</div>
-                        <div className="flex-1 overflow-hidden">
-                            <p className="text-[10px] font-black truncate">ADMIN MATCHAUTO</p>
-                            <p className="text-[8px] text-gray-500 font-mono">SEC-LEVEL: 5</p>
+                <div className="pt-8 mt-8 border-t border-white/5">
+                    <div className="bg-white/5 rounded-2xl p-4 mb-6">
+                        <p className="text-[10px] text-gray-500 font-mono uppercase tracking-[0.2em] mb-2">Seguridad Nivel 5</p>
+                        <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 bg-[#39FF14] rounded-full animate-pulse shadow-[0_0_10px_#39FF14]" />
+                            <span className="text-xs font-bold uppercase tracking-tighter text-white">CONEXIÓN CIFRADA</span>
                         </div>
-                        <Lock className="w-3 h-3 text-gray-600" />
                     </div>
+                    <button className="w-full py-4 rounded-xl border border-white/10 text-xs font-black tracking-widest hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-500 transition-all">
+                        CERRAR ACCESO
+                    </button>
                 </div>
             </aside>
 
-            {/* MAIN PORTAL AREA */}
+            {/* MAIN CONTENT AREA */}
             <main className="flex-1 ml-[280px] p-12">
                 <header className="flex justify-between items-center mb-16">
                     <div>
-                        <h2 className="text-3xl font-black tracking-tight mb-2">Monitor <span className="text-[#39FF14]">Presidencial</span></h2>
-                        <div className="flex items-center gap-2 text-xs font-mono text-gray-500">
-                            <div className="w-2 h-2 rounded-full bg-[#39FF14] animate-pulse"></div>
-                            PROTOCOLO DE SEGURIDAD ALPHA ACTIVO
-                        </div>
+                        <h2 className="text-4xl font-black tracking-tighter mb-2">Administración <span className="text-gray-500 uppercase text-lg ml-3 font-mono tracking-widest">v1.0.0-Beta</span></h2>
+                        <p className="text-gray-500 text-sm font-medium">Panel de control de alta fidelidad para el ecosistema Match-Auto.</p>
                     </div>
-
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-6">
                         <div className="relative">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                             <input
@@ -180,12 +200,12 @@ export default function AdminNexus() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* CHARTS / ACTIVITY */}
+                    {/* DYNAMIC VIEW AREA */}
                     {activeTab === 'OVERVIEW' ? (
                         <div className="lg:col-span-2 bg-[#0D0D0D] border border-white/5 rounded-[3rem] p-10">
                             <div className="flex justify-between items-center mb-10">
                                 <h3 className="text-xl font-bold flex items-center gap-3">
-                                    <Zap className="w-5 h-5 text-[#39FF14]" /> Tráfico en Tiempo Real
+                                    <Activity className="w-5 h-5 text-[#39FF14]" /> Tráfico en Tiempo Real
                                 </h3>
                                 <div className="flex gap-2">
                                     <span className="px-3 py-1 bg-white/5 text-[9px] font-mono text-gray-500 rounded-md">24H</span>
@@ -201,6 +221,82 @@ export default function AdminNexus() {
                                         transition={{ duration: 1, delay: i * 0.05 }}
                                         className="flex-1 bg-[#39FF14] rounded-t-lg opacity-40 hover:opacity-100 transition-opacity cursor-pointer shadow-[0_0_20px_rgba(57,255,20,0.2)]"
                                     />
+                                ))}
+                            </div>
+                        </div>
+                    ) : activeTab === 'MARKETING' ? (
+                        <div className="lg:col-span-2 bg-[#0D0D0D] border border-white/5 rounded-[3rem] p-10">
+                            <div className="flex justify-between items-center mb-10">
+                                <h3 className="text-xl font-bold flex items-center gap-3">
+                                    <Zap className="w-5 h-5 text-[#39FF14]" /> Viral Marketing Blast
+                                </h3>
+                                <button
+                                    onClick={generateBlast}
+                                    className="px-6 py-3 bg-[#39FF14] text-black font-black text-[10px] tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all"
+                                >
+                                    GENERAR NUEVO PACK
+                                </button>
+                            </div>
+
+                            <div className="space-y-6">
+                                {marketingPacks.length === 0 && (
+                                    <div className="p-20 border border-dashed border-white/10 rounded-3xl text-center text-gray-500 text-sm italic">
+                                        No hay campañas generadas. Presiona el botón para iniciar el motor IA.
+                                    </div>
+                                )}
+                                {marketingPacks.map((pack, idx) => (
+                                    <motion.div
+                                        key={idx}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        className="p-6 bg-white/5 border border-white/10 rounded-2xl"
+                                    >
+                                        <div className="flex justify-between items-start mb-4">
+                                            <h4 className="text-[#39FF14] font-black text-xs uppercase tracking-widest">TikTok/Reels Campaign</h4>
+                                            <span className="text-[8px] font-mono text-gray-600">{new Date(pack.generation_timestamp).toLocaleString()}</span>
+                                        </div>
+                                        <p className="text-white text-xs leading-relaxed mb-4 bg-black/40 p-4 rounded-xl border border-white/5 italic">
+                                            "{pack.tiktok_script}"
+                                        </p>
+                                        <div className="flex gap-2">
+                                            {pack.viral_hooks.slice(0, 2).map((hook: string, i: number) => (
+                                                <span key={i} className="px-3 py-1 bg-blue-500/10 text-blue-400 text-[8px] font-black rounded-md border border-blue-500/20 uppercase">
+                                                    HOOK: {hook}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : activeTab === 'PAYMENTS' ? (
+                        <div className="lg:col-span-2 bg-[#0D0D0D] border border-white/5 rounded-[3rem] p-10">
+                            <div className="flex justify-between items-center mb-10">
+                                <h3 className="text-xl font-bold flex items-center gap-3">
+                                    <Wallet className="w-5 h-5 text-[#39FF14]" /> Historial de Tesorería SOL
+                                </h3>
+                                <div className="text-xs font-mono text-gray-500 truncate max-w-[200px]">
+                                    {treasuryData?.address}
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                {treasuryData?.transactions?.map((tx: any, idx: number) => (
+                                    <div key={idx} className="flex justify-between items-center p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all cursor-pointer">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-3 bg-white/5 rounded-xl">
+                                                <Zap className="w-4 h-4 text-[#39FF14]" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-black uppercase tracking-tighter">Transferencia Recibida</p>
+                                                <p className="text-[8px] font-mono text-gray-600">{tx.signature.slice(0, 16)}...</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-sm font-black text-[#39FF14]">+{tx.amount} SOL</p>
+                                            <p className="text-[8px] font-mono text-gray-600">CONFIRMED</p>
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
                         </div>
@@ -233,6 +329,17 @@ export default function AdminNexus() {
                                         ACTUALIZAR PROTOCOLO FINANCIERO
                                     </button>
                                 </div>
+
+                                <div className="p-6 bg-[#39FF14]/5 rounded-2xl border border-[#39FF14]/20">
+                                    <h4 className="text-sm font-bold mb-2">Inyectar Inventario de Prueba</h4>
+                                    <p className="text-[10px] text-gray-500 mb-6 uppercase tracking-widest">Puebla el marketplace con 10x hardware instantáneamente.</p>
+                                    <button
+                                        onClick={handleSeedInventory}
+                                        className="w-full py-4 rounded-xl border border-[#39FF14]/30 text-[#39FF14] font-black tracking-widest hover:bg-[#39FF14] hover:text-black transition-all text-xs"
+                                    >
+                                        INYECTAR HARDWARE REAL
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     ) : (
@@ -248,28 +355,36 @@ export default function AdminNexus() {
                             {[
                                 { user: 'Admin @MX', action: 'Auth Success', time: 'hace 2m', level: 'SEC' },
                                 { user: 'Affiliate #04', action: 'Sale Confirmed', time: 'hace 12m', level: 'FIN' },
-                                { user: 'System Bot', action: 'Database Optimized', time: 'hace 45m', level: 'SYS' },
-                                { user: 'Unknown IP', action: 'Login Blocked', time: 'hace 1h', level: 'WAR', alert: true },
+                                { user: 'System AI', action: 'Vision Optimized', time: 'hace 45m', level: 'OPS' },
+                                { user: 'Blockchain', action: 'SOL Sync OK', time: 'hace 1h', level: 'WEB3' },
                             ].map((log, i) => (
-                                <div key={i} className="flex items-center gap-4">
-                                    <div className={cn(
-                                        "w-2 h-2 rounded-full",
-                                        log.alert ? "bg-red-500 shadow-[0_0_10px_#ef4444]" : "bg-gray-700"
-                                    )}></div>
-                                    <div className="flex-1">
-                                        <p className="text-xs font-bold">{log.user}</p>
-                                        <p className="text-[10px] text-gray-500">{log.action}</p>
+                                <div key={i} className="flex gap-4 group">
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-white/20 group-hover:bg-[#39FF14] transition-colors" />
+                                        <div className="w-[1px] h-full bg-white/5" />
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-[9px] font-mono text-gray-600">{log.time}</p>
-                                        <p className="text-[8px] font-black text-[#39FF14] tracking-widest">{log.level}</p>
+                                    <div className="flex-1 pb-6">
+                                        <div className="flex justify-between items-start mb-1">
+                                            <span className="text-[10px] font-black tracking-widest uppercase">{log.user}</span>
+                                            <span className="text-[8px] font-mono text-gray-600">{log.level}</span>
+                                        </div>
+                                        <p className="text-xs text-gray-400 group-hover:text-white transition-colors">{log.action}</p>
+                                        <p className="text-[8px] text-gray-700 mt-1 font-mono uppercase italic">{log.time}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <button className="mt-8 w-full py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black tracking-widest hover:bg-white/10 transition-all">
-                            VER TODOS LOS EVENTOS
-                        </button>
+
+                        <div className="p-6 bg-[#39FF14]/5 rounded-2xl border border-[#39FF14]/10 mt-8">
+                            <p className="text-[10px] text-[#39FF14] font-black uppercase tracking-widest mb-1">Carga del Orquestador</p>
+                            <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: '42%' }}
+                                    className="h-full bg-[#39FF14] shadow-[0_0_10px_#39FF14]"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </main>
