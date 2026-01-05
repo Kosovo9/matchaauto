@@ -5,26 +5,51 @@ import { AIOrchestrator } from '../services/ai/engine';
 import { Env } from '../../../shared/types';
 
 // Esquema de creación de listing (marketplace)
+// Esquema 10x Universal para Automotriz (Venta, Renta, Refacciones)
 const createListingSchema = z.object({
-    title: z.string().min(5).max(200),
+    // Core Data
+    title: z.string().min(10, "El título debe ser descriptivo").max(150),
     description: z.string().max(5000).optional(),
-    make: z.string().min(1),
-    model: z.string().min(1),
-    year: z.number().min(1900).max(new Date().getFullYear() + 1),
-    price: z.number().min(0),
-    mileage: z.number().min(0).optional(),
-    fuelType: z.enum(['gasoline', 'diesel', 'electric', 'hybrid', 'other']).optional(),
-    transmission: z.enum(['manual', 'automatic']).optional(),
-    images: z.array(z.string().url()).max(10).optional(),
-    locationLat: z.number().min(-90).max(90).optional(),
-    locationLng: z.number().min(-180).max(180).optional(),
-    city: z.string().optional(),
-    state: z.string().optional(),
-    country: z.string().optional(),
-    category: z.enum([
-        'electronics', 'fashion', 'home', 'vehicles',
-        'real-estate', 'services', 'digital', 'collectibles'
-    ]).default('vehicles'),
+    price: z.number().min(0, "El precio no puede ser negativo"),
+    currency: z.enum(['USD', 'MXN', 'EUR']).default('USD'),
+
+    // Clasificación Maestra
+    listingType: z.enum(['SALE', 'RENT', 'AUCTION']).default('SALE'), // ¿Vendes o Rentas?
+    category: z.enum(['VEHICLES', 'PARTS', 'SERVICES', 'REAL_ESTATE']).default('VEHICLES'),
+    subcategory: z.string().optional(), // Ej: "SUV", "Sedan", "Frenos", "Motor"
+
+    // Datos Específicos del Vehículo (Opcionales si es Refacción)
+    make: z.string().optional(),  // Chevrolet
+    model: z.string().optional(), // Suburban
+    year: z.number().min(1900).max(new Date().getFullYear() + 2).optional(),
+    trim: z.string().optional(),  // LTZ
+    mileage: z.number().optional(), // 117,000
+    mileageUnit: z.enum(['KM', 'MILES']).default('KM'),
+
+    // Specs Técnicos
+    fuelType: z.enum(['GASOLINE', 'DIESEL', 'ELECTRIC', 'HYBRID', 'OTHER']).optional(),
+    transmission: z.enum(['AUTOMATIC', 'MANUAL', 'CVT', 'DUAL_CLUTCH']).optional(),
+    engine: z.string().optional(), // "V8 5.3L"
+    driveType: z.enum(['FWD', 'RWD', 'AWD', '4WD']).optional(),
+    color: z.string().optional(),
+    interiorColor: z.string().optional(),
+
+    // Estado y Legal
+    condition: z.enum(['NEW', 'USED', 'CERTIFIED_PRE_OWNED', 'DAMAGED']).default('USED'),
+    owners: z.number().default(1),
+    features: z.array(z.string()).optional(), // ["Piel", "Quemacocos", "Blindada"]
+    vin: z.string().length(17).optional(), // Validación real de VIN
+    legalStatus: z.string().optional(), // "Factura Original", "Importada", etc.
+
+    // Multimedia y Ubicación
+    images: z.array(z.string().url()).min(1, "Sube al menos 1 foto").max(20),
+    location: z.object({
+        city: z.string().optional(),
+        state: z.string().optional(),
+        country: z.string().default('MX'),
+        lat: z.number().optional(),
+        lng: z.number().optional()
+    }).optional()
 });
 
 const listings = new Hono<{ Bindings: Env }>();
