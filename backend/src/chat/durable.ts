@@ -20,7 +20,7 @@ export class ChatRoom {
 
     constructor(private state: any, private env: any) {
         this.state.blockConcurrencyWhile(async () => {
-            const stored = await this.state.storage.get<ChatMessage[]>('messages')
+            const stored = await this.state.storage.get('messages') as ChatMessage[]
             this.messages = stored || []
         })
     }
