@@ -1,18 +1,21 @@
 import { Hono } from 'hono';
+import { Env } from '../../../shared/types';
+import { seedListings } from '../lib/seed';
 
-const router = new Hono();
+const system = new Hono<{ Bindings: Env }>();
 
-router.get('/ping', (c) => c.text('pong'));
-
-router.get('/db-check', async (c) => {
-    const db = (c.env as any).DB;
-    if (!db) return c.json({ error: 'DB NOT BOUND' });
-    try {
-        const tables = await db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
-        return c.json({ success: true, tables: tables.results });
-    } catch (e: any) {
-        return c.json({ success: false, error: e.message });
-    }
+system.get('/status', (c) => {
+    return c.json({
+        status: 'online',
+        uptime: process.uptime(),
+        region: 'Mexico-Queretaro-Edge',
+        version: '1.0.0-quantum'
+    });
 });
 
-export default router;
+system.post('/seed-inventory', async (c) => {
+    const result = await seedListings(c.env);
+    return c.json(result);
+});
+
+export default system;

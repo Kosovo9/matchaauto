@@ -33,6 +33,17 @@ export default function AdminNexus() {
     }, [status]);
     */
 
+    const handleSeedInventory = async () => {
+        try {
+            const response = await backendClient.post('/api/system/seed-inventory');
+            if (response.data.success) {
+                alert(`✅ Imperio Poblado: ${response.data.count} items inyectados.`);
+            }
+        } catch (e) {
+            console.error("Seed failed:", e);
+        }
+    };
+
     const stats = [
         { label: 'Revenue Total', value: '$84,200', trend: '+12.5%', icon: DollarSign, color: 'text-[#39FF14]' },
         { label: 'Active Users', value: '1,240', trend: '+5.2%', icon: Users, color: 'text-blue-400' },
@@ -75,6 +86,15 @@ export default function AdminNexus() {
                             {item.label}
                         </button>
                     ))}
+
+                    <div className="pt-8 opacity-50">
+                        <button
+                            onClick={handleSeedInventory}
+                            className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-[10px] font-black tracking-widest bg-white/5 border border-dashed border-white/20 hover:border-[#39FF14] hover:text-[#39FF14] transition-all"
+                        >
+                            <Zap className="w-3 h-3" /> INYECTAR INVENTARIO
+                        </button>
+                    </div>
                 </nav>
 
                 <div className="mt-auto pt-8 border-t border-white/5">
