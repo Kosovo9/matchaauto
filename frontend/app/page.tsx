@@ -6,6 +6,7 @@ import { MessageSquare } from 'lucide-react';
 import QuantumHero from "@/components/hero/quantum-hero";
 import QuantumChat from "@/components/chat/quantum-chat";
 import QuantumAppSection from "@/components/mobile-app-cta";
+import QuantumStressTest from "@/components/stress-test";
 
 export default function Home() {
     const [isChatOpen, setIsChatOpen] = useState(false);
@@ -17,6 +18,9 @@ export default function Home() {
 
             {/* Módulo de Descarga App 1000x */}
             <QuantumAppSection />
+
+            {/* Módulo de Prueba de Estrés IA */}
+            <QuantumStressTest />
 
             {/* Sistema Nervioso: Quantum Chat Global */}
             <AnimatePresence>
