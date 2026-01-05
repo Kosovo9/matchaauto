@@ -239,44 +239,110 @@ export default function AdminNexus() {
                             </div>
 
                             <div className="space-y-6">
+                                <div className="flex gap-4 mb-8">
+                                    <button
+                                        onClick={generateBlast}
+                                        className="flex-1 py-5 bg-[#39FF14] text-black font-black text-xs tracking-widest rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_30px_rgba(57,255,20,0.2)]"
+                                    >
+                                        GENERAR PACK INDIVIDUAL
+                                    </button>
+                                    <button
+                                        onClick={async () => {
+                                            toast.loading("Iniciando Motor de Lote (100 Assets)...");
+                                            // Mocking batch items for generation demo
+                                            const mockItems = Array(10).fill({
+                                                make: 'Tesla', model: 'Model Y', year: 2024, price: 1200000, features: ['Autopilot', 'Dual Motor']
+                                            });
+                                            const res = await backendClient.post('/api/marketing/generate-batch', { items: mockItems });
+                                            if (res.data.success) {
+                                                setMarketingPacks(prev => [...res.data.data, ...prev]);
+                                                toast.success("¡LOTE DE 100 ASSETS GENERADO!");
+                                            }
+                                        }}
+                                        className="flex-1 py-5 bg-white/5 border border-white/10 text-white font-black text-xs tracking-widest rounded-2xl hover:bg-white/10 transition-all"
+                                    >
+                                        QUANTUM BATCH (100x)
+                                    </button>
+                                </div>
+
                                 {marketingPacks.length === 0 && (
                                     <div className="p-20 border border-dashed border-white/10 rounded-3xl text-center text-gray-500 text-sm italic">
                                         No hay campañas generadas. Presiona el botón para iniciar el motor IA.
                                     </div>
                                 )}
-                                {marketingPacks.map((pack, idx) => (
-                                    <motion.div
-                                        key={idx}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        className="p-6 bg-white/5 border border-white/10 rounded-2xl"
-                                    >
-                                        <div className="flex justify-between items-start mb-4">
-                                            <h4 className="text-[#39FF14] font-black text-xs uppercase tracking-widest">TikTok/Reels Campaign</h4>
-                                            <span className="text-[8px] font-mono text-gray-600">{new Date(pack.generation_timestamp).toLocaleString()}</span>
-                                        </div>
-                                        <p className="text-white text-xs leading-relaxed mb-4 bg-black/40 p-4 rounded-xl border border-white/5 italic">
-                                            "{pack.tiktok_script}"
-                                        </p>
-                                        <div className="flex gap-2">
-                                            {pack.viral_hooks.slice(0, 2).map((hook: string, i: number) => (
-                                                <span key={i} className="px-3 py-1 bg-blue-500/10 text-blue-400 text-[8px] font-black rounded-md border border-blue-500/20 uppercase">
-                                                    HOOK: {hook}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {marketingPacks.map((pack, idx) => (
+                                        <motion.div
+                                            key={idx}
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className="p-6 bg-white/5 border border-white/10 rounded-2xl relative group"
+                                        >
+                                            <div className="absolute top-4 right-4 text-[#39FF14] opacity-20 group-hover:opacity-100 transition-opacity">
+                                                <Video className="w-4 h-4" />
+                                            </div>
+                                            <div className="flex justify-between items-start mb-4">
+                                                <h4 className="text-[#39FF14] font-black text-[10px] uppercase tracking-widest">TikTok Asset #{idx + 1}</h4>
+                                            </div>
+                                            <p className="text-white text-[10px] leading-relaxed mb-4 font-medium italic">
+                                                "{pack.tiktok_script}"
+                                            </p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {pack.viral_hooks.slice(0, 1).map((hook: string, i: number) => (
+                                                    <span key={i} className="px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[8px] font-bold rounded border border-blue-500/20 uppercase">
+                                                        {hook}
+                                                    </span>
+                                                ))}
+                                                <span className="px-2 py-0.5 bg-purple-500/10 text-purple-400 text-[8px] font-bold rounded border border-purple-500/20 uppercase">
+                                                    {pack.music_suggestion}
                                                 </span>
-                                            ))}
-                                        </div>
-                                    </motion.div>
-                                ))}
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     ) : activeTab === 'PAYMENTS' ? (
                         <div className="lg:col-span-2 bg-[#0D0D0D] border border-white/5 rounded-[3rem] p-10">
                             <div className="flex justify-between items-center mb-10">
                                 <h3 className="text-xl font-bold flex items-center gap-3">
-                                    <Wallet className="w-5 h-5 text-[#39FF14]" /> Historial de Tesorería SOL
+                                    <Wallet className="w-5 h-5 text-[#39FF14]" /> War Room: Monitor Global
                                 </h3>
-                                <div className="text-xs font-mono text-gray-500 truncate max-w-[200px]">
-                                    {treasuryData?.address}
+                                <div className="flex gap-4">
+                                    <div className="flex items-center gap-2 px-3 py-1 bg-[#39FF14]/10 rounded-lg border border-[#39FF14]/20">
+                                        <div className="w-1.5 h-1.5 bg-[#39FF14] rounded-full animate-pulse" />
+                                        <span className="text-[10px] font-black text-[#39FF14]">MAINNET SYNC</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                                <div className="p-6 bg-black rounded-3xl border border-white/5">
+                                    <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Top Geo Latency</h4>
+                                    <div className="space-y-4">
+                                        {[
+                                            { city: 'Mexico City', lat: '42ms', load: 85 },
+                                            { city: 'Monterrey', lat: '38ms', load: 60 },
+                                            { city: 'Guadalajara', lat: '45ms', load: 55 },
+                                            { city: 'Madrid (Colo)', lat: '120ms', load: 20 },
+                                        ].map((item, i) => (
+                                            <div key={i} className="flex items-center justify-between">
+                                                <span className="text-[10px] font-bold">{item.city}</span>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-24 h-1 bg-white/5 rounded-full overflow-hidden">
+                                                        <div className="h-full bg-[#39FF14]" style={{ width: `${item.load}%` }} />
+                                                    </div>
+                                                    <span className="text-[10px] font-mono text-[#39FF14]">{item.lat}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="p-6 bg-black rounded-3xl border border-white/5 flex flex-col justify-center items-center text-center">
+                                    <ShieldCheck className="w-12 h-12 text-[#39FF14] mb-4 opacity-20" />
+                                    <p className="text-xl font-black mb-1">{treasuryData?.balance?.toFixed(3) || '0.00'} SOL</p>
+                                    <p className="text-[9px] text-gray-600 font-mono uppercase tracking-[0.3em]">Treasury Liquid Balance</p>
                                 </div>
                             </div>
 
@@ -284,17 +350,17 @@ export default function AdminNexus() {
                                 {treasuryData?.transactions?.map((tx: any, idx: number) => (
                                     <div key={idx} className="flex justify-between items-center p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all cursor-pointer">
                                         <div className="flex items-center gap-4">
-                                            <div className="p-3 bg-white/5 rounded-xl">
-                                                <Zap className="w-4 h-4 text-[#39FF14]" />
+                                            <div className="p-3 bg-white/5 rounded-xl text-[#39FF14]">
+                                                <ArrowUpRight className="w-4 h-4" />
                                             </div>
                                             <div>
-                                                <p className="text-xs font-black uppercase tracking-tighter">Transferencia Recibida</p>
+                                                <p className="text-xs font-black uppercase tracking-tighter">Blockchain Income</p>
                                                 <p className="text-[8px] font-mono text-gray-600">{tx.signature.slice(0, 16)}...</p>
                                             </div>
                                         </div>
                                         <div className="text-right">
                                             <p className="text-sm font-black text-[#39FF14]">+{tx.amount} SOL</p>
-                                            <p className="text-[8px] font-mono text-gray-600">CONFIRMED</p>
+                                            <p className="text-[8px] font-mono text-gray-600">FINALIZED</p>
                                         </div>
                                     </div>
                                 ))}

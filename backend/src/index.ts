@@ -16,8 +16,30 @@ const app = new Hono<{ Bindings: Env }>();
 app.use('/*', cors({
     origin: '*',
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowHeaders: ['Content-Type', 'Authorization'],
+    allowHeaders: ['Content-Type', 'Authorization', 'X-Quantum-Latency'],
 }));
+
+// Global Latency & Geo Tracker
+app.use('/*', async (c, next) => {
+    const start = Date.now();
+    await next();
+    const ms = Date.now() - start;
+
+    // Cloudflare specific metadata
+    const cf = (c.req.raw as any).cf;
+    const geo = cf ? {
+        country: cf.country,
+        city: cf.city,
+        region: cf.region,
+        colo: cf.colo,
+        latency: ms
+    } : { country: 'LOCAL', latency: ms };
+
+    console.log(`📡 [QUANTUM-TRAFFIC] ${c.req.method} ${c.req.path} | ${geo.country} (${geo.city || 'Dev'}) | ${ms}ms`);
+
+    // Inject latency header for frontend monitoring
+    c.header('X-Quantum-Latency', `${ms}ms`);
+});
 
 // Health Check
 app.get('/health', (c) => c.json({ status: 'ok', version: '1.0.0-quantum' }));
