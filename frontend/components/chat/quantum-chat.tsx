@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X, MessageSquare, User, MoreVertical, Paperclip, Smile, CheckCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { backendClient } from '@/lib/backend-client';
 
 // --- TYPES ---
 interface Message {
@@ -23,13 +24,12 @@ interface QuantumChatProps {
 
 export default function QuantumChat({
     listingId = "suburban-2021",
-    sellerName = "Admin MatchAuto",
+    sellerName = "Quantum Sales AI",
     sellerAvatar,
     onClose
 }: QuantumChatProps) {
     const [messages, setMessages] = useState<Message[]>([
-        { id: '1', text: '¡Hola! Vi tu Suburban LTZ, ¿sigue disponible?', sender: 'me', timestamp: '15:58', status: 'read' },
-        { id: '2', text: '¡Qué tal! Sí, aún la tengo. Está impecable.', sender: 'them', timestamp: '15:59', status: 'read' },
+        { id: '1', text: '¡Bienvenido! Soy tu asistente de ventas Quantum. ¿En qué puedo ayudarte hoy?', sender: 'them', timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), status: 'read' },
     ]);
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -42,35 +42,56 @@ export default function QuantumChat({
         }
     }, [messages]);
 
-    const handleSend = () => {
+    const handleSend = async () => {
         if (!inputValue.trim()) return;
 
+        const userText = inputValue;
         const newMessage: Message = {
             id: Date.now().toString(),
-            text: inputValue,
+            text: userText,
             sender: 'me',
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             status: 'sent'
         };
 
-        setMessages([...messages, newMessage]);
+        setMessages(prev => [...prev, newMessage]);
         setInputValue('');
 
-        // SIMULATED RESPONSE 10X
-        setTimeout(() => {
-            setIsTyping(true);
-            setTimeout(() => {
+        // REAL-TIME SALES AI CLOSER
+        setIsTyping(true);
+        try {
+            const chatHistory = messages.map(m => ({
+                role: m.sender === 'me' ? 'user' : 'model',
+                parts: [{ text: m.text }]
+            }));
+
+            const response = await backendClient.post('/api/chat/ai-close', {
+                message: userText,
+                carDetails: {
+                    make: 'Cadillac',
+                    model: 'Suburban',
+                    year: 2021,
+                    price: 850000,
+                    features: ['Piel', 'V8', 'LTZ']
+                },
+                history: chatHistory
+            });
+
+            if (response.data.success) {
                 const reply: Message = {
-                    id: (Date.now() + 1).toString(),
-                    text: "Claro, si gustas puedes venir a verla mañana. ¿Te queda bien?",
+                    id: Date.now().toString(),
+                    text: response.data.reply,
                     sender: 'them',
                     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     status: 'delivered'
                 };
                 setMessages(prev => [...prev, reply]);
-                setIsTyping(false);
-            }, 1500);
-        }, 1000);
+            }
+        } catch (e) {
+            console.error("AI Sales Chat failed:", e);
+        } finally {
+            setIsTyping(false);
+        }
     };
 
     return (

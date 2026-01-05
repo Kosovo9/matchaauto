@@ -9,6 +9,7 @@ import system from './routes/system';
 import affiliates from './routes/affiliates';
 import notifications from './routes/notifications';
 import marketing from './routes/marketing';
+import chat from './routes/chat';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -52,6 +53,7 @@ app.route('/api/system', system);
 app.route('/api/affiliates', affiliates);
 app.route('/api/notifications', notifications);
 app.route('/api/marketing', marketing);
+app.route('/api/chat', chat);
 
 export default {
     fetch: app.fetch
