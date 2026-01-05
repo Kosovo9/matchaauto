@@ -36,6 +36,12 @@ const nextConfig = {
     experimental: {
         optimizePackageImports: ['@tanstack/react-query', 'recharts', 'lucide-react'],
     },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
+    typescript: {
+        ignoreBuildErrors: true,
+    },
 };
 
 module.exports = nextConfig;

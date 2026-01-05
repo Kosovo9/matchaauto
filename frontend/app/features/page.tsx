@@ -21,9 +21,11 @@ export default function FeaturesPage() {
             <main className="max-w-7xl mx-auto px-6 py-24">
                 <header className="text-center mb-24">
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                        <span className="text-[#39FF14] font-mono text-xs tracking-[0.5em] uppercase mb-4 block">Engine Capabilities</span>
-                        <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6">370+ <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">Features.</span></h1>
-                        <p className="text-gray-500 text-xl max-w-2xl mx-auto">La infraestructura más avanzada jamás construida para el mercado automotriz.</p>
+                        <div>
+                            <span className="text-[#39FF14] font-mono text-xs tracking-[0.5em] uppercase mb-4 block">Engine Capabilities</span>
+                            <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6">370+ <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">Features.</span></h1>
+                            <p className="text-gray-500 text-xl max-w-2xl mx-auto">La infraestructura más avanzada jamás construida para el mercado automotriz.</p>
+                        </div>
                     </motion.div>
                 </header>
 
