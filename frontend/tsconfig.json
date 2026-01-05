@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "types": [
+      "@cloudflare/workers-types"
+    ],
     "target": "ES2017",
     "lib": [
       "dom",
@@ -33,7 +36,8 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "../backend/**/*.ts"
   ],
   "exclude": [
     "node_modules"
