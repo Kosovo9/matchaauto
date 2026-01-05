@@ -59,7 +59,7 @@ export default function RootLayout({
                         </div>
                     </main>
                     <Footer />
-                    <Toaster position="top-right" />
+                    <Toaster position="top-right" reverseOrder={false} />
                 </AuthProvider>
             </body>
         </html>

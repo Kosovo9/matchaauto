@@ -19,10 +19,14 @@ import {
 import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
+import { usePushNotifications } from '@/hooks/use-notifications';
+import toast from 'react-hot-toast';
+import { backendClient } from '@/lib/backend-client';
 
 export default function AdminNexus() {
     const { data: session, status } = useSession();
     const [activeTab, setActiveTab] = useState('OVERVIEW');
+    const [margin, setMargin] = useState(10);
 
     // Presidential Protection
     /* 
@@ -33,14 +37,31 @@ export default function AdminNexus() {
     }, [status]);
     */
 
+    const { notifySale } = usePushNotifications();
+
     const handleSeedInventory = async () => {
         try {
             const response = await backendClient.post('/api/system/seed-inventory');
             if (response.data.success) {
                 alert(`✅ Imperio Poblado: ${response.data.count} items inyectados.`);
+                notifySale(2450000, 'Tesla Model S Plaid');
             }
         } catch (e) {
             console.error("Seed failed:", e);
+        }
+    };
+
+    const handleUpdateMargin = async (rate: number) => {
+        try {
+            const response = await backendClient.post('/api/affiliates/set-margin', {
+                id: 'socio_10x',
+                rate: rate
+            });
+            if (response.data.success) {
+                toast.success(`Margen actualizado a ${rate}%`);
+            }
+        } catch (e) {
+            console.error("Margin update failed:", e);
         }
     };
 
@@ -160,28 +181,65 @@ export default function AdminNexus() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* CHARTS / ACTIVITY */}
-                    <div className="lg:col-span-2 bg-[#0D0D0D] border border-white/5 rounded-[3rem] p-10">
-                        <div className="flex justify-between items-center mb-10">
-                            <h3 className="text-xl font-bold flex items-center gap-3">
-                                <Zap className="w-5 h-5 text-[#39FF14]" /> Tráfico en Tiempo Real
-                            </h3>
-                            <div className="flex gap-2">
-                                <span className="px-3 py-1 bg-white/5 text-[9px] font-mono text-gray-500 rounded-md">24H</span>
-                                <span className="px-3 py-1 bg-white/5 text-[9px] font-mono text-gray-500 rounded-md">7D</span>
+                    {activeTab === 'OVERVIEW' ? (
+                        <div className="lg:col-span-2 bg-[#0D0D0D] border border-white/5 rounded-[3rem] p-10">
+                            <div className="flex justify-between items-center mb-10">
+                                <h3 className="text-xl font-bold flex items-center gap-3">
+                                    <Zap className="w-5 h-5 text-[#39FF14]" /> Tráfico en Tiempo Real
+                                </h3>
+                                <div className="flex gap-2">
+                                    <span className="px-3 py-1 bg-white/5 text-[9px] font-mono text-gray-500 rounded-md">24H</span>
+                                    <span className="px-3 py-1 bg-white/5 text-[9px] font-mono text-gray-500 rounded-md">7D</span>
+                                </div>
+                            </div>
+                            <div className="h-[300px] w-full bg-gradient-to-t from-transparent to-[#39FF14]/5 rounded-3xl border border-white/5 flex items-end p-8 gap-4">
+                                {[40, 70, 45, 90, 65, 80, 55, 100, 75, 40, 85, 60].map((h, i) => (
+                                    <motion.div
+                                        key={i}
+                                        initial={{ height: 0 }}
+                                        animate={{ height: `${h}%` }}
+                                        transition={{ duration: 1, delay: i * 0.05 }}
+                                        className="flex-1 bg-[#39FF14] rounded-t-lg opacity-40 hover:opacity-100 transition-opacity cursor-pointer shadow-[0_0_20px_rgba(57,255,20,0.2)]"
+                                    />
+                                ))}
                             </div>
                         </div>
-                        <div className="h-[300px] w-full bg-gradient-to-t from-transparent to-[#39FF14]/5 rounded-3xl border border-white/5 flex items-end p-8 gap-4">
-                            {[40, 70, 45, 90, 65, 80, 55, 100, 75, 40, 85, 60].map((h, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ height: 0 }}
-                                    animate={{ height: `${h}%` }}
-                                    transition={{ duration: 1, delay: i * 0.05 }}
-                                    className="flex-1 bg-[#39FF14] rounded-t-lg opacity-40 hover:opacity-100 transition-opacity cursor-pointer shadow-[0_0_20px_rgba(57,255,20,0.2)]"
-                                />
-                            ))}
+                    ) : activeTab === 'SETTINGS' ? (
+                        <div className="lg:col-span-2 bg-[#0D0D0D] border border-white/5 rounded-[3rem] p-10">
+                            <h3 className="text-xl font-bold mb-8 flex items-center gap-3 text-white">
+                                <Settings className="w-5 h-5 text-[#39FF14]" /> Configuración del Imperio
+                            </h3>
+                            <div className="space-y-8">
+                                <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div>
+                                            <p className="text-sm font-bold">Margen de Afiliados (%)</p>
+                                            <p className="text-xs text-gray-500">Define la comisión global para revendedores.</p>
+                                        </div>
+                                        <span className="text-2xl font-black text-[#39FF14]">{margin}%</span>
+                                    </div>
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="50"
+                                        value={margin}
+                                        onChange={(e) => setMargin(parseInt(e.target.value))}
+                                        className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#39FF14] mb-6"
+                                    />
+                                    <button
+                                        onClick={() => handleUpdateMargin(margin)}
+                                        className="w-full py-4 rounded-xl bg-[#39FF14] text-black font-black tracking-widest hover:scale-[1.02] active:scale-95 transition-all text-xs"
+                                    >
+                                        ACTUALIZAR PROTOCOLO FINANCIERO
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="lg:col-span-2 bg-[#0D0D0D] border border-white/5 rounded-[3rem] p-10 flex items-center justify-center text-gray-600 font-mono text-xs uppercase tracking-[0.3em]">
+                            Módulo en Construcción - Nivel 5 Requerido
+                        </div>
+                    )}
 
                     {/* RECENT LOGS */}
                     <div className="bg-[#0D0D0D] border border-white/5 rounded-[3rem] p-10 flex flex-col">

@@ -1,8 +1,14 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import ai from './routes/ai';
+import { Env } from '../../shared/types';
 
-const app = new Hono();
+import listings from './routes/listings';
+import payments from './routes/payments';
+import ai from './routes/ai';
+import system from './routes/system';
+import affiliates from './routes/affiliates';
+
+const app = new Hono<{ Bindings: Env }>();
 
 // Global Middleware
 app.use('/*', cors({
@@ -12,12 +18,14 @@ app.use('/*', cors({
 }));
 
 // Health Check
-app.get('/health', (c) => c.json({ status: 'ok', version: '1.0.0' }));
+app.get('/health', (c) => c.json({ status: 'ok', version: '1.0.0-quantum' }));
 
 // Mount Routes
 app.route('/api/listings', listings);
 app.route('/api/payments', payments);
 app.route('/api/ai', ai);
+app.route('/api/system', system);
+app.route('/api/affiliates', affiliates);
 
 export default {
     fetch: app.fetch
