@@ -9,6 +9,7 @@ export interface CircuitBreakerConfig {
     resetTimeout: number; // ms
     name?: string;
     fallback?: (...args: any[]) => Promise<any>;
+    onStateChange?: (state: CircuitBreakerState, name: string) => void;
 }
 
 export class CircuitBreaker {
@@ -43,16 +44,20 @@ export class CircuitBreaker {
     }
 
     private onSuccess() {
+        if (this.state !== CircuitBreakerState.CLOSED) {
+            this.state = CircuitBreakerState.CLOSED;
+            this.config.onStateChange?.(this.state, this.name);
+        }
         this.failureCount = 0;
-        this.state = CircuitBreakerState.CLOSED;
     }
 
     private onFailure() {
         this.failureCount++;
         this.lastFailureTime = Date.now();
-        if (this.failureCount >= this.config.failureThreshold) {
+        if (this.failureCount >= this.config.failureThreshold && this.state !== CircuitBreakerState.OPEN) {
             this.state = CircuitBreakerState.OPEN;
             console.warn(`Circuit breaker "${this.name}" transition to OPEN`);
+            this.config.onStateChange?.(this.state, this.name);
         }
     }
 

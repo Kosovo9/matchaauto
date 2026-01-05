@@ -19,6 +19,7 @@ import { Env, ApiResponse } from '../../shared/types'
 import { rateLimit, rateLimitConfigs, RateLimitStore } from './middleware/rateLimiter'
 import { createMonitor } from './lib/monitoring'
 import { compression } from './middleware/compression'
+import { validateEnv } from './lib/env'
 
 // Route Imports
 import listings from './routes/listings'
@@ -56,6 +57,14 @@ app.use('*', cors({
 
 // Tracing & Monitoring Middleware
 app.use('*', async (c, next) => {
+    // Validate Environment first
+    try {
+        const validatedEnv = validateEnv(c.env);
+        // We can optionally set it to the context, but for now we just want to ensure it's valid
+    } catch (e: any) {
+        return c.json({ success: false, error: e.message, code: 'ENV_CONFIG_ERROR' }, 500);
+    }
+
     const traceId = `trace_${Date.now()}_${crypto.randomUUID().slice(0, 8)}`;
     c.set('traceId' as any, traceId);
     c.header('X-Trace-ID', traceId);
@@ -168,8 +177,9 @@ secret.get('/reputation/:userId', async (c) => {
 
 // Crypto Wallet Routes
 secret.get('/crypto/balance', async (c) => {
-    const address = c.req.query('address') || '8xMAut...NASA69'
-    const wallet = createCryptoWallet(c.env)
+    const address = c.req.query('address') || 'vines1vzrYbzLMRdu58ou5XTby4qAqVRLmqo36NKPTg'
+    const monitor = c.get('monitor' as any)
+    const wallet = createCryptoWallet(c.env, monitor)
     return c.json({ success: true, balance: await wallet.getBalance(address) })
 })
 
