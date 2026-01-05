@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match-Auto Admin Dashboard | Sentinel-X & PagerDuty</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --dark: #111827;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .threat-critical { background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); }
+        .threat-high { background: linear-gradient(135deg, #f97316 0%, #9a3412 100%); }
+        .threat-medium { background: linear-gradient(135deg, #f59e0b 0%, #92400e 100%); }
+        .threat-low { background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <nav class="glass fixed top-0 left-0 right-0 z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent ml-2">
+                        Match-Auto Sentinel
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-24 pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="glass card-hover rounded-xl p-6">
+                    <div class="text-sm text-gray-400">Threat Intensity</div>
+                    <div class="text-3xl font-bold mt-2" id="threat-intensity">8.4</div>
+                </div>
+                <div class="glass card-hover rounded-xl p-6">
+                    <div class="text-sm text-gray-400">Active Threats</div>
+                    <div class="text-3xl font-bold mt-2" id="active-threats">12</div>
+                </div>
+                <div class="glass card-hover rounded-xl p-6">
+                    <div class="text-sm text-gray-400">PD Alerts</div>
+                    <div class="text-3xl font-bold mt-2" id="pd-alerts">3</div>
+                </div>
+                <div class="glass card-hover rounded-xl p-6">
+                    <div class="text-sm text-gray-400">Response Time</div>
+                    <div class="text-3xl font-bold mt-2" id="response-time">42ms</div>
+                </div>
+            </div>
+
+            <div class="glass rounded-xl p-6 mb-8">
+                <h2 class="text-xl font-bold mb-6">Recent Activity</h2>
+                <div id="alerts-list" class="space-y-4">
+                    <div class="p-4 bg-gray-800/50 rounded-lg border-l-4 border-red-500">
+                        <div class="font-bold">Solana RPC Backend Error</div>
+                        <div class="text-sm text-gray-400">Circuit Breaker: SolanaRPC has transitioned to OPEN</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            try {
+                const res = await fetch('/api/pagerduty/alerts');
+                const data = await res.json();
+                console.log('Alerts:', data);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        loadData();
+    </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+country,country_code,state,city,is_major
+USA,US,California,Los Angeles,TRUE
+USA,US,California,San Francisco,TRUE
+USA,US,California,San Diego,TRUE
+USA,US,California,San Jose,TRUE
+USA,US,California,Sacramento,TRUE
+USA,US,New York,New York City,TRUE
+USA,US,New York,Buffalo,TRUE
+USA,US,New York,Rochester,TRUE
+USA,US,New York,Yonkers,TRUE
+USA,US,New York,Syracuse,TRUE
+USA,US,Texas,Houston,TRUE
+USA,US,Texas,San Antonio,TRUE
+USA,US,Texas,Dallas,TRUE
+USA,US,Texas,Austin,TRUE
+USA,US,Texas,Fort Worth,TRUE
+USA,US,Florida,Miami,TRUE
+USA,US,Florida,Tampa,TRUE
+USA,US,Florida,Orlando,TRUE
+USA,US,Florida,Jacksonville,TRUE
+USA,US,Florida,Tallahassee,TRUE
+Canada,CA,Ontario,Toronto,TRUE
+Canada,CA,Ontario,Ottawa,TRUE
+Canada,CA,Ontario,Mississauga,TRUE
+Canada,CA,Ontario,Brampton,TRUE
+Canada,CA,Ontario,Hamilton,TRUE
+Canada,CA,Quebec,Montreal,TRUE
+Canada,CA,Quebec,Quebec City,TRUE
+Canada,CA,Quebec,Laval,TRUE
+Canada,CA,Quebec,Gatineau,TRUE
+Canada,CA,Quebec,Longueuil,TRUE
+Canada,CA,British Columbia,Vancouver,TRUE
+Canada,CA,British Columbia,Victoria,TRUE
+Canada,CA,British Columbia,Surrey,TRUE
+Canada,CA,British Columbia,Burnaby,TRUE
+Canada,CA,British Columbia,Richmond,TRUE
+Brazil,BR,São Paulo,São Paulo,TRUE
+Brazil,BR,São Paulo,Guarulhos,TRUE
+Brazil,BR,São Paulo,Campinas,TRUE
+Brazil,BR,São Paulo,São Bernardo do Campo,TRUE
+Brazil,BR,São Paulo,Santo André,TRUE
+Brazil,BR,Rio de Janeiro,Rio de Janeiro,TRUE
+Brazil,BR,Rio de Janeiro,São Gonçalo,TRUE
+Brazil,BR,Rio de Janeiro,Duque de Caxias,TRUE
+Brazil,BR,Rio de Janeiro,Nova Iguaçu,TRUE
+Brazil,BR,Rio de Janeiro,Niterói,TRUE
+Brazil,BR,Minas Gerais,Belo Horizonte,TRUE
+Brazil,BR,Minas Gerais,Uberlândia,TRUE
+Brazil,BR,Minas Gerais,Contagem,TRUE
+Brazil,BR,Minas Gerais,Juiz de Fora,TRUE
+Brazil,BR,Minas Gerais,Betim,TRUE
+Spain,ES,Madrid,Madrid,TRUE
+Spain,ES,Madrid,Móstoles,TRUE
+Spain,ES,Madrid,Alcalá de Henares,TRUE
+Spain,ES,Madrid,Fuenlabrada,TRUE
+Spain,ES,Madrid,Leganés,TRUE
+Spain,ES,Catalonia,Barcelona,TRUE
+Spain,ES,Catalonia,L'Hospitalet de Llobregat,TRUE
+Spain,ES,Catalonia,Badalona,TRUE
+Spain,ES,Catalonia,Terrassa,TRUE
+Spain,ES,Catalonia,Sabadell,TRUE
+Spain,ES,Andalusia,Seville,TRUE
+Spain,ES,Andalusia,Málaga,TRUE
+Spain,ES,Andalusia,Córdoba,TRUE
+Spain,ES,Andalusia,Granada,TRUE
+Spain,ES,Andalusia,Jerez de la Frontera,TRUE
+Germany,DE,Bavaria,Munich,TRUE
+Germany,DE,Bavaria,Nuremberg,TRUE
+Germany,DE,Bavaria,Augsburg,TRUE
+Germany,DE,Bavaria,Regensburg,TRUE
+Germany,DE,Bavaria,Ingolstadt,TRUE
+Germany,DE,Berlin,Berlin,TRUE
+Germany,DE,Hamburg,Hamburg,TRUE
+Japan,JP,Tokyo,Tokyo,TRUE
+Japan,JP,Tokyo,Hachioji,TRUE
+Japan,JP,Tokyo,Machida,TRUE
+Japan,JP,Tokyo,Fuchu,TRUE
+Japan,JP,Tokyo,Chofu,TRUE
+Japan,JP,Osaka,Osaka,TRUE
+Japan,JP,Osaka,Sakai,TRUE
+Japan,JP,Osaka,Higashiosaka,TRUE
+Japan,JP,Osaka,Hirakata,TRUE
+Japan,JP,Osaka,Toyonaka,TRUE
+Mexico,MX,Ciudad de México,Iztapalapa,TRUE
+Mexico,MX,Ciudad de México,Gustavo A. Madero,TRUE
+Mexico,MX,Ciudad de México,Álvaro Obregón,TRUE
+Mexico,MX,Ciudad de México,Tlalpan,TRUE
+Mexico,MX,Ciudad de México,Coyoacán,TRUE
+Mexico,MX,Jalisco,Guadalajara,TRUE
+Mexico,MX,Jalisco,Zapopan,TRUE
+Mexico,MX,Jalisco,Tlaquepaque,TRUE
+Mexico,MX,Jalisco,Tonalá,TRUE
+Mexico,MX,Jalisco,Tlajomulco,TRUE
+Mexico,MX,Nuevo León,Monterrey,TRUE
+Mexico,MX,Nuevo León,Guadalupe,TRUE
+Mexico,MX,Nuevo León,San Nicolás de los Garza,TRUE
+Mexico,MX,Nuevo León,Apodaca,TRUE
+Mexico,MX,Nuevo León,San Pedro Garza García,TRUE
+Mexico,MX,Baja California,Tijuana,TRUE
+Mexico,MX,Baja California,Mexicali,TRUE
+Mexico,MX,Baja California,Ensenada,TRUE
+Mexico,MX,Baja California,Playas de Rosarito,TRUE
+Mexico,MX,Baja California,Tecate,TRUE

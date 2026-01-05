@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match-Auto | Alert Monitoring Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: #ffffff; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .alert-card { border-left: 4px solid #ef4444; }
+        .pulse-red { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+    </style>
+</head>
+<body class="p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight">Alert Monitoring <span class="text-red-500">Center</span></h1>
+                <p class="text-gray-500 text-sm mt-1">Estado de incidentes y simulaciones en tiempo real</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="glass px-4 py-2 rounded-lg text-sm">
+                    <span class="text-gray-500">Alertas Activas:</span> <span class="text-red-500 font-bold" id="active-alerts-count">0</span>
+                </div>
+                <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
+                    Silenciar Todo
+                </button>
+            </div>
+        </div>
+
+        <!-- Alert Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Active Alerts Column -->
+            <div class="lg:col-span-2 space-y-4">
+                <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Incidentes Recientes</h2>
+                
+                <div id="alerts-container" class="space-y-4">
+                    <!-- Alert Item Example -->
+                    <div class="glass p-5 rounded-xl alert-card bg-red-500/5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full pulse-red"></span>
+                                    <span class="text-xs font-bold text-red-500 uppercase">Crítico</span>
+                                </div>
+                                <h3 class="text-lg font-bold">Viral K-Factor Crisis (Simulation)</h3>
+                                <p class="text-gray-400 text-sm mt-1">La viralidad ha caído a 0.65. Alerta disparada por k_factor_crisis_simulator.js</p>
+                            </div>
+                            <span class="text-xs text-gray-600">HACE 2 MIN</span>
+                        </div>
+                        <div class="mt-4 flex gap-3">
+                            <button class="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-md transition-all">Reconocer</button>
+                            <button class="text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-md transition-all">Resolver</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats & History Column -->
+            <div class="space-y-6">
+                <div class="glass p-6 rounded-2xl">
+                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Resumen de Salud</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400 text-sm">Sentinel-X Status</span>
+                            <span class="text-green-500 text-sm font-bold">ACTIVO</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400 text-sm">TII Current</span>
+                            <span class="text-white text-sm font-bold">12 / 100</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400 text-sm">Uptime (24h)</span>
+                            <span class="text-white text-sm font-bold">99.99%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass p-6 rounded-2xl">
+                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Historial de Simulaciones</h3>
+                    <div class="space-y-3 text-xs text-gray-500" id="sim-history">
+                        <div class="flex justify-between border-b border-white/5 pb-2">
+                            <span>K-Factor Test</span>
+                            <span>EXITOSO</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/5 pb-2">
+                            <span>DDoS Layer 7 Test</span>
+                            <span>EXITOSO</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lógica para actualizar el dashboard (Simulada)
+        function addAlert(title, message, severity) {
+            const container = document.getElementById('alerts-container');
+            const count = document.getElementById('active-alerts-count');
+            count.innerText = parseInt(count.innerText) + 1;
+            
+            // Lógica para insertar nueva alerta...
+        }
+    </script>
+</body>
+</html>

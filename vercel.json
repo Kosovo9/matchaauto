@@ -1,0 +1,16 @@
+{
+    "buildCommand": "npm run build",
+    "devCommand": "npm run dev",
+    "installCommand": "npm install --legacy-peer-deps",
+    "outputDirectory": ".next",
+    "framework": "nextjs",
+    "regions": [
+        "iad1"
+    ],
+    "env": {
+        "NEXTAUTH_URL": "https://match-auto.vercel.app",
+        "NEXTAUTH_SECRET": "replace-with-your-production-secret",
+        "NEXT_PUBLIC_API_URL": "https://match-auto-backend.neocwolf.workers.dev",
+        "NODE_ENV": "production"
+    }
+}

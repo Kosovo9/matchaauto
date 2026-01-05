@@ -1,0 +1,183 @@
+{
+  "USA": {
+    "code": "US",
+    "states": {
+      "California": [
+        "Los Angeles",
+        "San Francisco",
+        "San Diego",
+        "San Jose",
+        "Sacramento"
+      ],
+      "New York": [
+        "New York City",
+        "Buffalo",
+        "Rochester",
+        "Yonkers",
+        "Syracuse"
+      ],
+      "Texas": [
+        "Houston",
+        "San Antonio",
+        "Dallas",
+        "Austin",
+        "Fort Worth"
+      ],
+      "Florida": [
+        "Miami",
+        "Tampa",
+        "Orlando",
+        "Jacksonville",
+        "Tallahassee"
+      ]
+    }
+  },
+  "Canada": {
+    "code": "CA",
+    "states": {
+      "Ontario": [
+        "Toronto",
+        "Ottawa",
+        "Mississauga",
+        "Brampton",
+        "Hamilton"
+      ],
+      "Quebec": [
+        "Montreal",
+        "Quebec City",
+        "Laval",
+        "Gatineau",
+        "Longueuil"
+      ],
+      "British Columbia": [
+        "Vancouver",
+        "Victoria",
+        "Surrey",
+        "Burnaby",
+        "Richmond"
+      ]
+    }
+  },
+  "Brazil": {
+    "code": "BR",
+    "states": {
+      "São Paulo": [
+        "São Paulo",
+        "Guarulhos",
+        "Campinas",
+        "São Bernardo do Campo",
+        "Santo André"
+      ],
+      "Rio de Janeiro": [
+        "Rio de Janeiro",
+        "São Gonçalo",
+        "Duque de Caxias",
+        "Nova Iguaçu",
+        "Niterói"
+      ],
+      "Minas Gerais": [
+        "Belo Horizonte",
+        "Uberlândia",
+        "Contagem",
+        "Juiz de Fora",
+        "Betim"
+      ]
+    }
+  },
+  "Spain": {
+    "code": "ES",
+    "states": {
+      "Madrid": [
+        "Madrid",
+        "Móstoles",
+        "Alcalá de Henares",
+        "Fuenlabrada",
+        "Leganés"
+      ],
+      "Catalonia": [
+        "Barcelona",
+        "L'Hospitalet de Llobregat",
+        "Badalona",
+        "Terrassa",
+        "Sabadell"
+      ],
+      "Andalusia": [
+        "Seville",
+        "Málaga",
+        "Córdoba",
+        "Granada",
+        "Jerez de la Frontera"
+      ]
+    }
+  },
+  "Germany": {
+    "code": "DE",
+    "states": {
+      "Bavaria": [
+        "Munich",
+        "Nuremberg",
+        "Augsburg",
+        "Regensburg",
+        "Ingolstadt"
+      ],
+      "Berlin": [
+        "Berlin"
+      ],
+      "Hamburg": [
+        "Hamburg"
+      ]
+    }
+  },
+  "Japan": {
+    "code": "JP",
+    "states": {
+      "Tokyo": [
+        "Tokyo",
+        "Hachioji",
+        "Machida",
+        "Fuchu",
+        "Chofu"
+      ],
+      "Osaka": [
+        "Osaka",
+        "Sakai",
+        "Higashiosaka",
+        "Hirakata",
+        "Toyonaka"
+      ]
+    }
+  },
+  "Mexico": {
+    "code": "MX",
+    "states": {
+      "Ciudad de México": [
+        "Iztapalapa",
+        "Gustavo A. Madero",
+        "Álvaro Obregón",
+        "Tlalpan",
+        "Coyoacán"
+      ],
+      "Jalisco": [
+        "Guadalajara",
+        "Zapopan",
+        "Tlaquepaque",
+        "Tonalá",
+        "Tlajomulco"
+      ],
+      "Nuevo León": [
+        "Monterrey",
+        "Guadalupe",
+        "San Nicolás de los Garza",
+        "Apodaca",
+        "San Pedro Garza García"
+      ],
+      "Baja California": [
+        "Tijuana",
+        "Mexicali",
+        "Ensenada",
+        "Playas de Rosarito",
+        "Tecate"
+      ]
+    }
+  }
+}

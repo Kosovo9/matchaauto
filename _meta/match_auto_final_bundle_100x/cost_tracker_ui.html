@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match-Auto | Real-Time Cost Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #ffffff; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glow-green { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); }
+        .glow-blue { box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-12">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight">Cost Tracker <span class="text-blue-500">Real-Time</span></h1>
+                <p class="text-gray-400 mt-2">Monitoreo de infraestructura global Match-Auto</p>
+            </div>
+            <div class="text-right">
+                <div class="inline-flex items-center px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-sm font-medium glow-green">
+                    <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                    Sistema Conectado
+                </div>
+                <p class="text-xs text-gray-500 mt-2" id="last-update">Última actualización: --:--:--</p>
+            </div>
+        </div>
+
+        <!-- Main Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="glass p-6 rounded-2xl">
+                <p class="text-gray-400 text-sm mb-1">Gasto Actual (Mes)</p>
+                <h2 class="text-4xl font-bold" id="current-cost">$0.00</h2>
+                <div class="mt-4 text-xs text-gray-500">Basado en uso real de Cloudflare</div>
+            </div>
+            <div class="glass p-6 rounded-2xl border-blue-500/30 glow-blue">
+                <p class="text-gray-400 text-sm mb-1">Ahorro vs AWS (Egress)</p>
+                <h2 class="text-4xl font-bold text-blue-500" id="savings">+$0.00</h2>
+                <div class="mt-4 text-xs text-blue-400 font-medium">Gracias a Cloudflare R2</div>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <p class="text-gray-400 text-sm mb-1">Proyección Mensual</p>
+                <h2 class="text-4xl font-bold" id="projected-cost">$0.00</h2>
+                <div class="mt-4 text-xs text-gray-500">Burn rate proyectado 30 días</div>
+            </div>
+        </div>
+
+        <!-- Usage Breakdown -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass p-8 rounded-2xl">
+                <h3 class="text-xl font-semibold mb-6">Desglose de Recursos</h3>
+                <div class="space-y-6">
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-400">Workers Requests</span>
+                            <span id="usage-workers">0</span>
+                        </div>
+                        <div class="w-full bg-white/5 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-400">R2 Storage (GB)</span>
+                            <span id="usage-storage">0 GB</span>
+                        </div>
+                        <div class="w-full bg-white/5 rounded-full h-2">
+                            <div class="bg-purple-500 h-2 rounded-full" style="width: 30%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-400">Images Transformed</span>
+                            <span id="usage-images">0</span>
+                        </div>
+                        <div class="w-full bg-white/5 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Feed -->
+            <div class="glass p-8 rounded-2xl">
+                <h3 class="text-xl font-semibold mb-6">Logs de Facturación</h3>
+                <div class="space-y-4 text-sm" id="logs">
+                    <div class="flex justify-between text-gray-500 border-b border-white/5 pb-2">
+                        <span>Sincronizando con Cloudflare API...</span>
+                        <span>JUST NOW</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulación de conexión con el Worker
+        function updateUI(data) {
+            document.getElementById('current-cost').innerText = `$${data.costs.infrastructure_total.toFixed(2)}`;
+            document.getElementById('savings').innerText = `+$${data.costs.r2_egress_savings.toFixed(2)}`;
+            document.getElementById('projected-cost').innerText = `$${data.costs.projected_monthly.toFixed(2)}`;
+            document.getElementById('usage-workers').innerText = data.current_usage.workers_requests.toLocaleString();
+            document.getElementById('usage-storage').innerText = `${data.current_usage.r2_storage_gb} GB`;
+            document.getElementById('usage-images').innerText = data.current_usage.images_transformed.toLocaleString();
+            document.getElementById('last-update').innerText = `Última actualización: ${new Date().toLocaleTimeString()}`;
+            
+            const logs = document.getElementById('logs');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'flex justify-between text-gray-400 border-b border-white/5 pb-2';
+            logEntry.innerHTML = `<span>Métricas actualizadas correctamente</span><span>${new Date().toLocaleTimeString()}</span>`;
+            logs.prepend(logEntry);
+        }
+
+        // Datos de ejemplo (En producción, esto vendría del fetch al Worker)
+        const mockData = {
+            costs: { infrastructure_total: 45.50, r2_egress_savings: 1250.00, projected_monthly: 850.00 },
+            current_usage: { workers_requests: 1250000, r2_storage_gb: 450, images_transformed: 45000 }
+        };
+
+        setTimeout(() => updateUI(mockData), 1000);
+    </script>
+</body>
+</html>
