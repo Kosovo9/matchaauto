@@ -1,43 +1,74 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
 export class SalesCloserAI {
-    private genAI: GoogleGenerativeAI;
-    private model: any;
+    private apiKey: string;
+    private model: string = "mistralai/Mistral-7B-Instruct-v0.2";
 
     constructor(apiKey: string) {
-        this.genAI = new GoogleGenerativeAI(apiKey);
-        this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        this.apiKey = apiKey;
     }
 
-    async generateResponse(userMessage: string, carDetails: any, chatHistory: { role: string, parts: { text: string }[] }[]) {
+    async generateResponse(userMessage: string, carDetails: any, chatHistory: { role: string, content: string }[]) {
         const systemPrompt = `
-            Eres un cerrador de ventas experto en Match-Auto, el marketplace de autos más avanzado de México.
-            Tu objetivo es ser persuasivo, profesional y ayudar al cliente a tomar la decisión de compra o agendar una cita.
+            Eres un cerrador de ventas experto en Match-Auto.
+            Auto: ${carDetails.make} ${carDetails.model} (${carDetails.year}) - $${carDetails.price} MXN.
+            Características: ${carDetails.features?.join(", ")}.
             
-            Contexto del Auto:
-            - Marca/Modelo: ${carDetails.make} ${carDetails.model}
-            - Año: ${carDetails.year}
-            - Precio: $${carDetails.price} MXN
-            - Características: ${carDetails.features?.join(", ")}
-
             Reglas:
-            1. Habla como un experto automotriz de alto nivel.
-            2. Usa ganchos de venta (escasez, calidad, oportunidad).
-            3. Si el cliente duda, ofrece financiamiento o una prueba de manejo.
-            4. Responde de forma concisa y directa.
-            5. Tu nombre es "Quantum Sales AI".
+            - Sé persuasivo y directo.
+            - Usa ganchos de venta.
+            - Tu nombre es "Quantum Sales AI".
+            - No menciones que eres una IA.
         `;
 
-        const chat = this.model.startChat({
-            history: [
-                { role: "user", parts: [{ text: systemPrompt }] },
-                { role: "model", parts: [{ text: "Entendido. Soy Quantum Sales AI. Estoy listo para cerrar esta venta. ¿Qué dice el cliente?" }] },
-                ...chatHistory
-            ],
-        });
+        const messages = [
+            { role: "system", content: systemPrompt },
+            ...chatHistory.map(h => ({ role: h.role === "user" ? "user" : "assistant", content: h.content })),
+            { role: "user", content: userMessage }
+        ];
 
-        const result = await chat.sendMessage(userMessage);
-        const response = await result.response;
-        return response.text();
+        try {
+            const response = await fetch(
+                `https://api-inference.huggingface.co/models/${this.model}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.apiKey}`,
+                        "Content-Type": "application/json"
+                    },
+                    method: "POST",
+                    body: JSON.stringify({
+                        inputs: this.formatPrompt(messages),
+                        parameters: { max_new_tokens: 500, temperature: 0.7 }
+                    }),
+                }
+            );
+
+            const result = await response.json();
+            // HF Inference API returns array for text-generation
+            let text = "";
+            if (Array.isArray(result) && result[0]?.generated_text) {
+                text = result[0].generated_text;
+            } else if (result.generated_text) {
+                text = result.generated_text;
+            } else {
+                text = "Lo siento, tuve un problema cuántico. ¿En qué puedo ayudarte?";
+            }
+
+            // Limpiar la respuesta (Mistral a veces repite el prompt)
+            if (text.includes("[/INST]")) {
+                text = text.split("[/INST]").pop().trim();
+            }
+
+            return text;
+        } catch (e) {
+            console.error("HF Inference Error:", e);
+            return "Error en la conexión con el servidor de inteligencia abierta.";
+        }
+    }
+
+    private formatPrompt(messages: any[]) {
+        return messages.map(m => {
+            if (m.role === "system") return `[SYSTEM] ${m.content} [/SYSTEM]`;
+            if (m.role === "user") return `[INST] ${m.content} [/INST]`;
+            return m.content;
+        }).join("\n");
     }
 }

@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://user:password@localhost:5432/matcha_auto"
+}
+
+enum VehicleType {
+  AUTO
+  AUTOBUS
+  LANCHA
+  AVION
+  MOTO
+  BLINDADO
+  CAMION
+  BICICLETA
+  CUATRIMOTO
+  TRACTOR
+}
+
+enum VehicleStatus {
+  DISPONIBLE
+  VENDIDO
+  ALQUILADO
+  REPARACION
+  RESERVADO
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("buyer")
+  vehicles  Vehicle[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Vehicle {
+  id             String        @id @default(uuid())
+  name           String
+  description    String?
+  type           VehicleType
+  subtype        String?
+  brand          String
+  model          String
+  year           Int
+  price          Decimal
+  priceCurrency  String        @default("COP")
+  status         VehicleStatus @default(DISPONIBLE)
+  
+  // Location
+  latitude       Float
+  longitude      Float
+  address        String
+  city           String
+  stateProvince  String
+  country        String        @default("Colombia")
+  
+  sellerId       String
+  seller         User          @relation(fields: [sellerId], references: [id])
+  
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([type])
+  @@index([city])
+  @@index([status])
+}

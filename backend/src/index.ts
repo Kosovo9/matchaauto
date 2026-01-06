@@ -1,60 +1,59 @@
 import { Hono } from 'hono';
+import { logger as honoLogger } from 'hono/logger';
 import { cors } from 'hono/cors';
-import { Env } from '../../shared/types';
+import { validateEnv } from './config/env';
+import { setupDatabase } from './config/database';
+import { setupRedis } from './config/redis';
+import { setupGeolocationRoutes } from './routes/geolocation.routes';
+import { setupVehicleRoutes } from './routes/vehicle.routes';
+import { setupSearchRoutes } from './routes/search.routes';
+import { setupGeofenceRoutes } from './routes/geofence.routes';
+import { setupPlanningRoutes } from './routes/routes.routes';
+import { setupTrackingRoutes } from './routes/tracking.routes';
+import { setupAnalyticsRoutes } from './routes/analytics.routes';
+import { setupLocationRoutes } from './routes/location.routes';
+import { setupWebhookRoutes } from './routes/webhook.routes';
+import { GeocodingService } from './services/geocoding.service';
+import { errorMiddleware } from './middleware/error.middleware';
+import { logger } from './utils/logger';
 
-import listings from './routes/listings';
-import payments from './routes/payments';
-import ai from './routes/ai';
-import system from './routes/system';
-import affiliates from './routes/affiliates';
-import notifications from './routes/notifications';
-import marketing from './routes/marketing';
-import chat from './routes/chat';
-
-const app = new Hono<{ Bindings: Env }>();
+const app = new Hono();
 
 // Global Middleware
-app.use('/*', cors({
-    origin: '*',
-    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowHeaders: ['Content-Type', 'Authorization', 'X-Quantum-Latency'],
-}));
+app.use('*', honoLogger());
+app.use('*', cors());
 
-// Global Latency & Geo Tracker
-app.use('/*', async (c, next) => {
-    const start = Date.now();
-    await next();
-    const ms = Date.now() - start;
+// Initialize App
+const start = async () => {
+    try {
+        const env = validateEnv(process.env);
+        const pgPool = setupDatabase(env);
+        const redis = setupRedis(env);
 
-    // Cloudflare specific metadata
-    const cf = (c.req.raw as any).cf;
-    const geo = cf ? {
-        country: cf.country,
-        city: cf.city,
-        region: cf.region,
-        colo: cf.colo,
-        latency: ms
-    } : { country: 'LOCAL', latency: ms };
+        // Core Shared Services
+        const geocodingService = new GeocodingService(redis as any, pgPool);
 
-    console.log(`📡 [QUANTUM-TRAFFIC] ${c.req.method} ${c.req.path} | ${geo.country} (${geo.city || 'Dev'}) | ${ms}ms`);
+        // Routes - 1000x Modules
+        setupGeolocationRoutes(app, pgPool, redis, geocodingService);
+        setupVehicleRoutes(app, pgPool);
+        setupSearchRoutes(app, redis, pgPool);
+        setupGeofenceRoutes(app, redis, pgPool);
+        setupPlanningRoutes(app, redis, pgPool);
+        setupTrackingRoutes(app, redis, pgPool);
+        setupAnalyticsRoutes(app, pgPool);
+        setupLocationRoutes(app, redis, pgPool);
+        setupWebhookRoutes(app);
 
-    // Inject latency header for frontend monitoring
-    c.header('X-Quantum-Latency', `${ms}ms`);
-});
+        // Error Handling
+        app.onError(errorMiddleware);
 
-// Health Check
-app.get('/health', (c) => c.json({ status: 'ok', version: '1.0.0-quantum' }));
+        logger.info(`🚀 MatchaAuto 1000x Backend initialized in ${env.NODE_ENV} mode`);
 
-// Mount Routes
-app.route('/api/listings', listings);
-app.route('/api/payments', payments);
-app.route('/api/ai', ai);
-app.route('/api/system', system);
-app.route('/api/affiliates', affiliates);
-app.route('/api/notifications', notifications);
-app.route('/api/marketing', marketing);
-app.route('/api/chat', chat);
-
-export default {
-    fetch: app.fetch
+    } catch (error) {
+        logger.error('Failed to start server:', error);
+    }
 };
+
+start();
+
+export default app;
