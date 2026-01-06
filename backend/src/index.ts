@@ -13,6 +13,8 @@ import { setupTrackingRoutes } from './routes/tracking.routes';
 import { setupAnalyticsRoutes } from './routes/analytics.routes';
 import { setupLocationRoutes } from './routes/location.routes';
 import { setupWebhookRoutes } from './routes/webhook.routes';
+import { setupCommunityResilienceRoutes } from './routes/community-resilience.routes';
+import { setupAdvancedGeoRoutes } from './routes/geo-analytics.routes';
 import { GeocodingService } from './services/geocoding.service';
 import { errorMiddleware } from './middleware/error.middleware';
 import { logger } from './utils/logger';
@@ -43,6 +45,10 @@ const start = async () => {
         setupAnalyticsRoutes(app, pgPool);
         setupLocationRoutes(app, redis, pgPool);
         setupWebhookRoutes(app);
+
+        // QUEEN MODULES (Community Resilience & Advanced Geo)
+        setupCommunityResilienceRoutes(app, redis, pgPool);
+        setupAdvancedGeoRoutes(app, redis, pgPool);
 
         // Error Handling
         app.onError(errorMiddleware);
