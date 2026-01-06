@@ -1,205 +1,131 @@
 import { z } from 'zod';
-import { Pool } from 'pg';
 import Redis from 'ioredis';
+import { Pool } from 'pg';
 import { logger } from '../utils/logger';
 import { metrics } from '../utils/metrics';
 import { CircuitBreaker } from '../patterns/circuit-breaker';
+import { LRUCache } from 'lru-cache';
+import { compress, decompress } from 'lz4';
+import { Mutex } from 'async-mutex';
 
-export const AnalyticsRequestSchema = z.object({
-    boundingBox: z.object({
-        minLat: z.number().min(-90).max(90),
-        maxLat: z.number().min(-90).max(90),
-        minLng: z.number().min(-180).max(180),
-        maxLng: z.number().min(-180).max(180)
-    }),
-    gridSize: z.number().min(0.001).max(0.1).default(0.01), // degrees
-    timeRange: z.object({
-        start: z.date().optional(),
-        end: z.date().optional()
-    }).optional()
+export const BoundsSchema = z.object({
+    minLng: z.number(), minLat: z.number(),
+    maxLng: z.number(), maxLat: z.number()
 });
 
-export const HeatmapPointSchema = z.object({
-    lat: z.number(),
-    lng: z.number(),
-    intensity: z.number()
-});
-
-export type AnalyticsRequest = z.infer<typeof AnalyticsRequestSchema>;
+export interface HeatmapData {
+    grid: { lat: number; lng: number; intensity: number }[];
+    maxIntensity: number;
+}
 
 export class GeoAnalyticsService {
-    private pgPool: Pool;
     private redis: Redis;
+    private pgPool: Pool;
+    private memoryCache: LRUCache<string, Buffer>;
     private circuitBreaker: CircuitBreaker;
-    private cacheTTL = 300; // 5 minutes for realtime analytics
-    private longCacheTTL = 3600; // 1 hour for historical patterns
 
-    constructor(pgPool: Pool, redis: Redis) {
-        this.pgPool = pgPool;
+    constructor(redis: Redis, pgPool: Pool) {
         this.redis = redis;
-        this.circuitBreaker = new CircuitBreaker({
-            failureThreshold: 3,
-            resetTimeout: 30000,
-            timeout: 20000 // DB queries can be slow
+        this.pgPool = pgPool;
+        this.memoryCache = new LRUCache<string, Buffer>({
+            max: 500,
+            ttl: 60000 // 1 min for heavy analytics
         });
+        this.circuitBreaker = new CircuitBreaker({ failureThreshold: 3, timeout: 10000 });
     }
 
-    /**
-     * Genera datos para mapa de calor (Heatmap) con caching y optimización espacial.
-     */
-    async getDensityStats(request: AnalyticsRequest): Promise<any[]> {
-        const start = Date.now();
-        metrics.increment('analytics.density_map_requests');
+    async calculateHeatmap(bounds: z.infer<typeof BoundsSchema>, resolution: number = 10): Promise<HeatmapData> {
+        const cacheKey = `heatmap:${JSON.stringify(bounds)}:${resolution}`;
 
-        try {
-            const validated = AnalyticsRequestSchema.parse(request);
-            const cacheKey = `analytics:density:${this.hashRequest(validated)}`;
+        // 1. L1 Cache
+        const mem = this.memoryCache.get(cacheKey);
+        if (mem) return JSON.parse(decompress(mem).toString());
 
-            const cached = await this.redis.get(cacheKey);
-            if (cached) {
-                metrics.increment('analytics.cache_hits_total');
-                return JSON.parse(cached);
-            }
-            metrics.increment('analytics.cache_misses_total');
-
-            const result = await this.circuitBreaker.execute(async () => {
-                const client = await this.pgPool.connect();
-                try {
-                    // Optimized Grid Clustering using PostGIS
-                    // ST_SnapToGrid groups points into a grid for fast aggregation
-                    const query = `
-                        SELECT 
-                            ST_Y(ST_SnapToGrid(location::geometry, $1, $1)) as lat,
-                            ST_X(ST_SnapToGrid(location::geometry, $1, $1)) as lng,
-                            COUNT(*) as intensity
-                        FROM vehicle_locations
-                        WHERE is_active = TRUE
-                          AND ST_Intersects(location::geometry, ST_MakeEnvelope($2, $3, $4, $5, 4326))
-                          ${validated.timeRange ? 'AND updated_at BETWEEN $6 AND $7' : ''}
-                        GROUP BY lat, lng
-                        HAVING COUNT(*) > 0;
-                    `;
-
-                    const params = [
-                        validated.gridSize,
-                        validated.boundingBox.minLng,
-                        validated.boundingBox.minLat,
-                        validated.boundingBox.maxLng,
-                        validated.boundingBox.maxLat
-                    ];
-
-                    if (validated.timeRange?.start && validated.timeRange?.end) {
-                        params.push(validated.timeRange.start, validated.timeRange.end);
-                    }
-
-                    const res = await client.query(query, params);
-                    return res.rows.map(r => ({
-                        lat: parseFloat(r.lat),
-                        lng: parseFloat(r.lng),
-                        intensity: parseInt(r.intensity)
-                    }));
-                } finally {
-                    client.release();
-                }
-            });
-
-            await this.redis.setex(cacheKey, this.cacheTTL, JSON.stringify(result));
-            metrics.timing('analytics.density_duration_ms', Date.now() - start);
-
-            return result;
-        } catch (error) {
-            logger.error('Density stats failed', { error });
-            metrics.increment('analytics.errors_total');
-            return []; // Fallback empty
+        // 2. L2 Cache
+        const redis = await this.redis.get(cacheKey);
+        if (redis) {
+            const data = JSON.parse(redis);
+            this.memoryCache.set(cacheKey, compress(Buffer.from(redis)));
+            return data;
         }
-    }
 
-    /**
-     * Detecta áreas de alta demanda sin cobertura (Dark Zones)
-     * Useful for business intelligence to know where to expand.
-     */
-    async findCoverageGaps(minDemand: number = 5, searchRadius: number = 2000): Promise<any[]> {
-        const cacheKey = `analytics:gaps:${minDemand}:${searchRadius}`;
-        const cached = await this.redis.get(cacheKey);
-        if (cached) return JSON.parse(cached);
-
-        const result = await this.circuitBreaker.execute(async () => {
+        // 3. PostGIS Aggregation (Vectorized)
+        return this.circuitBreaker.execute(async () => {
             const client = await this.pgPool.connect();
             try {
-                // Find clusters of user searches/locations where NO vehicles are nearby
-                const query = `
-                    WITH demand_clusters AS (
-                        SELECT 
-                            ST_ClusterDBSCAN(location::geometry, eps := 0.005, minpoints := $1) OVER () as cid,
-                            location
-                        FROM user_locations
-                        WHERE created_at > NOW() - INTERVAL '24 hours'
-                    )
-                    SELECT 
-                        ST_Y(ST_Centroid(ST_Collect(location::geometry))) as lat,
-                        ST_X(ST_Centroid(ST_Collect(location::geometry))) as lng,
-                        COUNT(*) as unmet_demand_count
-                    FROM demand_clusters
-                    WHERE cid IS NOT NULL
-                    AND NOT EXISTS (
-                        SELECT 1 FROM vehicle_locations vl 
-                        WHERE ST_DWithin(vl.location, demand_clusters.location, $2)
-                    )
-                    GROUP BY cid
-                    ORDER BY unmet_demand_count DESC;
-                `;
-                const res = await client.query(query, [minDemand, searchRadius]);
-                return res.rows;
+                // Snap to grid for O(1) aggregation relative to grid size, not N points
+                // 0.001 deg is approx 100m. Resolution scales this.
+                const gridSize = 0.001 * resolution;
+
+                const res = await client.query(`
+                SELECT 
+                    ST_X(ST_SnapToGrid(location::geometry, $1)) as lng,
+                    ST_Y(ST_SnapToGrid(location::geometry, $1)) as lat,
+                    COUNT(*) as count
+                FROM vehicle_locations
+                WHERE location && ST_MakeEnvelope($2, $3, $4, $5, 4326)
+                GROUP BY 1, 2
+              `, [gridSize, bounds.minLng, bounds.minLat, bounds.maxLng, bounds.maxLat]);
+
+                let maxIntensity = 0;
+                const grid = res.rows.map(r => {
+                    const val = parseInt(r.count);
+                    if (val > maxIntensity) maxIntensity = val;
+                    return { lat: parseFloat(r.lat), lng: parseFloat(r.lng), intensity: val };
+                });
+
+                // Normalize
+                if (maxIntensity > 0) {
+                    grid.forEach(g => g.intensity = parseFloat((g.intensity / maxIntensity).toFixed(2)));
+                }
+
+                const result = { grid, maxIntensity };
+
+                // Cache
+                const str = JSON.stringify(result);
+                await this.redis.setex(cacheKey, 300, str);
+                this.memoryCache.set(cacheKey, compress(Buffer.from(str)));
+
+                return result;
             } finally {
                 client.release();
             }
         });
-
-        await this.redis.setex(cacheKey, this.longCacheTTL, JSON.stringify(result));
-        return result;
     }
 
-    /**
-     * Análisis de patrones de movimiento (Commute Analysis)
-     * Identifies "Hubs" for specific users (Home, Work, etc.)
-     */
-    async analyzeMovementPatterns(userId: string): Promise<any> {
-        const cacheKey = `analytics:patterns:${userId}`;
-        const cached = await this.redis.get(cacheKey);
-        if (cached) return JSON.parse(cached);
+    async detectClusters(points: { lat: number, lng: number }[], epsilonKm: number, minPoints: number) {
+        // For large datasets, push to DB. For small (<1000), do in-memory DBSCAN?
+        // 10x approach: Offload to PostGIS `ST_ClusterDBSCAN`
+        const client = await this.pgPool.connect();
+        try {
+            // Serialize points to WKT or use a temp table
+            // Optimized: pass JSON array to a function that unpacks? 
+            // Or insert into temp table.
+            await client.query('CREATE TEMP TABLE IF NOT EXISTS temp_cluster_points (id serial, location geometry(Point, 4326))');
+            await client.query('TRUNCATE temp_cluster_points');
 
-        const result = await this.circuitBreaker.execute(async () => {
-            const client = await this.pgPool.connect();
-            try {
-                // Use K-Means or Centroid logic to find top 2 hubs
-                const query = `
-                    SELECT 
-                        ST_Y(ST_Centroid(ST_Collect(location::geometry))) as lat,
-                        ST_X(ST_Centroid(ST_Collect(location::geometry))) as lng,
-                        COUNT(*) as stay_count
-                    FROM location_history
-                    WHERE user_id = $1
-                    GROUP BY ST_SnapToGrid(location::geometry, 0.005) -- roughly 500m
-                    ORDER BY stay_count DESC
-                    LIMIT 2;
-                `;
-                const res = await client.query(query, [userId]);
-                return res.rows;
-            } finally {
-                client.release();
-            }
-        });
+            // Batch insert (simplified for implementation speed)
+            // In real 10x, use pg-copy-streams
+            const values = points.map(p => `(ST_SetSRID(ST_MakePoint(${p.lng}, ${p.lat}), 4326))`).join(',');
+            await client.query(`INSERT INTO temp_cluster_points (location) VALUES ${values}`);
 
-        await this.redis.setex(cacheKey, this.longCacheTTL, JSON.stringify(result));
-        return result;
-    }
+            const res = await client.query(`
+              SELECT cid, ST_AsGeoJSON(ST_Centroid(ST_Collect(location))) as center, count(*) 
+              FROM (
+                  SELECT ST_ClusterDBSCAN(location, eps := $1, minpoints := $2) over () as cid, location
+                  FROM temp_cluster_points
+              ) sq
+              WHERE cid IS NOT NULL
+              GROUP BY cid
+          `, [epsilonKm / 111.0, minPoints]); // Convert km to degrees approx
 
-    private hashRequest(req: any): string {
-        return Buffer.from(JSON.stringify(req)).toString('base64');
-    }
-
-    async clearCache(): Promise<void> {
-        const keys = await this.redis.keys('analytics:*');
-        if (keys.length) await this.redis.del(...keys);
+            return res.rows.map(r => ({
+                id: r.cid,
+                center: JSON.parse(r.center),
+                count: parseInt(r.count)
+            }));
+        } finally {
+            client.release();
+        }
     }
 }
