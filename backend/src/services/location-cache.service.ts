@@ -18,7 +18,7 @@ export const LocationDataSchema = z.object({
     speed: z.number().min(0).optional(),
     heading: z.number().min(0).max(360).optional(),
     batteryLevel: z.number().min(0).max(100).optional(),
-    metadata: z.record(z.any()).optional(),
+    metadata: z.record(z.string(), z.any()).optional(),
     timestamp: z.date().default(() => new Date()),
     ttl: z.number().min(0).default(300) // seconds
 });
@@ -62,6 +62,8 @@ export const LocationUpdateSchema = z.object({
 export type LocationData = z.infer<typeof LocationDataSchema>;
 export type LocationQuery = z.infer<typeof LocationQuerySchema>;
 export type LocationUpdate = z.infer<typeof LocationUpdateSchema>;
+export type LocationCacheRequest = LocationUpdate;
+export type CachedLocation = LocationData;
 
 interface CacheLayer {
     name: string;

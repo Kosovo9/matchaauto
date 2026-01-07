@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { Env } from '../../../shared/types';
+import { Env } from '@shared/types';
 
 // Esquemas de eventos virales
 const ViralEventSchema = z.object({
     userId: z.string(),
     type: z.enum(['invite_sent', 'invite_accepted', 'conversion', 'churn', 'share']),
     timestamp: z.string().datetime(),
-    metadata: z.record(z.any()).optional(),
+    metadata: z.record(z.string(), z.any()).optional(),
     weight: z.number().min(0).max(1).default(1),
 });
 

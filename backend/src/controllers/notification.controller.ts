@@ -1,51 +1,42 @@
-import { Request, Response, NextFunction } from 'express';
+import { Context } from 'hono';
 import { z } from 'zod';
 import { logger } from '../utils/logger';
 import { metrics } from '../utils/metrics';
 import { NotificationService, NotificationSchema } from '../services/notification.service';
 import Redis from 'ioredis';
 import { Pool } from 'pg';
-import { WebSocketServer } from 'ws';
-
-/**
- * @controller NotificationController
- * @description Controller for sending and managing notifications
- */
 
 export class NotificationController {
     private notificationService: NotificationService;
 
-    constructor(redisClient: Redis, pgPool: Pool, wss: WebSocketServer) {
+    constructor(redisClient: Redis, pgPool: Pool, wss: any) {
         this.notificationService = new NotificationService(redisClient, pgPool, wss);
     }
 
-    // POST /api/v1/notifications/send
-    // (Usually Admin or System internal use, but exposed for testing/dev)
-    async sendNotification(req: Request, res: Response) {
+    async sendNotification(c: Context) {
         try {
-            const validated = NotificationSchema.parse(req.body);
+            const body = await c.req.json();
+            const validated = NotificationSchema.parse(body);
 
             await this.notificationService.send(validated);
 
-            res.json({ success: true, message: 'Notification dispatched' });
+            metrics.increment('notifications.sent');
+            return c.json({ success: true, message: 'Notification dispatched' });
         } catch (error) {
-            this.handleError(error, res);
+            return this.handleError(error, c);
         }
     }
 
-    // GET /api/v1/notifications/history
-    async getHistory(req: Request, res: Response) {
-        // Implementation pending (fetching from DB table 'notifications')
-        // For now, return stub
-        res.json({ success: true, data: [] });
+    async getHistory(c: Context) {
+        return c.json({ success: true, data: [] });
     }
 
-    private handleError(error: any, res: Response) {
+    private handleError(error: any, c: Context) {
         if (error instanceof z.ZodError) {
-            res.status(400).json({ success: false, error: 'Validation Error', details: error.errors });
+            return c.json({ success: false, error: 'Validation Error', details: (error as z.ZodError).errors }, 400);
         } else {
             logger.error('Notification Controller Error', error);
-            res.status(500).json({ success: false, error: 'Internal Server Error' });
+            return c.json({ success: false, error: 'Internal Server Error' }, 500);
         }
     }
 }

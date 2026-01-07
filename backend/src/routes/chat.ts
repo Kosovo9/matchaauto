@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { Env } from '../../../shared/types';
+import { Env } from '../lib/env';
 import { SalesCloserAI } from '../services/sales-ai';
 
 const chat = new Hono<{ Bindings: Env }>();

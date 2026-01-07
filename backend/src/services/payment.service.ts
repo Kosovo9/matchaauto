@@ -12,7 +12,7 @@ export const PaymentIntentSchema = z.object({
     userId: z.string().uuid(),
     amount: z.number().positive(),
     currency: z.enum(['USD', 'EUR', 'MXN', 'GBP']),
-    provider: z.enum(['stripe', 'paypal', 'mercadopago']),
+    provider: z.enum(['manual', 'lemon_squeezy', 'mercadopago', 'stripe_standby']),
     metadata: z.record(z.any()).optional(),
     idempotencyKey: z.string().min(10)
 });
@@ -40,7 +40,7 @@ export class PaymentService {
         this.circuitBreakers = new Map();
 
         // Circuit Breakers for each provider
-        ['stripe', 'paypal', 'mercadopago'].forEach(p => {
+        ['manual', 'lemon_squeezy', 'mercadopago'].forEach(p => {
             this.circuitBreakers.set(p, new CircuitBreaker({
                 failureThreshold: 5,
                 timeout: 10000
@@ -76,17 +76,22 @@ export class PaymentService {
                 client.release();
             }
 
-            // 3. Call Provider Gateways (Mocked implementation for different providers)
+            // 3. Call Provider Gateways (STRIPE EN EL REFRI - STANDBY)
             const response = await this.circuitBreakers.get(validated.provider)!.execute(async () => {
-                if (validated.provider === 'stripe') {
-                    // Mock Stripe Intent Creation
-                    // await stripe.paymentIntents.create({...})
-                    return { clientSecret: `pi_mock_${transactionId}_secret`, gatewayId: `pi_mock_${transactionId}` };
+                if (validated.provider === 'lemon_squeezy') {
+                    // Prep para Lemon Squeezy (Pronto)
+                    return { clientSecret: `ls_prep_${transactionId}`, gatewayId: `ls_mock_${transactionId}` };
+                } else if (validated.provider === 'manual') {
+                    // Pago por transferencia / efectivo
+                    return { clientSecret: `manual_instr_${transactionId}`, gatewayId: `manual_${transactionId}` };
                 } else if (validated.provider === 'mercadopago') {
-                    // Mock MercadoPago
                     return { clientSecret: `pref_mock_${transactionId}`, gatewayId: `mp_mock_${transactionId}` };
                 }
-                return { clientSecret: 'mock_secret', gatewayId: 'mock_gateway_id' };
+
+                // STRIPE STANDBY - Solo si se reactiva manualmente
+                // if (validated.provider === 'stripe_standby') { ... }
+
+                return { clientSecret: 'pending_instructions', gatewayId: 'manual_flow' };
             });
 
             // 4. Update Gateway ID

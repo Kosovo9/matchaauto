@@ -1,11 +1,11 @@
 import { Context } from 'hono';
-import { GeofencingService } from '../services/geo-fencing.service';
+import { GeoFencingService } from '../services/geo-fencing.service';
 import { logger } from '../utils/logger';
 
 export class GeofenceEventsController {
-    private geofencingService: GeofencingService;
+    private geofencingService: GeoFencingService;
 
-    constructor(geofencingService: GeofencingService) {
+    constructor(geofencingService: GeoFencingService) {
         this.geofencingService = geofencingService;
     }
 

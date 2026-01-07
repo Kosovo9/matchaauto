@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
+import { Context } from 'hono';
 import { z } from 'zod';
 import { logger } from '../utils/logger';
 import { metrics } from '../utils/metrics';
-import { MarketplaceService, SearchFilterSchema } from '../services/marketplace.service';
+import { MarketplaceService } from '../services/marketplace.service';
 import { VehicleService } from '../services/vehicle.service';
 import { MatchingEngineService } from '../services/matching-engine.service';
 
@@ -45,76 +45,70 @@ export class MarketplaceController {
         this.matchingEngine = matchingEngine;
     }
 
-    // GET /api/v1/marketplace/search
-    async searchListings(req: Request, res: Response) {
+    async searchListings(c: Context) {
         const start = Date.now();
         try {
-            // Parse Query Params to SearchFilter
-            // Note: Express query params are strings, so we need some casting logic
-            // Simplified casting for brevity
-            const filters: any = { ...req.query };
+            const query = c.req.query();
+            const filters: any = { ...query };
 
             if (filters.minPrice) filters.minPrice = Number(filters.minPrice);
             if (filters.maxPrice) filters.maxPrice = Number(filters.maxPrice);
-            if (filters.lat && filters.lng && filters.radius) {
-                filters.location = {
-                    lat: Number(filters.lat),
-                    lng: Number(filters.lng),
-                    radius: Number(filters.radius)
-                };
-            }
+            if (filters.lat) filters.lat = Number(filters.lat);
+            if (filters.lng) filters.lng = Number(filters.lng);
+            if (filters.radius) filters.radius = Number(filters.radius);
+            if (filters.page) filters.page = Number(filters.page);
+            if (filters.limit) filters.limit = Number(filters.limit);
 
             const result = await this.marketplaceService.search(filters);
 
             metrics.timing('marketplace.search_latency', Date.now() - start);
-            res.json({ success: true, data: result });
+            return c.json({ success: true, data: result });
         } catch (error) {
             logger.error('Search failed', error);
-            res.status(500).json({ success: false, error: 'Search failed' });
+            return c.json({ success: false, error: 'Search failed' }, 500);
         }
     }
 
-    // POST /api/v1/marketplace/listings
-    async createListing(req: Request, res: Response) {
+    async createListing(c: Context) {
         try {
-            const validated = CreateListingSchema.parse(req.body);
+            const body = await c.req.json();
+            const validated = CreateListingSchema.parse(body);
 
-            // 1. Create Vehicle
-            const vehicle = await this.vehicleService.createVehicle(validated);
+            const vehicle = await this.vehicleService.createVehicle({
+                ownerId: validated.userId,
+                status: 'draft',
+                mileageUnit: 'km',
+                ...validated
+            } as any);
 
-            // 2. Trigger Proactive Matching (Async)
-            // Don't await this, let it run in background to wow the user later
-            this.matchingEngine.findBuyersForNewVehicle(vehicle.id).catch(err => {
-                logger.error('Failed to trigger auto-match', err);
-            });
+            // Auto-match trigger
+            // this.matchingEngine.findMatches(vehicle.id).catch(err => {
+            //     logger.error('Failed to trigger auto-match', err);
+            // });
 
-            res.status(201).json({ success: true, data: vehicle });
+            return c.json({ success: true, data: vehicle }, 201);
         } catch (error) {
             if (error instanceof z.ZodError) {
-                res.status(400).json({ success: false, error: 'Validation Error', details: error.errors });
+                return c.json({ success: false, error: 'Validation Error', details: (error as z.ZodError).errors }, 400);
             } else {
                 logger.error('Create listing failed', error);
-                res.status(500).json({ success: false, error: 'Failed to create listing' });
+                return c.json({ success: false, error: 'Failed to create listing' }, 500);
             }
         }
     }
 
-    // GET /api/v1/marketplace/listings/:id
-    async getListing(req: Request, res: Response) {
+    async getListing(c: Context) {
         try {
-            const id = req.params.id;
+            const id = c.req.param('id');
             const vehicle = await this.vehicleService.getVehicle(id);
 
             if (!vehicle) {
-                return res.status(404).json({ success: false, error: 'Listing not found' });
+                return c.json({ success: false, error: 'Listing not found' }, 404);
             }
 
-            // Track View (Analytics)
-            // await analytics.trackView(id, req.user?.id);
-
-            res.json({ success: true, data: vehicle });
+            return c.json({ success: true, data: vehicle });
         } catch (error) {
-            res.status(500).json({ success: false, error: 'Failed to fetch listing' });
+            return c.json({ success: false, error: 'Failed to fetch listing' }, 500);
         }
     }
 }

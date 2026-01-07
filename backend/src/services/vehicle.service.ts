@@ -32,7 +32,7 @@ export const VehicleSchema = z.object({
         address: z.string().optional()
     }).optional(),
     status: z.enum(['draft', 'published', 'sold', 'reserved', 'maintenance']).default('draft'),
-    metadata: z.record(z.any()).optional(),
+    metadata: z.record(z.string(), z.any()).optional(),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional()
 });
@@ -74,7 +74,9 @@ export class VehicleService {
             if (validated.location && !validated.location.address) {
                 try {
                     const geo = await this.geocoding.reverseGeocode(validated.location.lat, validated.location.lng);
-                    validated.location.address = geo.formattedAddress;
+                    if (geo) {
+                        validated.location.address = geo.formattedAddress;
+                    }
                 } catch (e) {
                     logger.warn('Failed to geocode new vehicle location', { id, error: e });
                 }
@@ -183,11 +185,20 @@ export class VehicleService {
         }
     }
 
+    async getVehicleById(id: string): Promise<Vehicle | null> {
+        return this.getVehicle(id);
+    }
+
     // Optimized for 10x: Single query with filters
     async searchVehicles(filters: any): Promise<Vehicle[]> {
         // This will be expanded in MarketplaceService, keeping it simple here for admin/owner usage
         // ... basic CRUD search
         return [];
+    }
+
+    // Alias
+    async listVehicles(filters: any): Promise<Vehicle[]> {
+        return this.searchVehicles(filters);
     }
 
     private async updateVehicleLocation(vehicleId: string, lat: number, lng: number, address: string | undefined, client: any) {

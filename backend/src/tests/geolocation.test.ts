@@ -15,7 +15,7 @@ describe('GeolocationService', () => {
         const cachedData = [{ id: '1', name: 'Car 1' }];
         mockRedis.get.mockResolvedValue(JSON.stringify(cachedData));
 
-        const results = await geoService.searchNearby(4.7110, -74.0721);
+        const results = await geoService.searchNearby({ latitude: 4.7110, longitude: -74.0721, radius: 1000, type: ['vehicle'] });
 
         expect(results).toEqual(cachedData);
         expect(mockRedis.get).toHaveBeenCalled();

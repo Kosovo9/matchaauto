@@ -1,11 +1,11 @@
 import { Context } from 'hono';
-import { GeofencingService } from '../services/geo-fencing.service';
+import { GeoFencingService } from '../services/geo-fencing.service';
 import { logger } from '../utils/logger';
 
 export class DeliveryZonesController {
-    private geofencingService: GeofencingService;
+    private geofencingService: GeoFencingService;
 
-    constructor(geofencingService: GeofencingService) {
+    constructor(geofencingService: GeoFencingService) {
         this.geofencingService = geofencingService;
     }
 
@@ -29,7 +29,7 @@ export class DeliveryZonesController {
     checkCoverage = async (c: Context) => {
         const { lat, lng } = c.req.query();
         const zones = await this.geofencingService.checkProximity('system', parseFloat(lat), parseFloat(lng));
-        const hasCoverage = zones.some(z => z.type === 'ENTER' || z.type === 'inside');
+        const hasCoverage = zones.some(z => z.eventType === 'ENTER' || z.eventType === 'inside');
         return c.json({ success: true, hasCoverage, zones: zones.length });
     };
 }

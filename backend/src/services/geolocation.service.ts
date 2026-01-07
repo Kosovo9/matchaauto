@@ -3,12 +3,11 @@ import { Redis } from 'ioredis';
 import { logger } from '../utils/logger';
 import { metrics } from '../utils/metrics';
 
-// Specialized Services
-import { LocationCacheService, LocationCacheRequest, CachedLocation } from './location-cache.service';
+import { LocationCacheService, LocationUpdate as LocationCacheRequest, LocationData as CachedLocation } from './location-cache.service';
 import { RadiusSearchService, RadiusSearchRequest, RadiusSearchResponse } from './radius-search.service';
-import { GeoAnalyticsService, AnalyticsRequest } from './geo-analytics.service';
-import { GeoFencingService, GeoFencingRequest } from './geo-fencing.service';
-import { AddressValidationService, AddressValidationRequest } from './address-validation.service';
+import { GeoAnalyticsService, BoundsSchema as AnalyticsRequest } from './geo-analytics.service';
+import { GeoFencingService, GeofenceCheckRequest as GeoFencingRequest } from './geo-fencing.service';
+import { AddressValidationService, ValidationRequest as AddressValidationRequest } from './address-validation.service';
 import { GeocodingService } from './geocoding.service';
 import { TimezoneService } from './timezone.service';
 
@@ -30,11 +29,11 @@ export class GeolocationService {
         // Initialize all specialized services
         this.locationCache = new LocationCacheService(redis, pgPool);
         this.radiusSearch = new RadiusSearchService(redis, pgPool);
-        this.analytics = new GeoAnalyticsService(pgPool, redis);
+        this.analytics = new GeoAnalyticsService(redis, pgPool);
         this.geoFencing = new GeoFencingService(redis, pgPool);
         this.geocoding = new GeocodingService(redis, pgPool);
-        this.addressValidation = new AddressValidationService(redis, pgPool, this.geocoding);
-        this.timezone = new TimezoneService(redis);
+        this.addressValidation = new AddressValidationService(redis, pgPool);
+        this.timezone = new TimezoneService(redis, pgPool);
 
         logger.info('GeolocationService Orchestrator initialized with 10x architecture');
     }
@@ -43,10 +42,11 @@ export class GeolocationService {
      * Updates vehicle location in real-time (Cache + Async DB Persistence)
      */
     async updateVehicleLocation(vehicleId: string, lat: number, lng: number): Promise<void> {
-        return this.locationCache.setLocation({
-            vehicleId,
-            location: { latitude: lat, longitude: lng },
-            timestamp: new Date()
+        await this.locationCache.updateLocation({
+            userId: vehicleId, // Mapping vehicleId as userId for cache lookup simplicity
+            entityId: vehicleId,
+            entityType: 'vehicle',
+            location: { latitude: lat, longitude: lng }
         });
     }
 
@@ -60,41 +60,40 @@ export class GeolocationService {
     /**
      * Get density heatmap data for analytics
      */
-    async getDensityMap(request: AnalyticsRequest): Promise<any[]> {
-        return this.analytics.getDensityStats(request);
+    async getDensityMap(request: AnalyticsRequest): Promise<any> {
+        return this.analytics.calculateHeatmap(request);
     }
 
     /**
      * Process Geofence checks (e.g. entering/leaving zones)
      */
     async checkGeofence(vehicleId: string, fenceId: string, lat: number, lng: number): Promise<boolean> {
-        return this.geoFencing.isInsideFence({
-            vehicleId,
-            fenceId,
+        const res = await this.geoFencing.checkLocation({
+            userId: vehicleId,
+            entityId: vehicleId,
+            entityType: 'vehicle',
             location: { latitude: lat, longitude: lng }
         });
+        return res.activeGeofences.includes(fenceId);
     }
 
     /**
      * Validate and normalize an address
      */
     async validateAddress(request: AddressValidationRequest) {
-        return this.addressValidation.validate(request);
+        return this.addressValidation.validateAddress(request);
     }
 
     /**
      * Get legacy density format (for backward compatibility if needed)
      */
-    async getLegacyDensityMap(boundingBox: any): Promise<any[]> {
+    async getLegacyDensityMap(boundingBox: any): Promise<any> {
         // Adapt old bounding box to new schema
-        return this.analytics.getDensityStats({
-            boundingBox: {
-                minLat: boundingBox.minLat,
-                maxLat: boundingBox.maxLat,
-                minLng: boundingBox.minLng,
-                maxLng: boundingBox.maxLng
-            },
-            gridSize: 0.01
+        return this.analytics.calculateHeatmap({
+            minLat: boundingBox.minLat,
+            maxLat: boundingBox.maxLat,
+            minLng: boundingBox.minLng,
+            maxLng: boundingBox.maxLng
         });
     }
 

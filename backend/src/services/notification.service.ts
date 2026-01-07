@@ -3,7 +3,7 @@ import Redis from 'ioredis';
 import { Pool } from 'pg';
 import { logger } from '../utils/logger';
 import { metrics } from '../utils/metrics';
-import { WebSocketServer, WebSocket } from 'ws';
+import WebSocket, { Server as WebSocketServer } from 'ws';
 
 // ==================== ZOD SCHEMAS ====================
 export const NotificationType = z.enum(['system', 'alert', 'match_found', 'payment_success', 'payment_failed', 'ad_approved']);
@@ -14,7 +14,7 @@ export const NotificationSchema = z.object({
     type: NotificationType,
     title: z.string().max(100),
     body: z.string().max(500),
-    data: z.record(z.any()).optional(),
+    metadata: z.record(z.string(), z.any()).optional(),
     channels: z.array(NotificationChannel).default(['in_app']),
     priority: z.enum(['low', 'normal', 'high', 'critical']).default('normal')
 });

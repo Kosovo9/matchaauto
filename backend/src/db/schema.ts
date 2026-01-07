@@ -1,8 +1,4 @@
-import { text, integer, decimal, boolean, timestamp, pgTable } from 'drizzle-orm/pg-core';
-
-// Nota: Aunque D1 es SQLite, Drizzle permite usar tipos similares. 
-// Para D1 usaremos sqlite-core si es necesario, pero Deepseek sugirió un esquema genérico.
-// Ajustando a SQLite core para D1 compatibilidad.
+import { sql } from 'drizzle-orm';
 import { sqliteTable, text as stext, integer as sinteger, real as sreal } from 'drizzle-orm/sqlite-core';
 
 export const users = sqliteTable('users', {

@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
+import { Context } from 'hono';
 import { z } from 'zod';
 import { logger } from '../utils/logger';
 import { metrics } from '../utils/metrics';
-import { RadiusSearchService } from '../services/radius-search.service';
+import { RadiusSearchService, RadiusSearchRequestSchema } from '../services/radius-search.service';
 import Redis from 'ioredis';
 import { Pool } from 'pg';
 
@@ -12,23 +12,7 @@ import { Pool } from 'pg';
  */
 
 // ==================== ZOD SCHEMAS ====================
-const RadiusSearchRequestSchema = z.object({
-    center: z.object({
-        lat: z.number().min(-90).max(90),
-        lng: z.number().min(-180).max(180)
-    }),
-    radius: z.number().min(0).max(1000000).default(1000), // meters
-    filters: z.object({ // Simplified filters
-        entityTypes: z.array(z.string()).optional(),
-        minSpeed: z.number().optional(),
-        attributes: z.record(z.any()).optional()
-    }).optional(),
-    options: z.object({
-        maxResults: z.number().min(1).max(10000).default(1000),
-        includeMetadata: z.boolean().default(true)
-    }).optional()
-}).strict();
-
+// Simplified validation for Hono input
 const HeatmapRequestSchema = z.object({
     bounds: z.object({
         northeast: z.object({ lat: z.number(), lng: z.number() }),
@@ -59,46 +43,53 @@ export class RadiusSearchController {
     }
 
     // POST /api/v1/radius/search
-    async searchWithinRadius(req: Request, res: Response): Promise<void> {
+    async searchWithinRadius(c: Context) {
         const start = Date.now();
         try {
-            const validated = RadiusSearchRequestSchema.parse(req.body);
+            const body = await c.req.json();
 
-            const result = await this.radiusSearchService.searchWithinRadius(
-                validated.center,
-                validated.radius,
-                validated.filters,
-                validated.options
-            );
+            // Map incoming 'center' to 'latitude/longitude' expected by service
+            const requestPayload = {
+                ...body,
+                latitude: body.center?.lat,
+                longitude: body.center?.lng,
+                // filters & options mapping if necessary, or let service schema handle valid subset
+            };
+
+            // Use the service's schema to parse what we can
+            const validated = RadiusSearchRequestSchema.parse(requestPayload);
+
+            const result = await this.radiusSearchService.search(validated);
 
             metrics.timing('radius_search.latency', Date.now() - start);
-            res.json({ success: true, data: result });
+            return c.json({ success: true, data: result });
         } catch (error) {
-            this.handleError(error, res);
+            return this.handleError(error, c);
         }
     }
 
     // POST /api/v1/radius/heatmap
-    async generateHeatmap(req: Request, res: Response): Promise<void> {
+    async generateHeatmap(c: Context) {
         try {
-            const validated = HeatmapRequestSchema.parse(req.body);
+            const body = await c.req.json();
+            const validated = HeatmapRequestSchema.parse(body);
 
-            // Note: Filters/Options optional here for brevity
             const result = await this.radiusSearchService.generateDensityHeatmap(
                 validated.bounds,
                 validated.resolution
             );
 
-            res.json({ success: true, data: result });
+            return c.json({ success: true, data: result });
         } catch (error) {
-            this.handleError(error, res);
+            return this.handleError(error, c);
         }
     }
 
     // POST /api/v1/radius/cluster
-    async clusterPoints(req: Request, res: Response): Promise<void> {
+    async clusterPoints(c: Context) {
         try {
-            const validated = ClusterRequestSchema.parse(req.body);
+            const body = await c.req.json();
+            const validated = ClusterRequestSchema.parse(body);
 
             const result = await this.radiusSearchService.clusterPoints(
                 validated.points,
@@ -106,33 +97,30 @@ export class RadiusSearchController {
                 validated.parameters
             );
 
-            res.json({ success: true, data: result });
+            return c.json({ success: true, data: result });
         } catch (error) {
-            this.handleError(error, res);
+            return this.handleError(error, c);
         }
     }
 
     // POST /api/v1/radius/analytics
-    async generateAnalytics(req: Request, res: Response): Promise<void> {
-        // Basic implementation for blocking call, detailed one in earlier prompt
+    async generateAnalytics(c: Context) {
         try {
-            // ... (simplified binding)
-            res.json({ success: true, message: "Use specialized endpoint for full analytics" });
-        } catch (e) { this.handleError(e, res); }
+            return c.json({ success: true, message: "Use specialized endpoint for full analytics" });
+        } catch (e) { return this.handleError(e, c); }
     }
 
     // POST /api/v1/radius/stream
-    async initializeStreamingSearch(req: Request, res: Response): Promise<void> {
-        // Simplified mock of streaming init
-        res.status(501).json({ error: "Streaming implemented via WebSocket server, not REST" });
+    async initializeStreamingSearch(c: Context) {
+        return c.json({ error: "Streaming implemented via WebSocket server, not REST" }, 501);
     }
 
-    private handleError(error: any, res: Response) {
+    private handleError(error: any, c: Context) {
         if (error instanceof z.ZodError) {
-            res.status(400).json({ success: false, error: 'Validation Error', details: error.errors });
+            return c.json({ success: false, error: 'Validation Error', details: error.errors }, 400);
         } else {
             logger.error('Radius Search Controller Error', error);
-            res.status(500).json({ success: false, error: 'Internal Server Error' });
+            return c.json({ success: false, error: 'Internal Server Error' }, 500);
         }
     }
 }

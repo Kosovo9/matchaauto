@@ -1,0 +1,30 @@
+{
+  "hub": {
+    "id": "hub-chi-001",
+    "name": "Taller Comunitario - Chihuahua",
+    "purpose": "Intercambio de herramientas, refacciones y apoyo técnico entre mecánicos",
+    "syncKey": "cr-hub-default-2026-mx-chh",
+    "template": "exchange-hub",
+    "signals": [
+      {
+        "id": "sig-001",
+        "type": "offer",
+        "category": "tools",
+        "description": "Escáner Xentry para Mercedes",
+        "priority": "paid"
+      },
+      {
+        "id": "sig-002",
+        "type": "request",
+        "category": "parts",
+        "description": "Biela para motor Nissan NP300",
+        "priority": "normal"
+      }
+    ]
+  },
+  "metadata": {
+    "version": "1.0",
+    "exportedAt": "2026-01-06T08:00:00Z",
+    "signature": "sha256-mock-signature"
+  }
+}

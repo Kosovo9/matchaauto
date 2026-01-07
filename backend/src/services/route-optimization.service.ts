@@ -25,7 +25,7 @@ export const RouteOptimizationRequestSchema = z.object({
                     hard: z.boolean().default(false)
                 })
             ).optional(),
-            constraints: z.record(z.any()).optional()
+            constraints: z.record(z.string(), z.any()).optional()
         })
     ).min(2).max(100),
     startPoint: z.object({
@@ -210,7 +210,7 @@ export class RouteOptimizationService {
             }
             const parents: number[][] = [];
             while (parents.length < populationSize - eliteSize) {
-                const tournament = [];
+                const tournament: { route: number[]; score: number }[] = [];
                 const tournamentSize = 5;
                 for (let i = 0; i < tournamentSize; i++) {
                     tournament.push(scored[Math.floor(Math.random() * scored.length)]);

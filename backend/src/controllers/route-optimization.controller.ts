@@ -1,33 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
+import { Context } from 'hono';
 import Redis from 'ioredis';
 import { Pool } from 'pg';
 import { z } from 'zod';
 import { logger } from '../utils/logger';
 import { metrics } from '../utils/metrics';
-import { RouteOptimizationService } from '../services/route-optimization.service';
-import { v4 as uuidv4 } from 'uuid';
+import { RouteOptimizationService, RouteOptimizationRequestSchema } from '../services/route-optimization.service';
 
-// ==================== ZOD SCHEMAS ====================
-// Schemas simplified for integration
-const LatLngSchema = z.object({ lat: z.number(), lng: z.number() });
-
-const OptimizationRequestSchema = z.object({
-    stops: z.array(z.object({
-        id: z.string(),
-        location: LatLngSchema,
-        demand: z.number().optional(),
-        timeWindow: z.tuple([z.string(), z.string()]).optional()
-    })).min(2).max(5000),
-    vehicles: z.array(z.object({
-        id: z.string(),
-        startLocation: LatLngSchema,
-        capacity: z.number().optional()
-    })).min(1).max(500),
-    options: z.object({
-        trafficModel: z.enum(['optimistic', 'pessimistic', 'real-time']).optional(),
-        timeLimit: z.number().optional()
-    }).optional()
-});
+/**
+ * @controller RouteOptimizationController
+ * @description REST Controller for route optimization.
+ */
 
 // ==================== CONTROLLER ====================
 export class RouteOptimizationController {
@@ -36,63 +18,52 @@ export class RouteOptimizationController {
 
     constructor(redis: Redis, pgPool: Pool) {
         this.redis = redis;
-        this.service = new RouteOptimizationService(pgPool);
+        this.service = new RouteOptimizationService(redis, pgPool);
     }
 
-    // POST /api/v1/routes/optimize
-    async optimizeRoute(req: Request, res: Response): Promise<void> {
+    async optimizeRoute(c: Context) {
         const start = Date.now();
         try {
-            const validated = OptimizationRequestSchema.parse(req.body);
+            const body = await c.req.json();
 
-            // Cache Check
-            const cacheKey = this.generateCacheKey(validated);
-            const cached = await this.redis.get(cacheKey);
+            // Map incoming 'stops' to 'waypoints' if needed, or just validate against service schema
+            // For now, let's assume the client sends what RouteOptimizationService expects
+            // but we'll add a simple mapper for compatibility if they use the old format
 
-            if (cached) {
-                metrics.increment('route_optimization.cache_hit');
-                res.json(JSON.parse(cached));
-                return;
-            }
+            const requestData = body.stops ? {
+                waypoints: body.stops.map((s: any) => ({
+                    latitude: s.location.lat,
+                    longitude: s.location.lng,
+                    id: s.id
+                })),
+                algorithm: body.options?.algorithm || 'genetic'
+            } : body;
 
-            // Solve VRP/TSP via Service
-            const result = await this.service.solveVRP({
-                vehicles: validated.vehicles,
-                stops: validated.stops,
-                options: validated.options
-            });
+            const validated = RouteOptimizationRequestSchema.parse(requestData);
 
-            // Cache Result
-            await this.redis.setex(cacheKey, 600, JSON.stringify({ success: true, data: result }));
+            const result = await this.service.optimizeRoute(validated);
 
             metrics.timing('route_optimization.latency', Date.now() - start);
-            res.json({ success: true, data: result });
+            return c.json({ success: true, data: result });
         } catch (error) {
-            this.handleError(error, res);
+            return this.handleError(error, c);
         }
     }
 
-    // GET /api/v1/routes/stream/:id
-    async streamOptimization(req: Request, res: Response): Promise<void> {
-        // Mock stream status
-        res.json({
+    async streamOptimization(c: Context) {
+        return c.json({
             success: true,
             status: 'streaming_not_implemented_in_mvp',
-            message: 'Use standard optimization endpoint for Block 1'
+            message: 'Use standard optimization endpoint'
         });
     }
 
-    private generateCacheKey(params: any): string {
-        // Simplified hash
-        return `route_opt:${JSON.stringify(params.stops.length)}:${JSON.stringify(params.vehicles.length)}`;
-    }
-
-    private handleError(error: any, res: Response) {
+    private handleError(error: any, c: Context) {
         if (error instanceof z.ZodError) {
-            res.status(400).json({ success: false, error: 'Validation Error', details: error.errors });
+            return c.json({ success: false, error: 'Validation Error', details: error.errors }, 400);
         } else {
             logger.error('Route Optimization Error', error);
-            res.status(500).json({ success: false, error: 'Optimization Failed' });
+            return c.json({ success: false, error: 'Optimization Failed' }, 500);
         }
     }
 }

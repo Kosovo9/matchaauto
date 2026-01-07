@@ -20,8 +20,17 @@ export class AddressBookController {
             const { userId, label, address } = await c.req.json();
 
             // 1. Validate and Normalize
-            const validation = await this.validationService.validateAndNormalize(address);
-            if (!validation.isValid) return c.json({ success: false, error: 'Invalid address' }, 400);
+            const validation = await this.validationService.validateAddress({
+                address: {
+                    street: typeof address === 'string' ? address : (address.street || ''),
+                    city: address.city || '',
+                    state: address.state || '',
+                    postalCode: address.postalCode || '',
+                    country: address.country || 'MX'
+                }
+            });
+
+            if (!validation.valid) return c.json({ success: false, error: 'Invalid address', issues: validation.issues }, 400);
 
             // 2. Save to DB
             const client = await this.pgPool.connect();
@@ -32,9 +41,12 @@ export class AddressBookController {
           RETURNING id;
         `;
                 const result = await client.query(query, [
-                    userId, label, validation.normalized,
-                    validation.coordinates.lat, validation.coordinates.lng,
-                    validation.isReliable
+                    userId,
+                    label,
+                    validation.address.formattedAddress || validation.address.street,
+                    validation.address.latitude,
+                    validation.address.longitude,
+                    validation.score > 0.8
                 ]);
                 return c.json({ success: true, id: result.rows[0].id });
             } finally {

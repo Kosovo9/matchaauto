@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { randomUUID } from 'crypto';
 import Redis from 'ioredis';
 import { Pool } from 'pg';
 import { logger } from '../utils/logger';
@@ -40,7 +41,7 @@ export const GeofenceSchema = z.object({
             'restrict_access'
         ])).default(['send_notification'])
     }).optional(),
-    metadata: z.record(z.any()).optional(),
+    metadata: z.record(z.string(), z.any()).optional(),
     createdAt: z.date().default(() => new Date()),
     updatedAt: z.date().optional(),
     expiresAt: z.date().optional()
@@ -128,7 +129,7 @@ export class GeoFencingService {
             const validatedData = GeofenceSchema.omit({ id: true, createdAt: true, updatedAt: true }).parse(data);
 
             // Generate ID
-            const id = crypto.randomUUID();
+            const id = randomUUID();
             const geofence: Geofence = {
                 ...validatedData,
                 id,
@@ -917,7 +918,7 @@ export class GeoFencingService {
             ) : undefined;
 
         return {
-            id: crypto.randomUUID(),
+            id: randomUUID(),
             geofenceId,
             userId: request.userId,
             entityId: request.entityId,
@@ -1005,6 +1006,21 @@ export class GeoFencingService {
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return R * c;
+    }
+
+    // New 10x Methods
+    async checkProximity(userId: string, lat: number, lng: number): Promise<any[]> {
+        return this.checkLocation({
+            userId,
+            entityId: userId, // Assuming user entity
+            entityType: 'user',
+            location: { latitude: lat, longitude: lng },
+            checkTypes: ['inside', 'violation']
+        }).then(res => res.events);
+    }
+
+    async getGeofencesInArea(minLat: number, minLng: number, maxLat: number, maxLng: number): Promise<Geofence[]> {
+        return this.getGeofencesByBounds({ minLat, minLng, maxLat, maxLng });
     }
 
     private toRad(degrees: number): number {

@@ -3,7 +3,7 @@ import Redis from 'ioredis';
 import { Pool } from 'pg';
 import { z } from 'zod';
 import { TimezoneService } from '../services/timezone.service';
-import { MetricsCollector } from '../utils/metrics-collector';
+import { metrics } from '../utils/metrics';
 import { logger } from '../utils/logger';
 
 // ==================== ZOD SCHEMAS ====================
@@ -16,11 +16,9 @@ const TimezoneRequestSchema = z.object({
 // ==================== CONTROLLER ====================
 export class TimezoneController {
     private service: TimezoneService;
-    private metrics: MetricsCollector;
 
     constructor(redis: Redis, pgPool: Pool) {
         this.service = new TimezoneService(redis, pgPool);
-        this.metrics = MetricsCollector.getInstance();
     }
 
     /**
@@ -57,7 +55,7 @@ export class TimezoneController {
             // Cache-Control for Timezones
             c.header('Cache-Control', 'public, max-age=3600');
 
-            this.metrics.increment('timezone.request_success');
+            metrics.increment('timezone.request_success');
 
             return c.json({
                 success: true,

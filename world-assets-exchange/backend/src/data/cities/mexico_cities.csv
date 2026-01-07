@@ -1,0 +1,195 @@
+state_code,state_name,city_name,country_code,is_major
+01,Aguascalientes,Aguascalientes,MX,TRUE
+01,Aguascalientes,Jesús María,MX,TRUE
+01,Aguascalientes,Calvillo,MX,TRUE
+01,Aguascalientes,Rincón de Romos,MX,TRUE
+01,Aguascalientes,Pabellón de Arteaga,MX,TRUE
+02,Baja California,Tijuana,MX,TRUE
+02,Baja California,Mexicali,MX,TRUE
+02,Baja California,Ensenada,MX,TRUE
+02,Baja California,Playas de Rosarito,MX,TRUE
+02,Baja California,Tecate,MX,TRUE
+03,Baja California Sur,La Paz,MX,TRUE
+03,Baja California Sur,Los Cabos,MX,TRUE
+03,Baja California Sur,San José del Cabo,MX,TRUE
+03,Baja California Sur,Cabo San Lucas,MX,TRUE
+03,Baja California Sur,Ciudad Constitución,MX,TRUE
+04,Campeche,Campeche,MX,TRUE
+04,Campeche,Ciudad del Carmen,MX,TRUE
+04,Campeche,Champotón,MX,TRUE
+04,Campeche,Escárcega,MX,TRUE
+04,Campeche,Calkiní,MX,TRUE
+05,Coahuila,Saltillo,MX,TRUE
+05,Coahuila,Torreón,MX,TRUE
+05,Coahuila,Monclova,MX,TRUE
+05,Coahuila,Piedras Negras,MX,TRUE
+05,Coahuila,Acuña,MX,TRUE
+05,Coahuila,Ramos Arizpe,MX,TRUE
+06,Colima,Colima,MX,TRUE
+06,Colima,Manzanillo,MX,TRUE
+06,Colima,Tecomán,MX,TRUE
+06,Colima,Villa de Álvarez,MX,TRUE
+06,Colima,Armería,MX,TRUE
+07,Chiapas,Tuxtla Gutiérrez,MX,TRUE
+07,Chiapas,Tapachula,MX,TRUE
+07,Chiapas,San Cristóbal de las Casas,MX,TRUE
+07,Chiapas,Comitán,MX,TRUE
+07,Chiapas,Palenque,MX,TRUE
+07,Chiapas,Ocosingo,MX,TRUE
+08,Chihuahua,Chihuahua,MX,TRUE
+08,Chihuahua,Ciudad Juárez,MX,TRUE
+08,Chihuahua,Cuauhtémoc,MX,TRUE
+08,Chihuahua,Delicias,MX,TRUE
+08,Chihuahua,Parral,MX,TRUE
+08,Chihuahua,Nuevo Casas Grandes,MX,TRUE
+09,Ciudad de México,Iztapalapa,MX,TRUE
+09,Ciudad de México,Gustavo A. Madero,MX,TRUE
+09,Ciudad de México,Álvaro Obregón,MX,TRUE
+09,Ciudad de México,Tlalpan,MX,TRUE
+09,Ciudad de México,Coyoacán,MX,TRUE
+09,Ciudad de México,Cuauhtémoc,MX,TRUE
+09,Ciudad de México,Miguel Hidalgo,MX,TRUE
+09,Ciudad de México,Benito Juárez,MX,TRUE
+09,Ciudad de México,Xochimilco,MX,TRUE
+09,Ciudad de México,Iztacalco,MX,TRUE
+10,Durango,Durango,MX,TRUE
+10,Durango,Gómez Palacio,MX,TRUE
+10,Durango,Lerdo,MX,TRUE
+10,Durango,Santiago Papasquiaro,MX,TRUE
+10,Durango,Guadalupe Victoria,MX,TRUE
+11,Guanajuato,León,MX,TRUE
+11,Guanajuato,Irapuato,MX,TRUE
+11,Guanajuato,Celaya,MX,TRUE
+11,Guanajuato,Salamanca,MX,TRUE
+11,Guanajuato,Guanajuato,MX,TRUE
+11,Guanajuato,San Miguel de Allende,MX,TRUE
+11,Guanajuato,Silao,MX,TRUE
+11,Guanajuato,Pénjamo,MX,TRUE
+11,Guanajuato,Dolores Hidalgo,MX,TRUE
+12,Guerrero,Acapulco,MX,TRUE
+12,Guerrero,Chilpancingo,MX,TRUE
+12,Guerrero,Iguala,MX,TRUE
+12,Guerrero,Zihuatanejo,MX,TRUE
+12,Guerrero,Taxco,MX,TRUE
+12,Guerrero,Chilapa,MX,TRUE
+13,Hidalgo,Pachuca,MX,TRUE
+13,Hidalgo,Tulancingo,MX,TRUE
+13,Hidalgo,Tizayuca,MX,TRUE
+13,Hidalgo,Tepeji del Río,MX,TRUE
+13,Hidalgo,Tula de Allende,MX,TRUE
+14,Jalisco,Guadalajara,MX,TRUE
+14,Jalisco,Zapopan,MX,TRUE
+14,Jalisco,Tlaquepaque,MX,TRUE
+14,Jalisco,Tonalá,MX,TRUE
+14,Jalisco,Tlajomulco,MX,TRUE
+14,Jalisco,Puerto Vallarta,MX,TRUE
+14,Jalisco,Lagos de Moreno,MX,TRUE
+14,Jalisco,Tepatitlán,MX,TRUE
+15,México,Ecatepec,MX,TRUE
+15,México,Nezahualcóyotl,MX,TRUE
+15,México,Naucalpan,MX,TRUE
+15,México,Tlalnepantla,MX,TRUE
+15,México,Toluca,MX,TRUE
+15,México,Chimalhuacán,MX,TRUE
+15,México,Atizapán de Zaragoza,MX,TRUE
+15,México,Cuautitlán Izcalli,MX,TRUE
+15,México,Ixtapaluca,MX,TRUE
+15,México,Texcoco,MX,TRUE
+16,Michoacán,Morelia,MX,TRUE
+16,Michoacán,Uruapan,MX,TRUE
+16,Michoacán,Zamora,MX,TRUE
+16,Michoacán,Lázaro Cárdenas,MX,TRUE
+16,Michoacán,Apatzingán,MX,TRUE
+16,Michoacán,Pátzcuaro,MX,TRUE
+17,Morelos,Cuernavaca,MX,TRUE
+17,Morelos,Jiutepec,MX,TRUE
+17,Morelos,Cuautla,MX,TRUE
+17,Morelos,Temixco,MX,TRUE
+17,Morelos,Yautepec,MX,TRUE
+18,Nayarit,Tepic,MX,TRUE
+18,Nayarit,Bahía de Banderas,MX,TRUE
+18,Nayarit,Santiago Ixcuintla,MX,TRUE
+18,Nayarit,Compostela,MX,TRUE
+18,Nayarit,Tuxpan,MX,TRUE
+19,Nuevo León,Monterrey,MX,TRUE
+19,Nuevo León,Guadalupe,MX,TRUE
+19,Nuevo León,San Nicolás de los Garza,MX,TRUE
+19,Nuevo León,Apodaca,MX,TRUE
+19,Nuevo León,San Pedro Garza García,MX,TRUE
+19,Nuevo León,General Escobedo,MX,TRUE
+19,Nuevo León,Santa Catarina,MX,TRUE
+19,Nuevo León,García,MX,TRUE
+20,Oaxaca,Oaxaca de Juárez,MX,TRUE
+20,Oaxaca,Salina Cruz,MX,TRUE
+20,Oaxaca,Juchitán,MX,TRUE
+20,Oaxaca,Tuxtepec,MX,TRUE
+20,Oaxaca,Huajuapan de León,MX,TRUE
+20,Oaxaca,Puerto Escondido,MX,TRUE
+21,Puebla,Puebla,MX,TRUE
+21,Puebla,Tehuacán,MX,TRUE
+21,Puebla,San Martín Texmelucan,MX,TRUE
+21,Puebla,Atlixco,MX,TRUE
+21,Puebla,Cholula,MX,TRUE
+21,Puebla,Teziutlán,MX,TRUE
+22,Querétaro,Querétaro,MX,TRUE
+22,Querétaro,San Juan del Río,MX,TRUE
+22,Querétaro,Corregidora,MX,TRUE
+22,Querétaro,El Marqués,MX,TRUE
+22,Querétaro,Tequisquiapan,MX,TRUE
+23,Quintana Roo,Cancún,MX,TRUE
+23,Quintana Roo,Playa del Carmen,MX,TRUE
+23,Quintana Roo,Chetumal,MX,TRUE
+23,Quintana Roo,Cozumel,MX,TRUE
+23,Quintana Roo,Tulum,MX,TRUE
+23,Quintana Roo,Isla Mujeres,MX,TRUE
+24,San Luis Potosí,San Luis Potosí,MX,TRUE
+24,San Luis Potosí,Soledad de Graciano Sánchez,MX,TRUE
+24,San Luis Potosí,Ciudad Valles,MX,TRUE
+24,San Luis Potosí,Matehuala,MX,TRUE
+24,San Luis Potosí,Rioverde,MX,TRUE
+25,Sinaloa,Culiacán,MX,TRUE
+25,Sinaloa,Mazatlán,MX,TRUE
+25,Sinaloa,Los Mochis,MX,TRUE
+25,Sinaloa,Guasave,MX,TRUE
+25,Sinaloa,Guamúchil,MX,TRUE
+26,Sonora,Hermosillo,MX,TRUE
+26,Sonora,Ciudad Obregón,MX,TRUE
+26,Sonora,Nogales,MX,TRUE
+26,Sonora,San Luis Río Colorado,MX,TRUE
+26,Sonora,Navojoa,MX,TRUE
+26,Sonora,Guaymas,MX,TRUE
+27,Tabasco,Villahermosa,MX,TRUE
+27,Tabasco,Cárdenas,MX,TRUE
+27,Tabasco,Comalcalco,MX,TRUE
+27,Tabasco,Huimanguillo,MX,TRUE
+27,Tabasco,Macuspana,MX,TRUE
+28,Tamaulipas,Reynosa,MX,TRUE
+28,Tamaulipas,Matamoros,MX,TRUE
+28,Tamaulipas,Nuevo Laredo,MX,TRUE
+28,Tamaulipas,Tampico,MX,TRUE
+28,Tamaulipas,Ciudad Victoria,MX,TRUE
+28,Tamaulipas,Ciudad Madero,MX,TRUE
+29,Tlaxcala,Tlaxcala,MX,TRUE
+29,Tlaxcala,Apizaco,MX,TRUE
+29,Tlaxcala,Huamantla,MX,TRUE
+29,Tlaxcala,San Pablo del Monte,MX,TRUE
+29,Tlaxcala,Chiautempan,MX,TRUE
+30,Veracruz,Veracruz,MX,TRUE
+30,Veracruz,Xalapa,MX,TRUE
+30,Veracruz,Coatzacoalcos,MX,TRUE
+30,Veracruz,Poza Rica,MX,TRUE
+30,Veracruz,Córdoba,MX,TRUE
+30,Veracruz,Orizaba,MX,TRUE
+30,Veracruz,Minatitlán,MX,TRUE
+30,Veracruz,Tuxpan,MX,TRUE
+31,Yucatán,Mérida,MX,TRUE
+31,Yucatán,Kanasín,MX,TRUE
+31,Yucatán,Valladolid,MX,TRUE
+31,Yucatán,Tizimín,MX,TRUE
+31,Yucatán,Progreso,MX,TRUE
+31,Yucatán,Umán,MX,TRUE
+32,Zacatecas,Zacatecas,MX,TRUE
+32,Zacatecas,Fresnillo,MX,TRUE
+32,Zacatecas,Guadalupe,MX,TRUE
+32,Zacatecas,Río Grande,MX,TRUE
+32,Zacatecas,Sombrerete,MX,TRUE

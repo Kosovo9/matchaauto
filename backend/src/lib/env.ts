@@ -20,8 +20,9 @@ export const EnvSchema = z.object({
     LOGFLARE_ENDPOINT: z.string().optional(),
 
     // AI
-    AI_TOXICITY_THRESHOLD: z.string().transform(Number).default('0.8'),
+    AI_TOXICITY_THRESHOLD: z.coerce.number().default(0.8),
     HF_TOKEN: z.string().optional(),
+    GOOGLE_AI_API_KEY: z.string().optional(),
 
     // Security
     SENTINEL_MODE: z.enum(['active', 'passive']).default('active'),
@@ -38,7 +39,7 @@ export const validateEnv = (env: any): Env => {
         return EnvSchema.parse(env);
     } catch (error) {
         if (error instanceof z.ZodError) {
-            const missingKeys = error.errors.map(e => e.path.join('.')).join(', ');
+            const missingKeys = (error as any).errors.map((e: any) => e.path.join('.')).join(', ');
             throw new Error(`Invalid Environment Configuration. Missing or invalid keys: ${missingKeys}`);
         }
         throw error;

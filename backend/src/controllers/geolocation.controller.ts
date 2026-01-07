@@ -18,7 +18,7 @@ export class GeolocationController {
             const lng = parseFloat(c.req.query('lng') || '0');
             const radius = parseFloat(c.req.query('radius') || '5000');
 
-            const results = await this.geoService.searchNearby(lat, lng, radius);
+            const results = await this.geoService.simpleSearch(lat, lng, radius);
 
             return c.json({
                 success: true,

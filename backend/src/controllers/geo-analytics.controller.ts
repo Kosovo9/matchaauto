@@ -4,7 +4,7 @@ import { Pool } from 'pg';
 import { z } from 'zod';
 import { GeoAnalyticsService } from '../services/geo-analytics.service';
 import { MetricsCollector } from '../utils/metrics-collector';
-import { CacheStrategies, SpatialCache } from '../utils/spatial-cache';
+import { SpatialCacheEngine } from '../utils/spatial-cache';
 import { logger } from '../utils/logger';
 
 // ==================== ZOD SCHEMAS ====================
@@ -32,7 +32,12 @@ const HeatmapRequestSchema = z.object({
         radius: z.number().min(10).max(5000).default(100),
         normalization: z.enum(['linear', 'log', 'sqrt', 'quantile']).default('linear'),
         outputFormat: z.enum(['grid', 'geojson', 'png']).default('grid')
-    }).optional().default({})
+    }).default({
+        resolution: 100,
+        radius: 100,
+        normalization: 'linear',
+        outputFormat: 'grid'
+    })
 });
 
 const ClusteringRequestSchema = z.object({
@@ -46,10 +51,15 @@ const ClusteringRequestSchema = z.object({
         eps: z.number().min(0).default(0.01),
         minPoints: z.number().int().min(1).default(5),
         k: z.number().int().min(1).max(100).optional()
-    }).optional().default({}),
+    }).default({
+        eps: 0.01,
+        minPoints: 5
+    }),
     options: z.object({
         calculateMetrics: z.boolean().default(true)
-    }).optional().default({})
+    }).default({
+        calculateMetrics: true
+    })
 });
 
 const SpatialStatisticsSchema = z.object({
@@ -65,7 +75,9 @@ const SpatialStatisticsSchema = z.object({
     ])).min(1).default(['centroid']),
     options: z.object({
         confidenceLevel: z.number().min(0.5).max(0.99).default(0.95)
-    }).optional().default({})
+    }).default({
+        confidenceLevel: 0.95
+    })
 });
 
 // ==================== CONTROLLER ====================
@@ -74,14 +86,14 @@ export class GeoAnalyticsController {
     private redis: Redis;
     private pgPool: Pool;
     private metrics: MetricsCollector;
-    private cache: SpatialCache;
+    private cache: SpatialCacheEngine;
 
     constructor(redis: Redis, pgPool: Pool) {
         this.redis = redis;
         this.pgPool = pgPool;
         this.service = new GeoAnalyticsService(redis, pgPool);
         this.metrics = MetricsCollector.getInstance();
-        this.cache = new SpatialCache(redis, CacheStrategies.MULTI_LAYER);
+        this.cache = new SpatialCacheEngine(redis);
     }
 
     // ==================== PUBLIC METHODS ====================
@@ -192,7 +204,7 @@ export class GeoAnalyticsController {
     private handleError(error: any, c: Context) {
         logger.error('GeoAnalytics Controller Error', error);
         if (error instanceof z.ZodError) {
-            return c.json({ success: false, error: 'Validation Error', details: error.errors }, 400);
+            return c.json({ success: false, error: 'Validation Error', details: (error as z.ZodError).errors }, 400);
         } else {
             return c.json({ success: false, error: 'Internal Analytics Error' }, 500);
         }

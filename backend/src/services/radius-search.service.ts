@@ -41,7 +41,7 @@ export const SearchResultSchema = z.object({
     longitude: z.number(),
     distance: z.number(),
     bearing: z.number().min(0).max(360).optional(),
-    data: z.record(z.any()),
+    data: z.record(z.string(), z.any()),
     score: z.number().min(0).max(1),
     metadata: z.object({
         accuracy: z.number().optional(),
@@ -221,6 +221,53 @@ export class RadiusSearchService {
         } finally {
             client.release();
         }
+    }
+
+    async generateDensityHeatmap(bounds: { northeast: { lat: number; lng: number }; southwest: { lat: number; lng: number } }, resolution: number = 100): Promise<any> {
+        // Quick 10x heatmap generation using PostGIS aggregation
+        const client = await this.pgPool.connect();
+        try {
+            const res = await client.query(`
+                SELECT 
+                    width_bucket(ST_X(v.location::geometry), $1, $3, $5) as grid_x,
+                    width_bucket(ST_Y(v.location::geometry), $2, $4, $5) as grid_y,
+                    count(*) as count,
+                    avg(v.battery_level) as avg_battery,
+                    avg(veh.price) as avg_price
+                FROM vehicle_locations v
+                JOIN vehicles veh ON v.vehicle_id = veh.id
+                WHERE ST_Intersects(v.location, ST_MakeEnvelope($1, $2, $3, $4, 4326))
+                GROUP BY grid_x, grid_y
+            `, [
+                bounds.southwest.lng, bounds.southwest.lat,
+                bounds.northeast.lng, bounds.northeast.lat,
+                resolution
+            ]);
+
+            return {
+                grid: res.rows,
+                resolution,
+                totalPoints: res.rows.reduce((sum, row) => sum + parseInt(row.count), 0)
+            };
+        } finally {
+            client.release();
+        }
+    }
+
+    async clusterPoints(points: { lat: number; lng: number; weight?: number }[], algorithm: string = 'dbscan', params?: any): Promise<any> {
+        // Simple in-memory clustering for now. For 10x scale, move to PostGIS ST_ClusterDBSCAN
+        // Repurpose detectClusters logic but for generic points
+        const mappedPoints: SearchResult[] = points.map((p, i) => ({
+            id: i.toString(),
+            type: 'generic',
+            latitude: p.lat,
+            longitude: p.lng,
+            distance: 0,
+            data: {},
+            score: p.weight || 1
+        }));
+
+        return this.detectClusters(mappedPoints, params?.epsilon || 1000);
     }
 
     private async searchServices(
@@ -618,7 +665,7 @@ export class RadiusSearchService {
 
         // Process in parallel with concurrency limit
         const concurrencyLimit = 5;
-        const chunks = [];
+        const chunks: RadiusSearchRequest[][] = [];
 
         for (let i = 0; i < requests.length; i += concurrencyLimit) {
             chunks.push(requests.slice(i, i + concurrencyLimit));

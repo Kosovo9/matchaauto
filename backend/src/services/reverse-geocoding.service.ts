@@ -100,7 +100,8 @@ export class ReverseGeocodingService {
                             results: results.slice(0, options?.maxResults || 5),
                             status: data.status === 'OK' ? 'OK' : 'ZERO_RESULTS',
                             provider: 'google',
-                            cached: false
+                            cached: false,
+                            timestamp: new Date()
                         };
                     } catch (error: any) {
                         logger.error('Google reverse geocoding failed:', {
@@ -143,7 +144,8 @@ export class ReverseGeocodingService {
                             results: results.slice(0, options?.maxResults || 5),
                             status: results.length > 0 ? 'OK' : 'ZERO_RESULTS',
                             provider: 'mapbox',
-                            cached: false
+                            cached: false,
+                            timestamp: new Date()
                         };
                     } catch (error: any) {
                         logger.error('Mapbox reverse geocoding failed:', {
@@ -193,7 +195,8 @@ export class ReverseGeocodingService {
                         results: [result],
                         status: data.error ? 'ZERO_RESULTS' : 'OK',
                         provider: 'nominatim',
-                        cached: false
+                        cached: false,
+                        timestamp: new Date()
                     };
                 } catch (error: any) {
                     logger.error('Nominatim reverse geocoding failed:', {

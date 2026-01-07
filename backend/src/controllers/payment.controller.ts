@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Context } from 'hono';
 import { z } from 'zod';
 import { logger } from '../utils/logger';
 import { metrics } from '../utils/metrics';
@@ -19,41 +19,47 @@ export class PaymentController {
     }
 
     // POST /api/v1/payments/intent
-    async createPaymentIntent(req: Request, res: Response) {
+    async createPaymentIntent(c: Context) {
         const start = Date.now();
         try {
-            const validated = PaymentIntentSchema.parse(req.body);
+            const body = await c.req.json();
+            const validated = PaymentIntentSchema.parse(body);
 
             const result = await this.paymentService.createPaymentIntent(validated);
 
             metrics.timing('payment.intent_creation_latency', Date.now() - start);
-            res.json({ success: true, data: result });
+            return c.json({ success: true, data: result });
         } catch (error) {
-            this.handleError(error, res);
+            return this.handleError(error, c);
         }
     }
 
     // POST /api/v1/payments/webhook/:provider
-    async handleWebhook(req: Request, res: Response) {
+    async handleWebhook(c: Context) {
         try {
-            const { provider } = req.params;
-            const signature = req.headers['stripe-signature'] || req.headers['x-paypal-signature'] || '';
+            const provider = c.req.param('provider');
+            const signature = c.req.header('stripe-signature') || c.req.header('x-paypal-signature') || '';
 
-            await this.paymentService.handleWebhook(provider, req.body, signature as string);
+            // Note: Hono's req.json() works async. For Webhooks, usually raw body is needed for signature verification
+            // Assuming service handles parsing or we pass raw body if needed.
+            // For now, passing parsed JSON.
+            const body = await c.req.json();
 
-            res.json({ received: true });
+            await this.paymentService.handleWebhook(provider, body, signature);
+
+            return c.json({ received: true });
         } catch (error) {
-            logger.error(`Webhook Handling Error (${req.params.provider})`, error);
-            res.status(400).json({ error: 'Webhook processing failed' });
+            logger.error(`Webhook Handling Error (${c.req.param('provider')})`, error);
+            return c.json({ error: 'Webhook processing failed' }, 400);
         }
     }
 
-    private handleError(error: any, res: Response) {
+    private handleError(error: any, c: Context) {
         if (error instanceof z.ZodError) {
-            res.status(400).json({ success: false, error: 'Validation Error', details: error.errors });
+            return c.json({ success: false, error: 'Validation Error', details: (error as z.ZodError).errors }, 400);
         } else {
             logger.error('Payment Controller Error', error);
-            res.status(500).json({ success: false, error: 'Payment Processing Failed' });
+            return c.json({ success: false, error: 'Payment Processing Failed' }, 500);
         }
     }
 }

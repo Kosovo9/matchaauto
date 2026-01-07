@@ -1,16 +1,14 @@
-import { Request, Response, NextFunction } from 'express';
+import { Context } from 'hono';
 import { z } from 'zod';
 import { logger } from '../utils/logger';
 import { metrics } from '../utils/metrics';
-import { GeocodingService, BatchGeocodingResult } from '../services/geocoding.service';
+import { GeocodingService } from '../services/geocoding.service';
 import Redis from 'ioredis';
 import { Pool } from 'pg';
-import { AxiosInstance } from 'axios';
 
 /**
  * @controller GeocodingController
  * @description REST Controller for geocoding addresses using 10x optimizations.
- * @optimizations Rate limits, Zod validation, Prometheus metrics, standardized error handling.
  */
 
 // ==================== ZOD SCHEMAS ====================
@@ -20,11 +18,6 @@ const GeocodeRequestSchema = z.object({
     language: z.string().length(2).default('en'),
     provider: z.enum(['google', 'osm', 'mapbox', 'auto']).default('auto'),
     region: z.string().max(100).optional(),
-    bounds: z.object({
-        northeast: z.object({ lat: z.number(), lng: z.number() }),
-        southwest: z.object({ lat: z.number(), lng: z.number() })
-    }).optional(),
-    components: z.record(z.string()).optional()
 }).strict();
 
 const BatchGeocodeRequestSchema = z.object({
@@ -36,90 +29,84 @@ const BatchGeocodeRequestSchema = z.object({
 }).strict();
 
 const ReverseGeocodeRequestSchema = z.object({
-    lat: z.number().min(-90).max(90),
-    lng: z.number().min(-180).max(180),
+    lat: z.coerce.number().min(-90).max(90),
+    lng: z.coerce.number().min(-180).max(180),
     language: z.string().length(2).default('en'),
     provider: z.enum(['google', 'osm', 'mapbox', 'auto']).default('auto'),
-    radius: z.number().min(0).max(50000).default(1000)
+    radius: z.coerce.number().min(0).max(50000).default(1000)
 }).strict();
 
 // ==================== CONTROLLER ====================
 export class GeocodingController {
     private readonly geocodingService: GeocodingService;
 
-    constructor(redisClient: Redis, pgPool: Pool, httpClient?: AxiosInstance) {
-        this.geocodingService = new GeocodingService(redisClient, pgPool, httpClient);
+    constructor(redisClient: Redis, pgPool: Pool) {
+        this.geocodingService = new GeocodingService(redisClient, pgPool);
     }
 
-    // POST /api/v1/geocode
-    async geocodeAddress(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async geocodeAddress(c: Context) {
         const start = Date.now();
         try {
-            const validated = GeocodeRequestSchema.parse(req.body);
+            const body = await c.req.json();
+            const validated = GeocodeRequestSchema.parse(body);
 
-            const result = await this.geocodingService.geocode(
-                validated.address,
-                validated.countryCode,
-                validated.language
-            );
+            const result = await this.geocodingService.geocode(validated.address);
 
             metrics.timing('geocoding.latency', Date.now() - start);
-            res.json({ success: true, data: result });
+            return c.json({ success: true, data: result });
         } catch (error) {
-            this.handleError(error, res);
+            return this.handleError(error, c);
         }
     }
 
-    // POST /api/v1/geocode/batch
-    async batchGeocodeAddresses(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async batchGeocodeAddresses(c: Context) {
         try {
-            const validated = BatchGeocodeRequestSchema.parse(req.body);
+            const body = await c.req.json();
+            const validated = BatchGeocodeRequestSchema.parse(body);
 
-            const results = await this.geocodingService.batchGeocode(
-                validated.addresses,
-                validated.countryCode,
-                validated.language
+            // Using simple map since service doesn't have batchGeocode yet
+            const results = await Promise.all(
+                validated.addresses.map(addr => this.geocodingService.geocode(addr))
             );
 
-            res.json({
+            return c.json({
                 success: true,
                 data: results,
-                meta: { total: validated.addresses.length, successful: results.filter(r => r.lat).length }
+                meta: { total: validated.addresses.length }
             });
         } catch (error) {
-            this.handleError(error, res);
+            return this.handleError(error, c);
         }
     }
 
-    // GET /api/v1/geocode/reverse
-    async reverseGeocode(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async reverseGeocode(c: Context) {
         try {
-            const validated = ReverseGeocodeRequestSchema.parse({
-                lat: parseFloat(req.query.lat as string),
-                lng: parseFloat(req.query.lng as string),
-                language: req.query.lang || 'en',
-                provider: req.query.provider || 'auto',
-                radius: req.query.radius ? parseInt(req.query.radius as string) : 1000
-            });
+            const query = {
+                lat: c.req.query('lat'),
+                lng: c.req.query('lng'),
+                lang: c.req.query('lang'),
+                provider: c.req.query('provider'),
+                radius: c.req.query('radius')
+            };
+            const validated = ReverseGeocodeRequestSchema.parse(query);
 
             const result = await this.geocodingService.reverseGeocode(
                 validated.lat,
-                validated.lng,
-                validated.language
+                validated.lng
             );
 
-            res.json({ success: true, data: result });
+            return c.json({ success: true, data: result });
         } catch (error) {
-            this.handleError(error, res);
+            return this.handleError(error, c);
         }
     }
 
-    private handleError(error: any, res: Response) {
+    private handleError(error: any, c: Context) {
         if (error instanceof z.ZodError) {
-            res.status(400).json({ success: false, error: 'Validation Error', details: error.errors });
+            return c.json({ success: false, error: 'Validation Error', details: (error as z.ZodError).errors }, 400);
         } else {
             logger.error('Geocoding Controller Error', error);
-            res.status(500).json({ success: false, error: 'Internal Server Error' });
+            return c.json({ success: false, error: 'Internal Server Error' }, 500);
         }
     }
 }

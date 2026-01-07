@@ -1,0 +1,346 @@
+src/controllers/address-book.controller.ts(23,61): error TS2339: Property 'validateAndNormalize' does not exist on type 'AddressValidationService'.
+src/controllers/address-validation.controller.ts(5,36): error TS2305: Module '"../services/address-validation.service"' has no exported member 'ValidationOptions'.
+src/controllers/address-validation.controller.ts(18,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { autocorrect: boolean; standardize: boolean; minConfidence: number; }): ZodDefault<ZodOptional<ZodObject<{ autocorrect: ZodDefault<ZodBoolean>; standardize: ZodDefault<ZodBoolean>; minConfidence: ZodDefault<...>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ autocorrect: boolean; standardize: boolean; minConfidence: number; }'.
+      Type '{}' is missing the following properties from type '{ autocorrect: boolean; standardize: boolean; minConfidence: number; }': autocorrect, standardize, minConfidence
+  Overload 2 of 2, '(def: () => { autocorrect: boolean; standardize: boolean; minConfidence: number; }): ZodDefault<ZodOptional<ZodObject<{ autocorrect: ZodDefault<ZodBoolean>; standardize: ZodDefault<ZodBoolean>; minConfidence: ZodDefault<...>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { autocorrect: boolean; standardize: boolean; minConfidence: number; }'.
+      Type '{}' provides no match for the signature '(): { autocorrect: boolean; standardize: boolean; minConfidence: number; }'.
+src/controllers/address-validation.controller.ts(26,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { parallel: boolean; }): ZodDefault<ZodOptional<ZodObject<{ parallel: ZodDefault<ZodBoolean>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ parallel: boolean; }'.
+      Property 'parallel' is missing in type '{}' but required in type '{ parallel: boolean; }'.
+  Overload 2 of 2, '(def: () => { parallel: boolean; }): ZodDefault<ZodOptional<ZodObject<{ parallel: ZodDefault<ZodBoolean>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { parallel: boolean; }'.
+      Type '{}' provides no match for the signature '(): { parallel: boolean; }'.
+src/controllers/address-validation.controller.ts(49,24): error TS2554: Expected 2 arguments, but got 1.
+src/controllers/address-validation.controller.ts(69,17): error TS2554: Expected 1 arguments, but got 4.
+src/controllers/address-validation.controller.ts(75,24): error TS2551: Property 'isValid' does not exist on type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 7 more ...; provider?: string | undefined; }'. Did you mean 'valid'?
+src/controllers/address-validation.controller.ts(94,48): error TS2339: Property 'validateBatch' does not exist on type 'AddressValidationService'.
+src/controllers/address-validation.controller.ts(116,53): error TS2339: Property 'standardizeAddress' does not exist on type 'AddressValidationService'.
+src/controllers/address-validation.controller.ts(137,52): error TS2339: Property 'autocompleteAddress' does not exist on type 'AddressValidationService'.
+src/controllers/address-validation.controller.ts(158,47): error TS2339: Property 'validatePostalCode' does not exist on type 'AddressValidationService'.
+src/controllers/address-validation.controller.ts(172,48): error TS2339: Property 'getCountryFormats' does not exist on type 'AddressValidationService'.
+src/controllers/address-validation.controller.ts(183,43): error TS2339: Property 'healthCheck' does not exist on type 'AddressValidationService'.
+src/controllers/address-validation.controller.ts(190,87): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/competitor-killer.controller.ts(2,32): error TS2307: Cannot find module '../shared/utils/ai-orchestrator' or its corresponding type declarations.
+src/controllers/delivery-zones.controller.ts(2,10): error TS2724: '"../services/geo-fencing.service"' has no exported member named 'GeofencingService'. Did you mean 'GeoFencingService'?
+src/controllers/distance-matrix.controller.ts(1,49): error TS2307: Cannot find module 'express' or its corresponding type declarations.
+src/controllers/distance-matrix.controller.ts(31,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { metric: "haversine" | "vincenty" | "euclidean" | "manhattan"; algorithm: "parallel" | "vectorized" | "batch" | "approximate"; optimize: boolean; trafficModel?: "pessimistic" | "optimistic" | "real-time" | undefined; }): ZodDefault<...>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ metric: "haversine" | "vincenty" | "euclidean" | "manhattan"; algorithm: "parallel" | "vectorized" | "batch" | "approximate"; optimize: boolean; trafficModel?: "pessimistic" | "optimistic" | "real-time" | undefined; }'.
+      Type '{}' is missing the following properties from type '{ metric: "haversine" | "vincenty" | "euclidean" | "manhattan"; algorithm: "parallel" | "vectorized" | "batch" | "approximate"; optimize: boolean; trafficModel?: "pessimistic" | "optimistic" | "real-time" | undefined; }': metric, algorithm, optimize
+  Overload 2 of 2, '(def: () => { metric: "haversine" | "vincenty" | "euclidean" | "manhattan"; algorithm: "parallel" | "vectorized" | "batch" | "approximate"; optimize: boolean; trafficModel?: "pessimistic" | "optimistic" | "real-time" | undefined; }): ZodDefault<...>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { metric: "haversine" | "vincenty" | "euclidean" | "manhattan"; algorithm: "parallel" | "vectorized" | "batch" | "approximate"; optimize: boolean; trafficModel?: "pessimistic" | "optimistic" | "real-time" | undefined; }'.
+      Type '{}' provides no match for the signature '(): { metric: "haversine" | "vincenty" | "euclidean" | "manhattan"; algorithm: "parallel" | "vectorized" | "batch" | "approximate"; optimize: boolean; trafficModel?: "pessimistic" | "optimistic" | "real-time" | undefined; }'.
+src/controllers/distance-matrix.controller.ts(49,50): error TS2345: Argument of type 'Pool' is not assignable to parameter of type 'Redis'.
+  Type 'Pool' is missing the following properties from type 'Redis': status, stream, isCluster, condition, and 358 more.
+src/controllers/distance-matrix.controller.ts(68,47): error TS2339: Property 'calculateDistanceMatrix' does not exist on type 'DistanceMatrixService'.
+src/controllers/distance-matrix.controller.ts(88,60): error TS2339: Property 'calculateDistanceMatrix' does not exist on type 'DistanceMatrixService'.
+src/controllers/distance-matrix.controller.ts(114,47): error TS2339: Property 'calculateDistanceMatrix' does not exist on type 'DistanceMatrixService'.
+src/controllers/distance-matrix.controller.ts(130,94): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/geo-analytics.controller.ts(35,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { resolution: number; radius: number; normalization: "linear" | "log" | "sqrt" | "quantile"; outputFormat: "grid" | "geojson" | "png"; }): ZodDefault<ZodOptional<ZodObject<{ resolution: ZodDefault<ZodNumber>; radius: ZodDefault<...>; normalization: ZodDefault<...>; outputFormat: ZodDefault<...>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ resolution: number; radius: number; normalization: "linear" | "log" | "sqrt" | "quantile"; outputFormat: "grid" | "geojson" | "png"; }'.
+      Type '{}' is missing the following properties from type '{ resolution: number; radius: number; normalization: "linear" | "log" | "sqrt" | "quantile"; outputFormat: "grid" | "geojson" | "png"; }': resolution, radius, normalization, outputFormat
+  Overload 2 of 2, '(def: () => { resolution: number; radius: number; normalization: "linear" | "log" | "sqrt" | "quantile"; outputFormat: "grid" | "geojson" | "png"; }): ZodDefault<ZodOptional<ZodObject<{ resolution: ZodDefault<ZodNumber>; radius: ZodDefault<...>; normalization: ZodDefault<...>; outputFormat: ZodDefault<...>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { resolution: number; radius: number; normalization: "linear" | "log" | "sqrt" | "quantile"; outputFormat: "grid" | "geojson" | "png"; }'.
+      Type '{}' provides no match for the signature '(): { resolution: number; radius: number; normalization: "linear" | "log" | "sqrt" | "quantile"; outputFormat: "grid" | "geojson" | "png"; }'.
+src/controllers/geo-analytics.controller.ts(49,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { eps: number; minPoints: number; k?: number | undefined; }): ZodDefault<ZodOptional<ZodObject<{ eps: ZodDefault<ZodNumber>; minPoints: ZodDefault<ZodNumber>; k: ZodOptional<...>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ eps: number; minPoints: number; k?: number | undefined; }'.
+      Type '{}' is missing the following properties from type '{ eps: number; minPoints: number; k?: number | undefined; }': eps, minPoints
+  Overload 2 of 2, '(def: () => { eps: number; minPoints: number; k?: number | undefined; }): ZodDefault<ZodOptional<ZodObject<{ eps: ZodDefault<ZodNumber>; minPoints: ZodDefault<ZodNumber>; k: ZodOptional<...>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { eps: number; minPoints: number; k?: number | undefined; }'.
+      Type '{}' provides no match for the signature '(): { eps: number; minPoints: number; k?: number | undefined; }'.
+src/controllers/geo-analytics.controller.ts(52,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { calculateMetrics: boolean; }): ZodDefault<ZodOptional<ZodObject<{ calculateMetrics: ZodDefault<ZodBoolean>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ calculateMetrics: boolean; }'.
+      Property 'calculateMetrics' is missing in type '{}' but required in type '{ calculateMetrics: boolean; }'.
+  Overload 2 of 2, '(def: () => { calculateMetrics: boolean; }): ZodDefault<ZodOptional<ZodObject<{ calculateMetrics: ZodDefault<ZodBoolean>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { calculateMetrics: boolean; }'.
+      Type '{}' provides no match for the signature '(): { calculateMetrics: boolean; }'.
+src/controllers/geo-analytics.controller.ts(68,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { confidenceLevel: number; }): ZodDefault<ZodOptional<ZodObject<{ confidenceLevel: ZodDefault<ZodNumber>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ confidenceLevel: number; }'.
+      Property 'confidenceLevel' is missing in type '{}' but required in type '{ confidenceLevel: number; }'.
+  Overload 2 of 2, '(def: () => { confidenceLevel: number; }): ZodDefault<ZodOptional<ZodObject<{ confidenceLevel: ZodDefault<ZodNumber>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { confidenceLevel: number; }'.
+      Type '{}' provides no match for the signature '(): { confidenceLevel: number; }'.
+src/controllers/geo-analytics.controller.ts(77,20): error TS2304: Cannot find name 'SpatialCache'.
+src/controllers/geo-analytics.controller.ts(195,87): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/geo-fencing.controller.ts(43,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { updateInterval: number; }): ZodDefault<ZodOptional<ZodObject<{ updateInterval: ZodDefault<ZodNumber>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ updateInterval: number; }'.
+      Property 'updateInterval' is missing in type '{}' but required in type '{ updateInterval: number; }'.
+  Overload 2 of 2, '(def: () => { updateInterval: number; }): ZodDefault<ZodOptional<ZodObject<{ updateInterval: ZodDefault<ZodNumber>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { updateInterval: number; }'.
+      Type '{}' provides no match for the signature '(): { updateInterval: number; }'.
+src/controllers/geo-fencing.controller.ts(80,17): error TS2353: Object literal may only specify known properties, and 'createdBy' does not exist in type 'Omit<{ id: string; name: string; geometry: { type: "Polygon"; coordinates: [number, number][][]; }; center: { latitude: number; longitude: number; }; radius: number; isActive: boolean; createdAt: Date; ... 4 more ...; expiresAt?: Date | undefined; }, "id" | ... 1 more ... | "updatedAt">'.
+src/controllers/geo-fencing.controller.ts(84,37): error TS2554: Expected 4-5 arguments, but got 2.
+src/controllers/geo-fencing.controller.ts(103,68): error TS2345: Argument of type '{ id: string; name?: string | undefined; description?: string | undefined; type?: "route" | "polygon" | "circle" | "multi_polygon" | "complex" | undefined; geometry?: { coordinates: any; properties?: Record<...> | undefined; } | undefined; rules?: { ...; }[] | undefined; priority?: number | undefined; }' is not assignable to parameter of type 'Partial<{ id: string; name: string; geometry: { type: "Polygon"; coordinates: [number, number][][]; }; center: { latitude: number; longitude: number; }; radius: number; isActive: boolean; createdAt: Date; ... 4 more ...; expiresAt?: Date | undefined; }>'.
+  Types of property 'geometry' are incompatible.
+    Type '{ coordinates: any; properties?: Record<string, any> | undefined; } | undefined' is not assignable to type '{ type: "Polygon"; coordinates: [number, number][][]; } | undefined'.
+      Property 'type' is missing in type '{ coordinates: any; properties?: Record<string, any> | undefined; }' but required in type '{ type: "Polygon"; coordinates: [number, number][][]; }'.
+src/controllers/geo-fencing.controller.ts(105,37): error TS2554: Expected 4-5 arguments, but got 2.
+src/controllers/geo-fencing.controller.ts(137,49): error TS2551: Property 'getGeofenceById' does not exist on type 'GeoFencingService'. Did you mean 'getGeofence'?
+src/controllers/geo-fencing.controller.ts(152,50): error TS2339: Property 'findAllGeofences' does not exist on type 'GeoFencingService'.
+src/controllers/geo-fencing.controller.ts(167,47): error TS2339: Property 'assignEntities' does not exist on type 'GeoFencingService'.
+src/controllers/geo-fencing.controller.ts(193,32): error TS2339: Property 'removeAssignment' does not exist on type 'GeoFencingService'.
+src/controllers/geo-fencing.controller.ts(209,56): error TS2339: Property 'findContainingGeofences' does not exist on type 'GeoFencingService'.
+src/controllers/geo-fencing.controller.ts(282,87): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/geo-search.controller.ts(44,17): error TS2739: Type '{}' is missing the following properties from type '{ sortBy: "speed" | "distance" | "availability" | "price_low" | "price_high" | "rating" | "relevance" | "battery"; sortOrder: "asc" | "desc"; limit: number; offset: number; minPrice?: number | undefined; ... 5 more ...; availability?: { ...; } | undefined; }': sortBy, sortOrder, limit, offset
+src/controllers/geocoding.controller.ts(1,49): error TS2307: Cannot find module 'express' or its corresponding type declarations.
+src/controllers/geocoding.controller.ts(5,28): error TS2305: Module '"../services/geocoding.service"' has no exported member 'BatchGeocodingResult'.
+src/controllers/geocoding.controller.ts(27,19): error TS2554: Expected 2-3 arguments, but got 1.
+src/controllers/geocoding.controller.ts(51,75): error TS2554: Expected 2 arguments, but got 3.
+src/controllers/geocoding.controller.ts(62,17): error TS2554: Expected 1 arguments, but got 3.
+src/controllers/geocoding.controller.ts(78,57): error TS2339: Property 'batchGeocode' does not exist on type 'GeocodingService'.
+src/controllers/geocoding.controller.ts(108,17): error TS2554: Expected 2 arguments, but got 3.
+src/controllers/geocoding.controller.ts(119,94): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/geofence-events.controller.ts(2,10): error TS2724: '"../services/geo-fencing.service"' has no exported member named 'GeofencingService'. Did you mean 'GeoFencingService'?
+src/controllers/geolocation.controller.ts(21,69): error TS2554: Expected 1 arguments, but got 3.
+src/controllers/growth.controller.ts(2,32): error TS2307: Cannot find module '../shared/utils/ai-orchestrator' or its corresponding type declarations.
+src/controllers/location-sync.controller.ts(22,44): error TS2339: Property 'updateLocation' does not exist on type 'VehicleTrackingService'.
+src/controllers/location-sync.controller.ts(37,53): error TS2339: Property 'getLiveLocation' does not exist on type 'VehicleTrackingService'.
+src/controllers/marketplace.controller.ts(1,49): error TS2307: Cannot find module 'express' or its corresponding type declarations.
+src/controllers/marketplace.controller.ts(83,69): error TS2345: Argument of type '{ userId: string; make: string; model: string; year: number; price: number; currency: "USD" | "MXN" | "EUR" | "GBP"; mileage: number; location: { lat: number; lng: number; address?: string | undefined; }; vin?: string | undefined; images?: string[] | undefined; features?: string[] | undefined; description?: string |...' is not assignable to parameter of type 'Omit<{ ownerId: string; make: string; model: string; year: number; mileage: number; mileageUnit: "km" | "mi"; features: string[]; images: string[]; currency: string; status: "draft" | "published" | "sold" | "reserved" | "maintenance"; ... 12 more ...; updatedAt?: Date | undefined; }, "id">'.
+  Type '{ userId: string; make: string; model: string; year: number; price: number; currency: "USD" | "MXN" | "EUR" | "GBP"; mileage: number; location: { lat: number; lng: number; address?: string | undefined; }; vin?: string | undefined; images?: string[] | undefined; features?: string[] | undefined; description?: string |...' is missing the following properties from type 'Omit<{ ownerId: string; make: string; model: string; year: number; mileage: number; mileageUnit: "km" | "mi"; features: string[]; images: string[]; currency: string; status: "draft" | "published" | "sold" | "reserved" | "maintenance"; ... 12 more ...; updatedAt?: Date | undefined; }, "id">': status, ownerId, mileageUnit
+src/controllers/marketplace.controller.ts(87,33): error TS2339: Property 'findBuyersForNewVehicle' does not exist on type 'MatchingEngineService'.
+src/controllers/marketplace.controller.ts(94,98): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/notification.controller.ts(1,49): error TS2307: Cannot find module 'express' or its corresponding type declarations.
+src/controllers/notification.controller.ts(8,10): error TS2305: Module '"ws"' has no exported member 'WebSocketServer'.
+src/controllers/notification.controller.ts(45,94): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/payment.controller.ts(1,49): error TS2307: Cannot find module 'express' or its corresponding type declarations.
+src/controllers/payment.controller.ts(53,94): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/pro-features.controller.ts(11,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(key: never): unknown', gave the following error.
+    Argument of type '"proService"' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(key: keyof ContextVariableMap): any', gave the following error.
+    Argument of type '"proService"' is not assignable to parameter of type 'keyof ContextVariableMap'.
+src/controllers/pro-features.controller.ts(33,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(key: never): unknown', gave the following error.
+    Argument of type '"proService"' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(key: keyof ContextVariableMap): any', gave the following error.
+    Argument of type '"proService"' is not assignable to parameter of type 'keyof ContextVariableMap'.
+src/controllers/pro-features.controller.ts(41,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(key: never): unknown', gave the following error.
+    Argument of type '"proService"' is not assignable to parameter of type 'never'.
+  Overload 2 of 2, '(key: keyof ContextVariableMap): any', gave the following error.
+    Argument of type '"proService"' is not assignable to parameter of type 'keyof ContextVariableMap'.
+src/controllers/radius-search.controller.ts(1,49): error TS2307: Cannot find module 'express' or its corresponding type declarations.
+src/controllers/radius-search.controller.ts(67,59): error TS2339: Property 'searchWithinRadius' does not exist on type 'RadiusSearchService'.
+src/controllers/radius-search.controller.ts(87,59): error TS2339: Property 'generateDensityHeatmap' does not exist on type 'RadiusSearchService'.
+src/controllers/radius-search.controller.ts(103,59): error TS2339: Property 'clusterPoints' does not exist on type 'RadiusSearchService'.
+src/controllers/radius-search.controller.ts(132,94): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/reverse-geocoding.controller.ts(1,49): error TS2307: Cannot find module 'express' or its corresponding type declarations.
+src/controllers/reverse-geocoding.controller.ts(5,35): error TS2305: Module '"../services/reverse-geocoding.service"' has no exported member 'BatchReverseGeocodingResult'.
+src/controllers/reverse-geocoding.controller.ts(42,89): error TS2554: Expected 2 arguments, but got 3.
+src/controllers/reverse-geocoding.controller.ts(60,17): error TS2554: Expected 1 arguments, but got 4.
+src/controllers/reverse-geocoding.controller.ts(89,17): error TS2554: Expected 1-2 arguments, but got 4.
+src/controllers/reverse-geocoding.controller.ts(96,96): error TS2339: Property 'formattedAddress' does not exist on type '{ results: { formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }[]; ... 4 more ...; errorMessage?: string | undefined; }'.
+src/controllers/reverse-geocoding.controller.ts(119,94): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/route-optimization.controller.ts(1,49): error TS2307: Cannot find module 'express' or its corresponding type declarations.
+src/controllers/route-optimization.controller.ts(39,24): error TS2554: Expected 2 arguments, but got 1.
+src/controllers/route-optimization.controller.ts(59,47): error TS2339: Property 'solveVRP' does not exist on type 'RouteOptimizationService'.
+src/controllers/route-optimization.controller.ts(92,94): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/spatial-analytics.controller.ts(17,55): error TS2339: Property 'getDensityStats' does not exist on type 'GeoAnalyticsService'.
+src/controllers/spatial-analytics.controller.ts(28,50): error TS2339: Property 'findCoverageGaps' does not exist on type 'GeoAnalyticsService'.
+src/controllers/spatial-analytics.controller.ts(38,54): error TS2339: Property 'analyzeMovementPatterns' does not exist on type 'GeoAnalyticsService'.
+src/controllers/timezone.controller.ts(51,47): error TS2339: Property 'getTimezoneByCoordinates' does not exist on type 'TimezoneService'.
+src/controllers/timezone.controller.ts(78,87): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/trading.controller.ts(51,16): error TS2528: A module cannot have multiple default exports.
+src/controllers/trading.controller.ts(66,16): error TS2528: A module cannot have multiple default exports.
+src/controllers/vehicle-tracking.controller.ts(5,24): error TS2307: Cannot find module 'socket.io' or its corresponding type declarations.
+src/controllers/vehicle-tracking.controller.ts(35,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { compression: "none" | "gzip" | "delta"; }): ZodDefault<ZodOptional<ZodObject<{ compression: ZodDefault<ZodEnum<{ none: "none"; gzip: "gzip"; delta: "delta"; }>>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ compression: "none" | "gzip" | "delta"; }'.
+      Property 'compression' is missing in type '{}' but required in type '{ compression: "none" | "gzip" | "delta"; }'.
+  Overload 2 of 2, '(def: () => { compression: "none" | "gzip" | "delta"; }): ZodDefault<ZodOptional<ZodObject<{ compression: ZodDefault<ZodEnum<{ none: "none"; gzip: "gzip"; delta: "delta"; }>>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { compression: "none" | "gzip" | "delta"; }'.
+      Type '{}' provides no match for the signature '(): { compression: "none" | "gzip" | "delta"; }'.
+src/controllers/vehicle-tracking.controller.ts(61,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { triggerOn: "speed" | "exit" | "enter" | "dwell" | "both"; severity: "info" | "warning" | "critical"; }): ZodDefault<ZodOptional<ZodObject<{ triggerOn: ZodDefault<ZodEnum<{ speed: "speed"; exit: "exit"; enter: "enter"; dwell: "dwell"; both: "both"; }>>; severity: ZodDefault<...>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ triggerOn: "speed" | "exit" | "enter" | "dwell" | "both"; severity: "info" | "warning" | "critical"; }'.
+      Type '{}' is missing the following properties from type '{ triggerOn: "speed" | "exit" | "enter" | "dwell" | "both"; severity: "info" | "warning" | "critical"; }': triggerOn, severity
+  Overload 2 of 2, '(def: () => { triggerOn: "speed" | "exit" | "enter" | "dwell" | "both"; severity: "info" | "warning" | "critical"; }): ZodDefault<ZodOptional<ZodObject<{ triggerOn: ZodDefault<ZodEnum<{ speed: "speed"; exit: "exit"; enter: "enter"; dwell: "dwell"; both: "both"; }>>; severity: ZodDefault<...>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { triggerOn: "speed" | "exit" | "enter" | "dwell" | "both"; severity: "info" | "warning" | "critical"; }'.
+      Type '{}' provides no match for the signature '(): { triggerOn: "speed" | "exit" | "enter" | "dwell" | "both"; severity: "info" | "warning" | "critical"; }'.
+src/controllers/vehicle-tracking.controller.ts(70,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { updateInterval: number; }): ZodDefault<ZodOptional<ZodObject<{ updateInterval: ZodDefault<ZodNumber>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ updateInterval: number; }'.
+      Property 'updateInterval' is missing in type '{}' but required in type '{ updateInterval: number; }'.
+  Overload 2 of 2, '(def: () => { updateInterval: number; }): ZodDefault<ZodOptional<ZodObject<{ updateInterval: ZodDefault<ZodNumber>; }, $strip>>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { updateInterval: number; }'.
+      Type '{}' provides no match for the signature '(): { updateInterval: number; }'.
+src/controllers/vehicle-tracking.controller.ts(83,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/controllers/vehicle-tracking.controller.ts(96,20): error TS2304: Cannot find name 'SpatialCache'.
+src/controllers/vehicle-tracking.controller.ts(101,24): error TS2554: Expected 2-5 arguments, but got 1.
+src/controllers/vehicle-tracking.controller.ts(150,26): error TS2554: Expected 2-3 arguments, but got 1.
+src/controllers/vehicle-tracking.controller.ts(169,32): error TS2339: Property 'bulkInsertPositions' does not exist on type 'VehicleTrackingService'.
+src/controllers/vehicle-tracking.controller.ts(189,44): error TS2339: Property 'getCurrentPosition' does not exist on type 'VehicleTrackingService'.
+src/controllers/vehicle-tracking.controller.ts(206,45): error TS2339: Property 'startTrip' does not exist on type 'VehicleTrackingService'.
+src/controllers/vehicle-tracking.controller.ts(227,47): error TS2339: Property 'endTrip' does not exist on type 'VehicleTrackingService'.
+src/controllers/vehicle-tracking.controller.ts(261,50): error TS2339: Property 'getFleetAnalytics' does not exist on type 'VehicleTrackingService'.
+src/controllers/vehicle-tracking.controller.ts(305,48): error TS2339: Property 'getDriverHistory' does not exist on type 'VehicleTrackingService'.
+src/controllers/vehicle-tracking.controller.ts(360,45): error TS2339: Property 'checkHealth' does not exist on type 'VehicleTrackingService'.
+src/controllers/vehicle-tracking.controller.ts(371,87): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/vehicle.controller.ts(25,51): error TS2551: Property 'getVehicleById' does not exist on type 'VehicleService'. Did you mean 'getVehicle'?
+src/controllers/vehicle.controller.ts(35,52): error TS2339: Property 'listVehicles' does not exist on type 'VehicleService'.
+src/database/postgis-schema.ts(292,18): error TS2749: 'BoundingBoxSchema' refers to a value, but is being used as a type here. Did you mean 'typeof BoundingBoxSchema'?
+src/db/client.ts(1,25): error TS2307: Cannot find module 'drizzle-orm/d1' or its corresponding type declarations.
+src/db/schema.ts(1,69): error TS2307: Cannot find module 'drizzle-orm/pg-core' or its corresponding type declarations.
+src/db/schema.ts(6,80): error TS2307: Cannot find module 'drizzle-orm/sqlite-core' or its corresponding type declarations.
+src/db/schema.ts(13,70): error TS2304: Cannot find name 'sql'.
+src/db/schema.ts(36,70): error TS2304: Cannot find name 'sql'.
+src/db/schema.ts(37,70): error TS2304: Cannot find name 'sql'.
+src/index.ts(107,45): error TS2345: Argument of type 'Redis | Redis' is not assignable to parameter of type 'Redis'.
+  Type 'Redis' is missing the following properties from type 'Redis': options, status, stream, isCluster, and 223 more.
+src/index.ts(108,37): error TS2345: Argument of type 'Redis | Redis' is not assignable to parameter of type 'Redis'.
+  Type 'Redis' is missing the following properties from type 'Redis': options, status, stream, isCluster, and 223 more.
+src/lib/env.ts(23,65): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: number): ZodDefault<ZodPipe<ZodString, ZodTransform<number, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'number'.
+  Overload 2 of 2, '(def: () => number): ZodDefault<ZodPipe<ZodString, ZodTransform<number, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => number'.
+src/lib/env.ts(41,39): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/lib/monitoring.ts(27,48): error TS2353: Object literal may only specify known properties, and 'extra' does not exist in type 'EventHint'.
+src/lib/monitoring.ts(32,46): error TS2345: Argument of type '{ level: "error" | "info" | "warning"; extra: any; }' is not assignable to parameter of type 'SeverityLevel | undefined'.
+src/middleware/sentinel-x-tii.ts(19,27): error TS2367: This comparison appears to be unintentional because the types '"normal"' and '"lockdown"' have no overlap.
+src/middleware/validation.middleware.ts(15,36): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/modules/community-resilience/emergency/emergency.service.ts(115,13): error TS2304: Cannot find name 'logger'.
+src/modules/community-resilience/health-barter/health-barter.service.ts(4,29): error TS2305: Module '"../edu-health-types"' has no exported member 'RuralClinic'.
+src/modules/community-resilience/health-barter/health-barter.service.ts(4,58): error TS2305: Module '"../edu-health-types"' has no exported member 'Medicine'.
+src/modules/hubs/hubs.controller.ts(13,17): error TS2322: Type '{ name: string; purpose: string; status: "active" | "dormant" | "archived"; memberCount: number; completedExchanges: number; language: string; id?: string | undefined; createdAt?: Date | undefined; moderatorId?: string | undefined; metadata?: Record<...> | undefined; }[]' is not assignable to type 'never[]'.
+  Type '{ name: string; purpose: string; status: "active" | "dormant" | "archived"; memberCount: number; completedExchanges: number; language: string; id?: string | undefined; createdAt?: Date | undefined; moderatorId?: string | undefined; metadata?: Record<...> | undefined; }' is not assignable to type 'never'.
+src/modules/hubs/hubs.controller.ts(17,21): error TS2322: Type '{ id: string; name: string; purpose: string; memberCount: number; completedExchanges: number; language: string; status: string; }' is not assignable to type 'never'.
+src/modules/hubs/hubs.controller.ts(18,21): error TS2322: Type '{ id: string; name: string; purpose: string; memberCount: number; completedExchanges: number; language: string; status: string; }' is not assignable to type 'never'.
+src/modules/hubs/hubs.controller.ts(19,21): error TS2322: Type '{ id: string; name: string; purpose: string; memberCount: number; completedExchanges: number; language: string; status: string; }' is not assignable to type 'never'.
+src/patterns/resilience.ts(1,24): error TS2307: Cannot find module './logger' or its corresponding type declarations.
+src/routes/admin.ts(13,41): error TS2339: Property 'ADMIN_API_KEY' does not exist on type 'Env'.
+src/routes/analytics.routes.ts(6,21): error TS2554: Expected 2 arguments, but got 1.
+src/routes/chat.ts(10,16): error TS2339: Property 'GOOGLE_AI_API_KEY' does not exist on type 'Env'.
+src/routes/chat.ts(14,45): error TS2339: Property 'GOOGLE_AI_API_KEY' does not exist on type 'Env'.
+src/routes/location.routes.ts(9,31): error TS2554: Expected 2 arguments, but got 1.
+src/routes/vehicle.routes.ts(6,21): error TS2554: Expected 4 arguments, but got 1.
+src/routes/viral.ts(34,40): error TS2345: Argument of type '{ userId: any; type: any; metadata: any; }' is not assignable to parameter of type 'Omit<{ userId: string; type: "invite_sent" | "invite_accepted" | "conversion" | "churn" | "share"; timestamp: string; weight: number; metadata?: Record<string, any> | undefined; }, "timestamp">'.
+  Property 'weight' is missing in type '{ userId: any; type: any; metadata: any; }' but required in type 'Omit<{ userId: string; type: "invite_sent" | "invite_accepted" | "conversion" | "churn" | "share"; timestamp: string; weight: number; metadata?: Record<string, any> | undefined; }, "timestamp">'.
+src/services/address-validation.service.ts(80,17): error TS2322: Type '(address: Address) => Promise<{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; ... 9 more ...; metadata?: Record<...> | undefined; }; ... 4 more ...; provider: string; }>' is not assignable to type '(address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }) => Promise<...>'.
+  Type 'Promise<{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 4 more ...; provider: string; }>' is not assignable to type 'Promise<{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 7 more ...; provider?: string | undefin...'.
+    Type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 4 more ...; provider: string; }' is missing the following properties from type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 7 more ...; provider?: string | undefined; }': executionTimeMs, cached
+src/services/address-validation.service.ts(120,17): error TS2322: Type '(address: Address) => Promise<{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; ... 9 more ...; metadata?: Record<...> | undefined; }; ... 4 more ...; provider: string; }>' is not assignable to type '(address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }) => Promise<...>'.
+  Type 'Promise<{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 4 more ...; provider: string; }>' is not assignable to type 'Promise<{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 7 more ...; provider?: string | undefin...'.
+    Type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 4 more ...; provider: string; }' is missing the following properties from type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 7 more ...; provider?: string | undefined; }': executionTimeMs, cached
+src/services/address-validation.service.ts(154,13): error TS2322: Type '(address: Address) => Promise<{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; ... 9 more ...; metadata?: Record<...> | undefined; }; ... 4 more ...; provider: string; }>' is not assignable to type '(address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }) => Promise<...>'.
+  Type 'Promise<{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 4 more ...; provider: string; }>' is not assignable to type 'Promise<{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 7 more ...; provider?: string | undefin...'.
+    Type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 4 more ...; provider: string; }' is missing the following properties from type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 7 more ...; provider?: string | undefined; }': executionTimeMs, cached
+src/services/address-validation.service.ts(211,47): error TS2345: Argument of type '{ street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }' is not assignable to parameter of type '{ street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }'.
+  Property 'validated' is missing in type '{ street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }' but required in type '{ street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }'.
+src/services/address-validation.service.ts(249,60): error TS2345: Argument of type '{ street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }' is not assignable to parameter of type '{ street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }'.
+  Property 'validated' is missing in type '{ street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }' but required in type '{ street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }'.
+src/services/address-validation.service.ts(333,17): error TS2741: Property 'validated' is missing in type '{ street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }' but required in type '{ street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }'.
+src/services/address-validation.service.ts(383,55): error TS2345: Argument of type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; geocode: true; }' is not assignable to parameter of type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }; ... 4 more ...; providers?: ("google" | ... 2 more ... | "smartyst...'.
+  Type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; geocode: true; }' is missing the following properties from type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }; ... 4 more ...; providers?: ("google" | ... 2 more ... | "smartyst...': strict, language, timeout
+src/services/address-validation.service.ts(688,17): error TS2739: Type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 4 more ...; provider: string; }' is missing the following properties from type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 7 more ...; provider?: string | undefined; }': executionTimeMs, cached
+src/services/address-validation.service.ts(728,13): error TS2739: Type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 4 more ...; provider: string; }' is missing the following properties from type '{ address: { street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }; ... 7 more ...; provider?: string | undefined; }': executionTimeMs, cached
+src/services/address-validation.service.ts(772,24): error TS18046: 'error' is of type 'unknown'.
+src/services/community-resilience/matching/engines/redis.matcher.ts(41,42): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+src/services/community-resilience/matching/engines/redis.matcher.ts(41,65): error TS2571: Object is of type 'unknown'.
+src/services/distance-matrix.service.ts(205,25): error TS18046: 'data' is of type 'unknown'.
+src/services/distance-matrix.service.ts(206,75): error TS18046: 'data' is of type 'unknown'.
+src/services/distance-matrix.service.ts(208,28): error TS18046: 'data' is of type 'unknown'.
+src/services/distance-matrix.service.ts(253,25): error TS18046: 'data' is of type 'unknown'.
+src/services/distance-matrix.service.ts(254,57): error TS18046: 'data' is of type 'unknown'.
+src/services/distance-matrix.service.ts(256,28): error TS18046: 'data' is of type 'unknown'.
+src/services/distance-matrix.service.ts(261,40): error TS18046: 'data' is of type 'unknown'.
+src/services/distance-matrix.service.ts(262,59): error TS18046: 'data' is of type 'unknown'.
+src/services/geo-analytics.service.ts(42,36): error TS2304: Cannot find name 'decompress'.
+src/services/geo-analytics.service.ts(48,44): error TS2304: Cannot find name 'compress'.
+src/services/geo-analytics.service.ts(87,48): error TS2304: Cannot find name 'compress'.
+src/services/geo-fencing.service.ts(69,17): error TS2554: Expected 2-3 arguments, but got 1.
+src/services/geo-fencing.service.ts(684,43): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/geolocation.service.ts(7,32): error TS2305: Module '"./location-cache.service"' has no exported member 'LocationCacheRequest'.
+src/services/geolocation.service.ts(7,54): error TS2305: Module '"./location-cache.service"' has no exported member 'CachedLocation'.
+src/services/geolocation.service.ts(9,31): error TS2305: Module '"./geo-analytics.service"' has no exported member 'AnalyticsRequest'.
+src/services/geolocation.service.ts(10,29): error TS2305: Module '"./geo-fencing.service"' has no exported member 'GeoFencingRequest'.
+src/services/geolocation.service.ts(11,36): error TS2724: '"./address-validation.service"' has no exported member named 'AddressValidationRequest'. Did you mean 'ValidationRequest'?
+src/services/geolocation.service.ts(33,50): error TS2345: Argument of type 'Pool' is not assignable to parameter of type 'Redis'.
+  Type 'Pool' is missing the following properties from type 'Redis': status, stream, isCluster, condition, and 358 more.
+src/services/geolocation.service.ts(36,78): error TS2554: Expected 2 arguments, but got 3.
+src/services/geolocation.service.ts(46,35): error TS2551: Property 'setLocation' does not exist on type 'LocationCacheService'. Did you mean 'getLocation'?
+src/services/geolocation.service.ts(64,31): error TS2339: Property 'getDensityStats' does not exist on type 'GeoAnalyticsService'.
+src/services/geolocation.service.ts(71,32): error TS2339: Property 'isInsideFence' does not exist on type 'GeoFencingService'.
+src/services/geolocation.service.ts(82,39): error TS2339: Property 'validate' does not exist on type 'AddressValidationService'.
+src/services/geolocation.service.ts(90,31): error TS2339: Property 'getDensityStats' does not exist on type 'GeoAnalyticsService'.
+src/services/geospatial/isochrones.service.ts(71,26): error TS2345: Argument of type '{ time: number; geometry: any; metrics: { areaKm2: string; reachabilityIndex: number; }; }' is not assignable to parameter of type 'never'.
+src/services/listings.service.ts(1,45): error TS2307: Cannot find module 'drizzle-orm' or its corresponding type declarations.
+src/services/location-cache.service.ts(59,17): error TS2554: Expected 2-3 arguments, but got 1.
+src/services/location-cache.service.ts(146,45): error TS2339: Property 'get' does not exist on type 'LocationCacheService'.
+src/services/location-cache.service.ts(456,13): error TS2322: Type 'string | undefined' is not assignable to type '"user" | "vehicle" | "service" | "asset" | undefined'.
+  Type 'string' is not assignable to type '"user" | "vehicle" | "service" | "asset" | undefined'.
+src/services/location-cache.service.ts(543,39): error TS2339: Property 'get' does not exist on type '{ increment: (name: string, value?: number) => void; timing: (name: string, durationMs: number) => void; gauge: (name: string, value: number) => void; }'.
+src/services/location-cache.service.ts(544,41): error TS2339: Property 'get' does not exist on type '{ increment: (name: string, value?: number) => void; timing: (name: string, durationMs: number) => void; gauge: (name: string, value: number) => void; }'.
+src/services/location-cache.service.ts(545,42): error TS2339: Property 'get' does not exist on type '{ increment: (name: string, value?: number) => void; timing: (name: string, durationMs: number) => void; gauge: (name: string, value: number) => void; }'.
+src/services/mexico-launcher.ts(24,39): error TS2339: Property 'SENTINEL_KV' does not exist on type 'Env'.
+src/services/mexico-launcher.ts(64,24): error TS2339: Property 'SENTINEL_KV' does not exist on type 'Env'.
+src/services/notification.service.ts(6,10): error TS2305: Module '"ws"' has no exported member 'WebSocketServer'.
+src/services/notification.service.ts(6,27): error TS2595: 'WebSocket' can only be imported by using a default import.
+src/services/notification.service.ts(76,49): error TS2345: Argument of type '{ type: "system" | "alert" | "match_found" | "payment_success" | "payment_failed" | "ad_approved"; }' is not assignable to parameter of type 'number'.
+src/services/payment.service.ts(16,17): error TS2554: Expected 2-3 arguments, but got 1.
+src/services/payment.service.ts(105,51): error TS2345: Argument of type '{ provider: "manual" | "lemon_squeezy" | "mercadopago" | "stripe_standby"; }' is not assignable to parameter of type 'number'.
+src/services/payment.service.ts(110,50): error TS2345: Argument of type '{ reason: string; }' is not assignable to parameter of type 'number'.
+src/services/radius-search.service.ts(624,25): error TS2345: Argument of type '{ latitude: number; longitude: number; radius: number; unit: "meters" | "kilometers" | "miles"; categories?: ("vehicle" | "service" | "part" | "dealer" | "mechanic" | "rental" | "charging" | ... 4 more ... | "finance")[] | undefined; filters?: { ...; } | undefined; }[]' is not assignable to parameter of type 'never'.
+src/services/radius-search.service.ts(628,41): error TS2339: Property 'map' does not exist on type 'never'.
+src/services/reverse-geocoding.service.ts(76,17): error TS2322: Type '(lat: number, lon: number, options?: any) => Promise<{ results: any; status: "OK" | "ZERO_RESULTS"; provider: string; cached: false; }>' is not assignable to type '(lat: number, lon: number, options?: any) => Promise<{ results: { formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }[]; ... 4 more ...; errorMessage?: string...'.
+  Type 'Promise<{ results: any; status: "OK" | "ZERO_RESULTS"; provider: string; cached: false; }>' is not assignable to type 'Promise<{ results: { formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }[]; ... 4 more ...; errorMessage?: string | undefined; }>'.
+    Property 'timestamp' is missing in type '{ results: any; status: "OK" | "ZERO_RESULTS"; provider: string; cached: false; }' but required in type '{ results: { formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }[]; ... 4 more ...; errorMessage?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(121,17): error TS2322: Type '(lat: number, lon: number, options?: any) => Promise<{ results: any; status: "OK" | "ZERO_RESULTS"; provider: string; cached: false; }>' is not assignable to type '(lat: number, lon: number, options?: any) => Promise<{ results: { formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }[]; ... 4 more ...; errorMessage?: string...'.
+  Type 'Promise<{ results: any; status: "OK" | "ZERO_RESULTS"; provider: string; cached: false; }>' is not assignable to type 'Promise<{ results: { formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }[]; ... 4 more ...; errorMessage?: string | undefined; }>'.
+    Property 'timestamp' is missing in type '{ results: any; status: "OK" | "ZERO_RESULTS"; provider: string; cached: false; }' but required in type '{ results: { formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }[]; ... 4 more ...; errorMessage?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(163,13): error TS2322: Type '(lat: number, lon: number, options?: any) => Promise<{ results: { formattedAddress: any; latitude: number; longitude: number; country: any; countryCode: any; state: any; county: any; city: any; district: any; ... 7 more ...; timestamp: Date; }[]; status: "OK" | "ZERO_RESULTS"; provider: string; cached: false; }>' is not assignable to type '(lat: number, lon: number, options?: any) => Promise<{ results: { formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }[]; ... 4 more ...; errorMessage?: string...'.
+  Type 'Promise<{ results: { formattedAddress: any; latitude: number; longitude: number; country: any; countryCode: any; state: any; county: any; city: any; district: any; street: any; houseNumber: any; postalCode: any; ... 4 more ...; timestamp: Date; }[]; status: "OK" | "ZERO_RESULTS"; provider: string; cached: false; }>' is not assignable to type 'Promise<{ results: { formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }[]; ... 4 more ...; errorMessage?: string | undefined; }>'.
+    Property 'timestamp' is missing in type '{ results: { formattedAddress: any; latitude: number; longitude: number; country: any; countryCode: any; state: any; county: any; city: any; district: any; street: any; houseNumber: any; postalCode: any; ... 4 more ...; timestamp: Date; }[]; status: "OK" | "ZERO_RESULTS"; provider: string; cached: false; }' but required in type '{ results: { formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }[]; ... 4 more ...; errorMessage?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(479,13): error TS2741: Property 'timestamp' is missing in type '{ results: { formattedAddress: any; latitude: number; longitude: number; country: any; countryCode: any; state: any; county: any; city: any; district: any; street: any; houseNumber: any; postalCode: any; ... 4 more ...; timestamp: Date; }[]; status: "OK" | "ZERO_RESULTS"; provider: string; cached: true; }' but required in type '{ results: { formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }[]; ... 4 more ...; errorMessage?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(524,32): error TS2339: Property 'state' does not exist on type '{ formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(527,32): error TS2339: Property 'district' does not exist on type '{ formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(528,32): error TS2339: Property 'street' does not exist on type '{ formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(529,32): error TS2339: Property 'houseNumber' does not exist on type '{ formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(530,32): error TS2339: Property 'postalCode' does not exist on type '{ formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(532,32): error TS2339: Property 'locationType' does not exist on type '{ formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(712,56): error TS2345: Argument of type '{ latitude: number; longitude: number; language: string; maxResults: number; }' is not assignable to parameter of type '{ latitude: number; longitude: number; language: string; radius: number; maxResults: number; resultType?: ("intersection" | "country" | "route" | "street_address" | "subpremise" | "locality" | ... 14 more ... | "point_of_interest")[] | undefined; locationType?: ("ROOFTOP" | ... 2 more ... | "APPROXIMATE")[] | undefi...'.
+  Property 'radius' is missing in type '{ latitude: number; longitude: number; language: string; maxResults: number; }' but required in type '{ latitude: number; longitude: number; language: string; radius: number; maxResults: number; resultType?: ("intersection" | "country" | "route" | "street_address" | "subpremise" | "locality" | ... 14 more ... | "point_of_interest")[] | undefined; locationType?: ("ROOFTOP" | ... 2 more ... | "APPROXIMATE")[] | undefi...'.
+src/services/reverse-geocoding.service.ts(728,32): error TS2339: Property 'houseNumber' does not exist on type '{ formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(729,32): error TS2339: Property 'street' does not exist on type '{ formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(730,32): error TS2339: Property 'district' does not exist on type '{ formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(736,32): error TS2339: Property 'state' does not exist on type '{ formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }'.
+src/services/reverse-geocoding.service.ts(742,32): error TS2339: Property 'state' does not exist on type '{ formattedAddress: string; latitude: number; longitude: number; confidence: number; provider: string; cached: boolean; country?: string | undefined; countryCode?: string | undefined; city?: string | undefined; }'.
+src/services/route-optimization.service.ts(216,37): error TS2345: Argument of type '{ route: number[]; score: number; }' is not assignable to parameter of type 'never'.
+src/services/route-optimization.service.ts(218,45): error TS2339: Property 'score' does not exist on type 'never'.
+src/services/route-optimization.service.ts(218,55): error TS2339: Property 'score' does not exist on type 'never'.
+src/services/route-optimization.service.ts(219,44): error TS2339: Property 'route' does not exist on type 'never'.
+src/services/sales-ai.ts(49,24): error TS18046: 'result' is of type 'unknown'.
+src/services/sales-ai.ts(50,24): error TS18046: 'result' is of type 'unknown'.
+src/services/sales-ai.ts(57,24): error TS2532: Object is possibly 'undefined'.
+src/services/secret/DopamineEngine.ts(68,51): error TS2345: Argument of type '"­ƒôê ALTA DEMANDA - 5 PERSONAS VIENDO"' is not assignable to parameter of type 'never'.
+src/services/secret/DopamineEngine.ts(69,39): error TS2345: Argument of type '"Ô£¿ RECI├ëN LLEGADO - S├ë EL PRIMERO"' is not assignable to parameter of type 'never'.
+src/services/secret/DopamineEngine.ts(70,50): error TS2345: Argument of type '"­ƒÄ» MATCH 99% - DISE├æADO PARA TI"' is not assignable to parameter of type 'never'.
+src/services/secret/Escrow.ts(38,26): error TS2347: Untyped function calls may not accept type arguments.
+src/services/vehicle-tracking.service.ts(8,10): error TS2595: 'WebSocket' can only be imported by using a default import.
+src/services/vehicle-tracking.service.ts(8,21): error TS2305: Module '"ws"' has no exported member 'WebSocketServer'.
+src/sockets/geofence.socket.ts(2,10): error TS2724: '"../services/geo-fencing.service"' has no exported member named 'GeofencingService'. Did you mean 'GeoFencingService'?
+src/sockets/tracking.socket.ts(9,46): error TS2339: Property 'updateLocation' does not exist on type 'VehicleTrackingService'.
+src/tests/distance-matrix.test.ts(24,25): error TS2353: Object literal may only specify known properties, and 'lat' does not exist in type '{ latitude: number; longitude: number; id?: string | undefined; }'.
+src/tests/distance-matrix.test.ts(25,30): error TS2353: Object literal may only specify known properties, and 'lat' does not exist in type '{ latitude: number; longitude: number; id?: string | undefined; }'.
+src/tests/geo-fencing.test.ts(2,10): error TS2724: '"../services/geo-fencing.service"' has no exported member named 'GeofencingService'. Did you mean 'GeoFencingService'?
+src/tests/geolocation.test.ts(18,63): error TS2554: Expected 1 arguments, but got 2.
+src/tests/geolocation.test.ts(29,54): error TS2554: Expected 1 arguments, but got 2.
+src/tests/vehicle.test.ts(14,26): error TS2554: Expected 4 arguments, but got 1.
+src/tests/vehicle.test.ts(22,47): error TS2339: Property 'listVehicles' does not exist on type 'VehicleService'.
+src/utils/spatial-cache.ts(60,9): error TS2322: Type 'unknown[]' is not assignable to type 'string[]'.
+  Type 'unknown' is not assignable to type 'string'.
+../shared/types/VehicleDNA.ts(1,22): error TS2307: Cannot find module 'crypto-js' or its corresponding type declarations.
+../shared/utils/i18n-persistence.ts(1,38): error TS2307: Cannot find module 'cookies-next' or its corresponding type declarations.
+../shared/utils/spatial-cache.ts(60,9): error TS2322: Type 'unknown[]' is not assignable to type 'string[]'.
+  Type 'unknown' is not assignable to type 'string'.

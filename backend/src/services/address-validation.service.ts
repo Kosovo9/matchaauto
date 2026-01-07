@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { randomUUID } from 'crypto';
 import Redis from 'ioredis';
 import { Pool } from 'pg';
 import axios from 'axios';
@@ -23,7 +24,7 @@ export const AddressSchema = z.object({
     validationScore: z.number().min(0).max(1).optional(),
     issues: z.array(z.string()).optional(),
     suggestions: z.array(z.string()).optional(),
-    metadata: z.record(z.any()).optional()
+    metadata: z.record(z.string(), z.any()).optional()
 });
 
 export const ValidationRequestSchema = z.object({
@@ -41,20 +42,24 @@ export const ValidationResultSchema = z.object({
     score: z.number().min(0).max(1),
     issues: z.array(z.string()),
     suggestions: z.array(z.string()),
-    corrections: z.record(z.any()).optional(),
+    corrections: z.record(z.string(), z.any()).optional(),
     provider: z.string().optional(),
     executionTimeMs: z.number(),
     cached: z.boolean().default(false)
 });
 
 export type Address = z.infer<typeof AddressSchema>;
-export type ValidationRequest = z.infer<typeof ValidationRequestSchema>;
+export type ValidationRequestInput = z.input<typeof ValidationRequestSchema>;
 export type ValidationResult = z.infer<typeof ValidationResultSchema>;
+export type AddressValidationRequest = ValidationRequestInput;
+export type AddressValidationResult = ValidationResult;
+
+export type ProviderResult = Omit<ValidationResult, 'executionTimeMs' | 'cached'>;
 
 interface ValidationProvider {
     name: string;
     priority: number;
-    validate(address: Address): Promise<ValidationResult>;
+    validate(address: Address): Promise<ProviderResult>;
     getCost(): number;
     isAvailable(): boolean;
 }
@@ -105,7 +110,7 @@ export class AddressValidationService {
                         issues: result.verdict?.addressComplete ? [] : ['Incomplete address'],
                         suggestions: result.address?.addressComponents?.map((c: any) => c.componentName?.text) || [],
                         provider: 'google'
-                    };
+                    } as ProviderResult;
                 },
                 getCost: () => 0.005,
                 isAvailable: () => true
@@ -140,7 +145,7 @@ export class AddressValidationService {
                         issues: item?.scoring?.queryScore < 0.8 ? ['Low confidence score'] : [],
                         suggestions: [],
                         provider: 'here'
-                    };
+                    } as ProviderResult;
                 },
                 getCost: () => 0.0005,
                 isAvailable: () => true
@@ -179,7 +184,7 @@ export class AddressValidationService {
                     issues: result?.importance < 0.5 ? ['Low importance score'] : [],
                     suggestions: [],
                     provider: 'osm'
-                };
+                } as ProviderResult;
             },
             getCost: () => 0,
             isAvailable: () => true
@@ -190,7 +195,8 @@ export class AddressValidationService {
             name: 'database',
             priority: 3,
             validate: async (address: Address) => {
-                return this.validateWithDatabase(address);
+                const res = await this.validateWithDatabase(address);
+                return res as ProviderResult;
             },
             getCost: () => 0,
             isAvailable: () => true
@@ -200,7 +206,7 @@ export class AddressValidationService {
         this.providers.sort((a, b) => a.priority - b.priority);
     }
 
-    async validateAddress(request: ValidationRequest): Promise<ValidationResult> {
+    async validateAddress(request: ValidationRequestInput): Promise<ValidationResult> {
         const startTime = Date.now();
         metrics.increment('address_validation.requests_total');
 
@@ -665,7 +671,7 @@ export class AddressValidationService {
         };
     }
 
-    private async validateWithDatabase(address: Address): Promise<ValidationResult> {
+    private async validateWithDatabase(address: Address): Promise<ProviderResult> {
         const client = await this.pgPool.connect();
 
         try {
@@ -863,7 +869,7 @@ export class AddressValidationService {
           usage_count = validated_addresses.usage_count + 1,
           updated_at = NOW()
       `, [
-                crypto.randomUUID(),
+                randomUUID(),
                 result.address.street,
                 result.address.streetNumber,
                 result.address.unit,
@@ -886,6 +892,71 @@ export class AddressValidationService {
             logger.warn('Failed to store validation result', { error });
         } finally {
             client.release();
+        }
+    }
+
+    async validateBatch(addresses: Address[], options?: any): Promise<ValidationResult[]> {
+        const results = await Promise.all(addresses.map(async (addr) => {
+            try {
+                return await this.validateAddress(addr, options);
+            } catch (e) {
+                return {
+                    address: addr,
+                    valid: false,
+                    score: 0,
+                    issues: ['Validation failed'],
+                    suggestions: [],
+                    executionTimeMs: 0,
+                    cached: false
+                };
+            }
+        }));
+        return results;
+    }
+
+    async standardizeAddress(address: Address): Promise<Address> {
+        return {
+            ...address,
+            street: address.street.trim().toUpperCase(),
+            city: address.city.trim().toUpperCase(),
+            state: address.state.trim().toUpperCase(),
+            country: address.country.trim().toUpperCase(),
+            formattedAddress: `${address.street}, ${address.city}, ${address.state} ${address.postalCode}, ${address.country}`.toUpperCase()
+        };
+    }
+
+    async autocompleteAddress(query: string, options?: any): Promise<string[]> {
+        if (!process.env.GOOGLE_MAPS_API_KEY) return [];
+        try {
+            const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&types=address&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+            const res = await axios.get(url);
+            return res.data.predictions?.map((p: any) => p.description) || [];
+        } catch (e) {
+            logger.error('Autocomplete failed', e);
+            return [];
+        }
+    }
+
+    async validatePostalCode(postalCode: string, country: string): Promise<boolean> {
+        if (country === 'US') return /^\d{5}(-\d{4})?$/.test(postalCode);
+        if (country === 'MX') return /^\d{5}$/.test(postalCode);
+        return postalCode.length >= 3;
+    }
+
+    async getCountryFormats(country: string): Promise<any> {
+        const formats: Record<string, any> = {
+            'US': { postalCode: '#####', state: 'Required', format: 'Street, City, State Zip' },
+            'MX': { postalCode: '#####', state: 'Required', format: 'Street, Colony, City, State, Zip' }
+        };
+        return formats[country] || { format: 'Generic' };
+    }
+
+    async healthCheck(): Promise<boolean> {
+        try {
+            await this.pgPool.query('SELECT 1');
+            return true;
+        } catch (e) {
+            return false;
         }
     }
 }

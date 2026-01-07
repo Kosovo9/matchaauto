@@ -1,0 +1,1395 @@
+{
+  "country": "Mexico",
+  "country_code": "MX",
+  "total_states": 32,
+  "states": [
+    {
+      "state_code": "01",
+      "state_name": "Aguascalientes",
+      "cities": [
+        {
+          "city_name": "Aguascalientes",
+          "state": "Aguascalientes",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Jesús María",
+          "state": "Aguascalientes",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Calvillo",
+          "state": "Aguascalientes",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Rincón de Romos",
+          "state": "Aguascalientes",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Pabellón de Arteaga",
+          "state": "Aguascalientes",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "02",
+      "state_name": "Baja California",
+      "cities": [
+        {
+          "city_name": "Tijuana",
+          "state": "Baja California",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Mexicali",
+          "state": "Baja California",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Ensenada",
+          "state": "Baja California",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Playas de Rosarito",
+          "state": "Baja California",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tecate",
+          "state": "Baja California",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "03",
+      "state_name": "Baja California Sur",
+      "cities": [
+        {
+          "city_name": "La Paz",
+          "state": "Baja California Sur",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Los Cabos",
+          "state": "Baja California Sur",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "San José del Cabo",
+          "state": "Baja California Sur",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Cabo San Lucas",
+          "state": "Baja California Sur",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Ciudad Constitución",
+          "state": "Baja California Sur",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "04",
+      "state_name": "Campeche",
+      "cities": [
+        {
+          "city_name": "Campeche",
+          "state": "Campeche",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Ciudad del Carmen",
+          "state": "Campeche",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Champotón",
+          "state": "Campeche",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Escárcega",
+          "state": "Campeche",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Calkiní",
+          "state": "Campeche",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "05",
+      "state_name": "Coahuila",
+      "cities": [
+        {
+          "city_name": "Saltillo",
+          "state": "Coahuila",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Torreón",
+          "state": "Coahuila",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Monclova",
+          "state": "Coahuila",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Piedras Negras",
+          "state": "Coahuila",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Acuña",
+          "state": "Coahuila",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Ramos Arizpe",
+          "state": "Coahuila",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 6
+    },
+    {
+      "state_code": "06",
+      "state_name": "Colima",
+      "cities": [
+        {
+          "city_name": "Colima",
+          "state": "Colima",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Manzanillo",
+          "state": "Colima",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tecomán",
+          "state": "Colima",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Villa de Álvarez",
+          "state": "Colima",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Armería",
+          "state": "Colima",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "07",
+      "state_name": "Chiapas",
+      "cities": [
+        {
+          "city_name": "Tuxtla Gutiérrez",
+          "state": "Chiapas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tapachula",
+          "state": "Chiapas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "San Cristóbal de las Casas",
+          "state": "Chiapas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Comitán",
+          "state": "Chiapas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Palenque",
+          "state": "Chiapas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Ocosingo",
+          "state": "Chiapas",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 6
+    },
+    {
+      "state_code": "08",
+      "state_name": "Chihuahua",
+      "cities": [
+        {
+          "city_name": "Chihuahua",
+          "state": "Chihuahua",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Ciudad Juárez",
+          "state": "Chihuahua",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Cuauhtémoc",
+          "state": "Chihuahua",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Delicias",
+          "state": "Chihuahua",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Parral",
+          "state": "Chihuahua",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Nuevo Casas Grandes",
+          "state": "Chihuahua",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 6
+    },
+    {
+      "state_code": "09",
+      "state_name": "Ciudad de México",
+      "cities": [
+        {
+          "city_name": "Iztapalapa",
+          "state": "Ciudad de México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Gustavo A. Madero",
+          "state": "Ciudad de México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Álvaro Obregón",
+          "state": "Ciudad de México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tlalpan",
+          "state": "Ciudad de México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Coyoacán",
+          "state": "Ciudad de México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Cuauhtémoc",
+          "state": "Ciudad de México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Miguel Hidalgo",
+          "state": "Ciudad de México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Benito Juárez",
+          "state": "Ciudad de México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Xochimilco",
+          "state": "Ciudad de México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Iztacalco",
+          "state": "Ciudad de México",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 10
+    },
+    {
+      "state_code": "10",
+      "state_name": "Durango",
+      "cities": [
+        {
+          "city_name": "Durango",
+          "state": "Durango",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Gómez Palacio",
+          "state": "Durango",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Lerdo",
+          "state": "Durango",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Santiago Papasquiaro",
+          "state": "Durango",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Guadalupe Victoria",
+          "state": "Durango",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "11",
+      "state_name": "Guanajuato",
+      "cities": [
+        {
+          "city_name": "León",
+          "state": "Guanajuato",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Irapuato",
+          "state": "Guanajuato",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Celaya",
+          "state": "Guanajuato",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Salamanca",
+          "state": "Guanajuato",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Guanajuato",
+          "state": "Guanajuato",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "San Miguel de Allende",
+          "state": "Guanajuato",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Silao",
+          "state": "Guanajuato",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Pénjamo",
+          "state": "Guanajuato",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Dolores Hidalgo",
+          "state": "Guanajuato",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 9
+    },
+    {
+      "state_code": "12",
+      "state_name": "Guerrero",
+      "cities": [
+        {
+          "city_name": "Acapulco",
+          "state": "Guerrero",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Chilpancingo",
+          "state": "Guerrero",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Iguala",
+          "state": "Guerrero",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Zihuatanejo",
+          "state": "Guerrero",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Taxco",
+          "state": "Guerrero",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Chilapa",
+          "state": "Guerrero",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 6
+    },
+    {
+      "state_code": "13",
+      "state_name": "Hidalgo",
+      "cities": [
+        {
+          "city_name": "Pachuca",
+          "state": "Hidalgo",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tulancingo",
+          "state": "Hidalgo",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tizayuca",
+          "state": "Hidalgo",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tepeji del Río",
+          "state": "Hidalgo",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tula de Allende",
+          "state": "Hidalgo",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "14",
+      "state_name": "Jalisco",
+      "cities": [
+        {
+          "city_name": "Guadalajara",
+          "state": "Jalisco",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Zapopan",
+          "state": "Jalisco",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tlaquepaque",
+          "state": "Jalisco",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tonalá",
+          "state": "Jalisco",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tlajomulco",
+          "state": "Jalisco",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Puerto Vallarta",
+          "state": "Jalisco",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Lagos de Moreno",
+          "state": "Jalisco",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tepatitlán",
+          "state": "Jalisco",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 8
+    },
+    {
+      "state_code": "15",
+      "state_name": "México",
+      "cities": [
+        {
+          "city_name": "Ecatepec",
+          "state": "México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Nezahualcóyotl",
+          "state": "México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Naucalpan",
+          "state": "México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tlalnepantla",
+          "state": "México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Toluca",
+          "state": "México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Chimalhuacán",
+          "state": "México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Atizapán de Zaragoza",
+          "state": "México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Cuautitlán Izcalli",
+          "state": "México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Ixtapaluca",
+          "state": "México",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Texcoco",
+          "state": "México",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 10
+    },
+    {
+      "state_code": "16",
+      "state_name": "Michoacán",
+      "cities": [
+        {
+          "city_name": "Morelia",
+          "state": "Michoacán",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Uruapan",
+          "state": "Michoacán",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Zamora",
+          "state": "Michoacán",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Lázaro Cárdenas",
+          "state": "Michoacán",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Apatzingán",
+          "state": "Michoacán",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Pátzcuaro",
+          "state": "Michoacán",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 6
+    },
+    {
+      "state_code": "17",
+      "state_name": "Morelos",
+      "cities": [
+        {
+          "city_name": "Cuernavaca",
+          "state": "Morelos",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Jiutepec",
+          "state": "Morelos",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Cuautla",
+          "state": "Morelos",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Temixco",
+          "state": "Morelos",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Yautepec",
+          "state": "Morelos",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "18",
+      "state_name": "Nayarit",
+      "cities": [
+        {
+          "city_name": "Tepic",
+          "state": "Nayarit",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Bahía de Banderas",
+          "state": "Nayarit",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Santiago Ixcuintla",
+          "state": "Nayarit",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Compostela",
+          "state": "Nayarit",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tuxpan",
+          "state": "Nayarit",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "19",
+      "state_name": "Nuevo León",
+      "cities": [
+        {
+          "city_name": "Monterrey",
+          "state": "Nuevo León",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Guadalupe",
+          "state": "Nuevo León",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "San Nicolás de los Garza",
+          "state": "Nuevo León",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Apodaca",
+          "state": "Nuevo León",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "San Pedro Garza García",
+          "state": "Nuevo León",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "General Escobedo",
+          "state": "Nuevo León",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Santa Catarina",
+          "state": "Nuevo León",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "García",
+          "state": "Nuevo León",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 8
+    },
+    {
+      "state_code": "20",
+      "state_name": "Oaxaca",
+      "cities": [
+        {
+          "city_name": "Oaxaca de Juárez",
+          "state": "Oaxaca",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Salina Cruz",
+          "state": "Oaxaca",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Juchitán",
+          "state": "Oaxaca",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tuxtepec",
+          "state": "Oaxaca",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Huajuapan de León",
+          "state": "Oaxaca",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Puerto Escondido",
+          "state": "Oaxaca",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 6
+    },
+    {
+      "state_code": "21",
+      "state_name": "Puebla",
+      "cities": [
+        {
+          "city_name": "Puebla",
+          "state": "Puebla",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tehuacán",
+          "state": "Puebla",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "San Martín Texmelucan",
+          "state": "Puebla",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Atlixco",
+          "state": "Puebla",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Cholula",
+          "state": "Puebla",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Teziutlán",
+          "state": "Puebla",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 6
+    },
+    {
+      "state_code": "22",
+      "state_name": "Querétaro",
+      "cities": [
+        {
+          "city_name": "Querétaro",
+          "state": "Querétaro",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "San Juan del Río",
+          "state": "Querétaro",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Corregidora",
+          "state": "Querétaro",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "El Marqués",
+          "state": "Querétaro",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tequisquiapan",
+          "state": "Querétaro",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "23",
+      "state_name": "Quintana Roo",
+      "cities": [
+        {
+          "city_name": "Cancún",
+          "state": "Quintana Roo",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Playa del Carmen",
+          "state": "Quintana Roo",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Chetumal",
+          "state": "Quintana Roo",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Cozumel",
+          "state": "Quintana Roo",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tulum",
+          "state": "Quintana Roo",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Isla Mujeres",
+          "state": "Quintana Roo",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 6
+    },
+    {
+      "state_code": "24",
+      "state_name": "San Luis Potosí",
+      "cities": [
+        {
+          "city_name": "San Luis Potosí",
+          "state": "San Luis Potosí",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Soledad de Graciano Sánchez",
+          "state": "San Luis Potosí",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Ciudad Valles",
+          "state": "San Luis Potosí",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Matehuala",
+          "state": "San Luis Potosí",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Rioverde",
+          "state": "San Luis Potosí",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "25",
+      "state_name": "Sinaloa",
+      "cities": [
+        {
+          "city_name": "Culiacán",
+          "state": "Sinaloa",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Mazatlán",
+          "state": "Sinaloa",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Los Mochis",
+          "state": "Sinaloa",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Guasave",
+          "state": "Sinaloa",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Guamúchil",
+          "state": "Sinaloa",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "26",
+      "state_name": "Sonora",
+      "cities": [
+        {
+          "city_name": "Hermosillo",
+          "state": "Sonora",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Ciudad Obregón",
+          "state": "Sonora",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Nogales",
+          "state": "Sonora",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "San Luis Río Colorado",
+          "state": "Sonora",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Navojoa",
+          "state": "Sonora",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Guaymas",
+          "state": "Sonora",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 6
+    },
+    {
+      "state_code": "27",
+      "state_name": "Tabasco",
+      "cities": [
+        {
+          "city_name": "Villahermosa",
+          "state": "Tabasco",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Cárdenas",
+          "state": "Tabasco",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Comalcalco",
+          "state": "Tabasco",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Huimanguillo",
+          "state": "Tabasco",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Macuspana",
+          "state": "Tabasco",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "28",
+      "state_name": "Tamaulipas",
+      "cities": [
+        {
+          "city_name": "Reynosa",
+          "state": "Tamaulipas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Matamoros",
+          "state": "Tamaulipas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Nuevo Laredo",
+          "state": "Tamaulipas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tampico",
+          "state": "Tamaulipas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Ciudad Victoria",
+          "state": "Tamaulipas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Ciudad Madero",
+          "state": "Tamaulipas",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 6
+    },
+    {
+      "state_code": "29",
+      "state_name": "Tlaxcala",
+      "cities": [
+        {
+          "city_name": "Tlaxcala",
+          "state": "Tlaxcala",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Apizaco",
+          "state": "Tlaxcala",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Huamantla",
+          "state": "Tlaxcala",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "San Pablo del Monte",
+          "state": "Tlaxcala",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Chiautempan",
+          "state": "Tlaxcala",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    },
+    {
+      "state_code": "30",
+      "state_name": "Veracruz",
+      "cities": [
+        {
+          "city_name": "Veracruz",
+          "state": "Veracruz",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Xalapa",
+          "state": "Veracruz",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Coatzacoalcos",
+          "state": "Veracruz",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Poza Rica",
+          "state": "Veracruz",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Córdoba",
+          "state": "Veracruz",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Orizaba",
+          "state": "Veracruz",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Minatitlán",
+          "state": "Veracruz",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tuxpan",
+          "state": "Veracruz",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 8
+    },
+    {
+      "state_code": "31",
+      "state_name": "Yucatán",
+      "cities": [
+        {
+          "city_name": "Mérida",
+          "state": "Yucatán",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Kanasín",
+          "state": "Yucatán",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Valladolid",
+          "state": "Yucatán",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Tizimín",
+          "state": "Yucatán",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Progreso",
+          "state": "Yucatán",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Umán",
+          "state": "Yucatán",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 6
+    },
+    {
+      "state_code": "32",
+      "state_name": "Zacatecas",
+      "cities": [
+        {
+          "city_name": "Zacatecas",
+          "state": "Zacatecas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Fresnillo",
+          "state": "Zacatecas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Guadalupe",
+          "state": "Zacatecas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Río Grande",
+          "state": "Zacatecas",
+          "country": "Mexico",
+          "is_major": true
+        },
+        {
+          "city_name": "Sombrerete",
+          "state": "Zacatecas",
+          "country": "Mexico",
+          "is_major": true
+        }
+      ],
+      "total_cities": 5
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { Env } from '../../../shared/types';
+import { Env } from '@shared/types';
 import { createMonitor } from '../lib/monitoring';
 
 export interface LaunchPhase {

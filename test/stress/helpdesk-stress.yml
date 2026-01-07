@@ -1,0 +1,23 @@
+
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 30
+      arrivalRate: 5
+      name: "Warm up"
+    - duration: 60
+      arrivalRate: 20
+      name: "Sustained load"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - flow:
+    - post:
+        url: "/api/helpdesk/query"
+        json:
+          userId: "stress-user-{{ $randomString() }}"
+          question: "¿Cómo cambio una llanta?"
+          model: "qwen3"
+          forceOffline: false

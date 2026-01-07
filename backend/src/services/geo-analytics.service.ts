@@ -128,4 +128,25 @@ export class GeoAnalyticsService {
             client.release();
         }
     }
+
+    // New 10x Methods for SpatialAnalyticsController
+    async getDensityStats(bounds: z.infer<typeof BoundsSchema>): Promise<any> {
+        return this.calculateHeatmap(bounds);
+    }
+
+    async findCoverageGaps(bounds: z.infer<typeof BoundsSchema>, threshold: number): Promise<any[]> {
+        // Find areas with 0 density grid points
+        const heatmap = await this.calculateHeatmap(bounds, 10);
+        // This is a stub for 10x gaps
+        return [];
+    }
+
+    async analyzeMovementPatterns(bounds: z.infer<typeof BoundsSchema>, timeWindow: string): Promise<any> {
+        // Stub for pattern analysis
+        return {
+            averageSpeed: 45,
+            dominantFlow: 'N-S',
+            congestionHotspots: []
+        };
+    }
 }

@@ -59,7 +59,7 @@ export const UserSchema = BaseSchema.extend({
     walletVerified: z.boolean().default(false),
 
     // Metadata extendible
-    metadata: z.record(z.any()).default({}),
+    metadata: z.record(z.string(), z.any()).default({}),
 });
 
 // Tipos inferidos
@@ -135,10 +135,10 @@ export const ListingSchema = BaseSchema.extend({
     })).max(10).default([]),
 
     // Características específicas por categoría
-    attributes: z.record(z.any()).default({}),
+    attributes: z.record(z.string(), z.any()).default({}),
 
     // Metadata extendible
-    metadata: z.record(z.any()).default({}),
+    metadata: z.record(z.string(), z.any()).default({}),
 });
 
 // Tipos inferidos
@@ -246,7 +246,7 @@ export const TransactionSchema = BaseSchema.extend({
     }).optional(),
 
     // Metadata extendible
-    metadata: z.record(z.any()).default({}),
+    metadata: z.record(z.string(), z.any()).default({}),
 });
 
 // Tipos inferidos
@@ -282,7 +282,7 @@ export const MessageSchema = BaseSchema.extend({
     contentType: z.enum(['text', 'image', 'offer', 'system']).default('text'),
     isRead: z.boolean().default(false),
     readAt: z.string().datetime().optional(),
-    metadata: z.record(z.any()).default({}),
+    metadata: z.record(z.string(), z.any()).default({}),
 });
 
 export type Message = z.infer<typeof MessageSchema>;
@@ -296,7 +296,7 @@ export const NotificationSchema = BaseSchema.extend({
     ]),
     title: z.string().max(100),
     body: z.string().max(500),
-    data: z.record(z.any()).default({}),
+    data: z.record(z.string(), z.any()).default({}),
     isRead: z.boolean().default(false),
     readAt: z.string().datetime().optional(),
     actionUrl: z.string().url().optional(),
@@ -361,15 +361,8 @@ export interface ListingFilters {
     userId?: string;
 }
 
-// Exportar todo
-export {
-    UserSchema,
-    ListingSchema,
-    TransactionSchema,
-    ReviewSchema,
-    MessageSchema,
-    NotificationSchema,
-};
+// Note: Individual schemas are already exported using 'export const' at their definitions above.
+
 
 // Utility type para environment de Cloudflare
 export interface Env {

@@ -3,87 +3,87 @@ import { Pool } from 'pg';
 
 // Fallback logic for PostGIS extensions if not provided yet
 export const GeoPointSchema = z.object({
-    type: z.literal('Point'),
-    coordinates: z.tuple([z.number(), z.number()])
-        .refine(([lng, lat]) =>
-            lng >= -180 && lng <= 180 && lat >= -90 && lat <= 90,
-            { message: 'Coordenadas inválidas' }
-        )
+  type: z.literal('Point'),
+  coordinates: z.tuple([z.number(), z.number()])
+    .refine(([lng, lat]) =>
+      lng >= -180 && lng <= 180 && lat >= -90 && lat <= 90,
+      { message: 'Coordenadas inválidas' }
+    )
 });
 
 export const BoundingBoxSchema = z.object({
-    minLng: z.number().min(-180).max(180),
-    minLat: z.number().min(-90).max(90),
-    maxLng: z.number().min(-180).max(180),
-    maxLat: z.number().min(-90).max(90)
+  minLng: z.number().min(-180).max(180),
+  minLat: z.number().min(-90).max(90),
+  maxLng: z.number().min(-180).max(180),
+  maxLat: z.number().min(-90).max(90)
 });
 
 export const VehicleLocationSchema = z.object({
-    id: z.string().uuid(),
-    userId: z.string().uuid(),
-    vehicleId: z.string().uuid(),
-    location: GeoPointSchema,
-    accuracy: z.number().min(0).max(100).optional(), // metros
-    altitude: z.number().optional(),
-    speed: z.number().min(0).optional(), // km/h
-    heading: z.number().min(0).max(360).optional(), // grados
-    batteryLevel: z.number().min(0).max(100).optional(),
-    lastUpdated: z.date().default(() => new Date()),
-    isActive: z.boolean().default(true),
-    metadata: z.record(z.any()).optional()
+  id: z.string().uuid(),
+  userId: z.string().uuid(),
+  vehicleId: z.string().uuid(),
+  location: GeoPointSchema,
+  accuracy: z.number().min(0).max(100).optional(), // metros
+  altitude: z.number().optional(),
+  speed: z.number().min(0).optional(), // km/h
+  heading: z.number().min(0).max(360).optional(), // grados
+  batteryLevel: z.number().min(0).max(100).optional(),
+  lastUpdated: z.date().default(() => new Date()),
+  isActive: z.boolean().default(true),
+  metadata: z.record(z.string(), z.any()).optional()
 });
 
 export const UserLocationSchema = z.object({
-    id: z.string().uuid(),
-    userId: z.string().uuid(),
-    location: GeoPointSchema,
-    sessionId: z.string(),
-    deviceType: z.enum(['mobile', 'web', 'api']),
-    accuracy: z.number().min(0).max(100),
-    lastPing: z.date(),
-    isOnline: z.boolean().default(false),
-    geofenceId: z.string().uuid().optional(),
-    searchRadius: z.number().min(1).max(50000).default(10000), // metros
-    preferences: z.object({
-        unit: z.enum(['km', 'miles']).default('km'),
-        maxDistance: z.number().min(1).max(500).default(50)
-    }).optional()
+  id: z.string().uuid(),
+  userId: z.string().uuid(),
+  location: GeoPointSchema,
+  sessionId: z.string(),
+  deviceType: z.enum(['mobile', 'web', 'api']),
+  accuracy: z.number().min(0).max(100),
+  lastPing: z.date(),
+  isOnline: z.boolean().default(false),
+  geofenceId: z.string().uuid().optional(),
+  searchRadius: z.number().min(1).max(50000).default(10000), // metros
+  preferences: z.object({
+    unit: z.enum(['km', 'miles']).default('km'),
+    maxDistance: z.number().min(1).max(500).default(50)
+  }).optional()
 });
 
 export const GeofenceSchema = z.object({
-    id: z.string().uuid(),
-    name: z.string().min(1).max(100),
-    description: z.string().optional(),
-    geometry: z.object({
-        type: z.literal('Polygon'),
-        coordinates: z.array(z.array(z.tuple([z.number(), z.number()])))
-    }),
-    center: GeoPointSchema,
-    radius: z.number().min(10).max(50000), // metros
-    isActive: z.boolean().default(true),
-    rules: z.object({
-        notifyOnEntry: z.boolean().default(true),
-        notifyOnExit: z.boolean().default(true),
-        autoMatch: z.boolean().default(false),
-        restrictions: z.array(z.string()).optional()
-    }).optional(),
-    createdAt: z.date().default(() => new Date()),
-    updatedAt: z.date().optional()
+  id: z.string().uuid(),
+  name: z.string().min(1).max(100),
+  description: z.string().optional(),
+  geometry: z.object({
+    type: z.literal('Polygon'),
+    coordinates: z.array(z.array(z.tuple([z.number(), z.number()])))
+  }),
+  center: GeoPointSchema,
+  radius: z.number().min(10).max(50000), // metros
+  isActive: z.boolean().default(true),
+  rules: z.object({
+    notifyOnEntry: z.boolean().default(true),
+    notifyOnExit: z.boolean().default(true),
+    autoMatch: z.boolean().default(false),
+    restrictions: z.array(z.string()).optional()
+  }).optional(),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().optional()
 });
 
 export const SpatialIndexSchema = z.object({
-    id: z.string().uuid(),
-    name: z.string(),
-    type: z.enum(['gist', 'gin', 'brin']),
-    tableName: z.string(),
-    columnName: z.string(),
-    dimensions: z.number().min(2).max(3).default(2),
-    isActive: z.boolean().default(true),
-    stats: z.object({
-        sizeBytes: z.number(),
-        lastUpdated: z.date(),
-        hitRate: z.number().min(0).max(1)
-    }).optional()
+  id: z.string().uuid(),
+  name: z.string(),
+  type: z.enum(['gist', 'gin', 'brin']),
+  tableName: z.string(),
+  columnName: z.string(),
+  dimensions: z.number().min(2).max(3).default(2),
+  isActive: z.boolean().default(true),
+  stats: z.object({
+    sizeBytes: z.number(),
+    lastUpdated: z.date(),
+    hitRate: z.number().min(0).max(1)
+  }).optional()
 });
 
 export type GeoPoint = z.infer<typeof GeoPointSchema>;
@@ -93,39 +93,39 @@ export type Geofence = z.infer<typeof GeofenceSchema>;
 export type SpatialIndex = z.infer<typeof SpatialIndexSchema>;
 
 export class PostGISDatabase {
-    private pool: Pool;
+  private pool: Pool;
 
-    constructor(config: any) {
-        this.pool = new Pool({
-            ...config,
-            types: {
-                getTypeParser: (oid: number) => {
-                    if (oid === 600) { // point type
-                        return (val: string) => {
-                            const match = val.match(/\(([^)]+)\)/);
-                            if (match) {
-                                const [lng, lat] = match[1].split(',').map(Number);
-                                return { type: 'Point', coordinates: [lng, lat] };
-                            }
-                            return null;
-                        };
-                    }
-                    return null;
-                }
-            }
-        });
-    }
+  constructor(config: any) {
+    this.pool = new Pool({
+      ...config,
+      types: {
+        getTypeParser: (oid: number) => {
+          if (oid === 600) { // point type
+            return (val: string) => {
+              const match = val.match(/\(([^)]+)\)/);
+              if (match) {
+                const [lng, lat] = match[1].split(',').map(Number);
+                return { type: 'Point', coordinates: [lng, lat] };
+              }
+              return null;
+            };
+          }
+          return null;
+        }
+      }
+    });
+  }
 
-    async createSpatialTables(): Promise<void> {
-        const client = await this.pool.connect();
+  async createSpatialTables(): Promise<void> {
+    const client = await this.pool.connect();
 
-        try {
-            // Enable PostGIS extension
-            await client.query('CREATE EXTENSION IF NOT EXISTS postgis');
-            await client.query('CREATE EXTENSION IF NOT EXISTS postgis_topology');
+    try {
+      // Enable PostGIS extension
+      await client.query('CREATE EXTENSION IF NOT EXISTS postgis');
+      await client.query('CREATE EXTENSION IF NOT EXISTS postgis_topology');
 
-            // Create vehicle_locations table with spatial index
-            await client.query(`
+      // Create vehicle_locations table with spatial index
+      await client.query(`
         CREATE TABLE IF NOT EXISTS vehicle_locations (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           user_id UUID NOT NULL,
@@ -147,19 +147,19 @@ export class PostGISDatabase {
         );
       `);
 
-            // Create spatial index
-            await client.query(`
+      // Create spatial index
+      await client.query(`
         CREATE INDEX IF NOT EXISTS idx_vehicle_locations_geo 
         ON vehicle_locations USING GIST (location);
       `);
 
-            await client.query(`
+      await client.query(`
         CREATE INDEX IF NOT EXISTS idx_vehicle_locations_active 
         ON vehicle_locations (is_active, last_updated DESC);
       `);
 
-            // Create user_locations table
-            await client.query(`
+      // Create user_locations table
+      await client.query(`
         CREATE TABLE IF NOT EXISTS user_locations (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           user_id UUID UNIQUE NOT NULL,
@@ -179,13 +179,13 @@ export class PostGISDatabase {
         );
       `);
 
-            await client.query(`
+      await client.query(`
         CREATE INDEX IF NOT EXISTS idx_user_locations_geo 
         ON user_locations USING GIST (location);
       `);
 
-            // Create geofences table
-            await client.query(`
+      // Create geofences table
+      await client.query(`
         CREATE TABLE IF NOT EXISTS geofences (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           name VARCHAR(100) NOT NULL,
@@ -202,18 +202,18 @@ export class PostGISDatabase {
         );
       `);
 
-            await client.query(`
+      await client.query(`
         CREATE INDEX IF NOT EXISTS idx_geofences_geo 
         ON geofences USING GIST (geometry);
       `);
 
-            await client.query(`
+      await client.query(`
         CREATE INDEX IF NOT EXISTS idx_geofences_center 
         ON geofences USING GIST (center);
       `);
 
-            // Create spatial analytics table
-            await client.query(`
+      // Create spatial analytics table
+      await client.query(`
         CREATE TABLE IF NOT EXISTS spatial_analytics (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           date DATE NOT NULL,
@@ -232,28 +232,28 @@ export class PostGISDatabase {
         );
       `);
 
-            console.log('✅ Spatial tables created successfully');
+      console.log('✅ Spatial tables created successfully');
 
-        } catch (error) {
-            console.error('❌ Error creating spatial tables:', error);
-            throw error;
-        } finally {
-            client.release();
-        }
+    } catch (error) {
+      console.error('❌ Error creating spatial tables:', error);
+      throw error;
+    } finally {
+      client.release();
     }
+  }
 
-    async getNearestVehicles(
-        point: GeoPoint,
-        radius: number = 10000,
-        limit: number = 50,
-        filters: any = {}
-    ): Promise<VehicleLocation[]> {
-        const client = await this.pool.connect();
+  async getNearestVehicles(
+    point: GeoPoint,
+    radius: number = 10000,
+    limit: number = 50,
+    filters: any = {}
+  ): Promise<VehicleLocation[]> {
+    const client = await this.pool.connect();
 
-        try {
-            const { coordinates: [lng, lat] } = point;
+    try {
+      const { coordinates: [lng, lat] } = point;
 
-            const query = `
+      const query = `
         SELECT 
           vl.*,
           ST_Distance(vl.location, ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography) as distance_meters
@@ -271,31 +271,31 @@ export class PostGISDatabase {
         LIMIT $4;
       `;
 
-            const params: any[] = [lng, lat, radius, limit];
+      const params: any[] = [lng, lat, radius, limit];
 
-            if (filters.vehicleType) params.push(filters.vehicleType);
-            if (filters.minBattery) params.push(filters.minBattery);
-            if (filters.maxPrice) params.push(filters.maxPrice);
+      if (filters.vehicleType) params.push(filters.vehicleType);
+      if (filters.minBattery) params.push(filters.minBattery);
+      if (filters.maxPrice) params.push(filters.maxPrice);
 
-            const result = await client.query(query, params);
+      const result = await client.query(query, params);
 
-            return result.rows.map(row => ({
-                ...row,
-                location: typeof row.location === 'string' ? JSON.parse(row.location) : row.location
-            }));
-        } finally {
-            client.release();
-        }
+      return result.rows.map(row => ({
+        ...row,
+        location: typeof row.location === 'string' ? JSON.parse(row.location) : row.location
+      }));
+    } finally {
+      client.release();
     }
+  }
 
-    async calculateDensityHeatmap(
-        boundingBox: BoundingBoxSchema['_input'],
-        gridSize: number = 100
-    ): Promise<any[]> {
-        const client = await this.pool.connect();
+  async calculateDensityHeatmap(
+    boundingBox: z.infer<typeof BoundingBoxSchema>,
+    gridSize: number = 100
+  ): Promise<any[]> {
+    const client = await this.pool.connect();
 
-        try {
-            const query = `
+    try {
+      const query = `
         WITH grid AS (
           SELECT 
             ST_SetSRID(ST_MakeEnvelope($1, $2, $3, $4, 4326), 4326) as bbox,
@@ -335,33 +335,33 @@ export class PostGISDatabase {
         ORDER BY c.grid_x, c.grid_y;
       `;
 
-            const result = await client.query(query, [
-                boundingBox.minLng,
-                boundingBox.minLat,
-                boundingBox.maxLng,
-                boundingBox.maxLat,
-                gridSize
-            ]);
+      const result = await client.query(query, [
+        boundingBox.minLng,
+        boundingBox.minLat,
+        boundingBox.maxLng,
+        boundingBox.maxLat,
+        gridSize
+      ]);
 
-            return result.rows;
-        } finally {
-            client.release();
-        }
+      return result.rows;
+    } finally {
+      client.release();
     }
+  }
 
-    async updateUserLocation(
-        userId: string,
-        location: GeoPoint,
-        sessionId: string,
-        deviceType: string,
-        accuracy: number = 50
-    ): Promise<void> {
-        const client = await this.pool.connect();
+  async updateUserLocation(
+    userId: string,
+    location: GeoPoint,
+    sessionId: string,
+    deviceType: string,
+    accuracy: number = 50
+  ): Promise<void> {
+    const client = await this.pool.connect();
 
-        try {
-            const { coordinates: [lng, lat] } = location;
+    try {
+      const { coordinates: [lng, lat] } = location;
 
-            const query = `
+      const query = `
         INSERT INTO user_locations (user_id, location, session_id, device_type, accuracy, last_ping, is_online)
         VALUES ($1, ST_SetSRID(ST_MakePoint($2, $3), 4326)::geography, $4, $5, $6, NOW(), TRUE)
         ON CONFLICT (user_id) 
@@ -376,23 +376,23 @@ export class PostGISDatabase {
         RETURNING id;
       `;
 
-            await client.query(query, [userId, lng, lat, sessionId, deviceType, accuracy]);
+      await client.query(query, [userId, lng, lat, sessionId, deviceType, accuracy]);
 
-            // Check geofence triggers
-            await this.checkGeofenceTriggers(userId, location);
+      // Check geofence triggers
+      await this.checkGeofenceTriggers(userId, location);
 
-        } finally {
-            client.release();
-        }
+    } finally {
+      client.release();
     }
+  }
 
-    private async checkGeofenceTriggers(userId: string, location: GeoPoint): Promise<void> {
-        const client = await this.pool.connect();
+  private async checkGeofenceTriggers(userId: string, location: GeoPoint): Promise<void> {
+    const client = await this.pool.connect();
 
-        try {
-            const { coordinates: [lng, lat] } = location;
+    try {
+      const { coordinates: [lng, lat] } = location;
 
-            const query = `
+      const query = `
         SELECT g.*,
           ST_Distance(
             g.center,
@@ -411,39 +411,39 @@ export class PostGISDatabase {
           );
       `;
 
-            const result = await client.query(query, [userId, lng, lat]);
+      const result = await client.query(query, [userId, lng, lat]);
 
-            // Trigger events if user entered new geofence
-            for (const geofence of result.rows) {
-                // Update user's current geofence
-                await client.query(
-                    'UPDATE user_locations SET geofence_id = $1 WHERE user_id = $2',
-                    [geofence.id, userId]
-                );
+      // Trigger events if user entered new geofence
+      for (const geofence of result.rows) {
+        // Update user's current geofence
+        await client.query(
+          'UPDATE user_locations SET geofence_id = $1 WHERE user_id = $2',
+          [geofence.id, userId]
+        );
 
-                // Log geofence event
-                await client.query(`
+        // Log geofence event
+        await client.query(`
           INSERT INTO geofence_events (user_id, geofence_id, event_type, location)
           VALUES ($1, $2, 'entry', ST_SetSRID(ST_MakePoint($3, $4), 4326)::geography)
         `, [userId, geofence.id, lng, lat]);
-            }
-        } finally {
-            client.release();
-        }
+      }
+    } finally {
+      client.release();
     }
+  }
 
-    async optimizeSpatialIndexes(): Promise<void> {
-        const client = await this.pool.connect();
+  async optimizeSpatialIndexes(): Promise<void> {
+    const client = await this.pool.connect();
 
-        try {
-            // Analyze tables for better query planning
-            await client.query('ANALYZE vehicle_locations');
-            await client.query('ANALYZE user_locations');
-            await client.query('ANALYZE geofences');
+    try {
+      // Analyze tables for better query planning
+      await client.query('ANALYZE vehicle_locations');
+      await client.query('ANALYZE user_locations');
+      await client.query('ANALYZE geofences');
 
-            console.log('✅ Spatial indexes optimized');
-        } finally {
-            client.release();
-        }
+      console.log('✅ Spatial indexes optimized');
+    } finally {
+      client.release();
     }
+  }
 }

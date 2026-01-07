@@ -27,7 +27,7 @@ export const DistanceMatrixRequestSchema = z.object({
     departureTime: z.date().optional(),
     arrivalTime: z.date().optional(),
     avoid: z.array(z.enum(['tolls', 'highways', 'ferries'])).default([]),
-    restrictions: z.record(z.any()).optional()
+    restrictions: z.record(z.string(), z.any()).optional()
 });
 
 export const DistanceMatrixElementSchema = z.object({
@@ -201,7 +201,7 @@ export class DistanceMatrixService {
                         `&avoid=${options.avoid.join('|')}` +
                         `&key=${process.env.GOOGLE_MAPS_API_KEY}`
                     );
-                    const data = await response.json();
+                    const data: any = await response.json();
                     if (data.status !== 'OK') {
                         throw new Error(`Google Distance Matrix failed: ${data.status}`);
                     }
@@ -249,7 +249,7 @@ export class DistanceMatrixService {
                         `&destinations=${destinations.map((_, i) => origins.length + i).join(';')}` +
                         `&annotations=distance,duration`
                     );
-                    const data = await response.json();
+                    const data: any = await response.json();
                     if (data.code !== 'Ok') {
                         throw new Error(`OSRM failed: ${data.message}`);
                     }
