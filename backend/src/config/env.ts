@@ -23,7 +23,7 @@ export const EnvSchema = z.object({
     SMTP_HOST: z.string().default('localhost'),
     SMTP_PORT: z.coerce.number().default(1025),
     MAIL_FROM: z.string().default('MatchaAuto <no-reply@match-autos.com>'),
-    APP_ENV: z.enum(['development', 'staging', 'production']).default('development'),
+    APP_ENV: z.enum(['local', 'development', 'staging', 'production']).default('local'),
     CORS_ALLOW_ORIGINS: z.string().optional(),
 });
 
