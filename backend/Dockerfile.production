@@ -15,11 +15,16 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Copiar archivos de dependencias
+# Primero las dependencias (mejor cache)
 COPY backend/package*.json ./
-
-# Instalar dependencias (incluyendo nativas para Linux)
 RUN npm install --legacy-peer-deps
+
+# Luego el código
+COPY backend/src ./src
+COPY backend/tsconfig.json ./
+
+# Compilar
+RUN npm run build
 
 # --- ETAPA DE RUNTIME ---
 FROM node:20-bookworm-slim AS runner
@@ -31,12 +36,10 @@ RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Copiar node_modules compilados del builder
+# Copiar node_modules y el bundle compilado
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
 COPY backend/package*.json ./
-
-# Copiar el bundle pre-compilado desde el host
-COPY backend/dist/bundle.js ./dist/bundle.js
 
 EXPOSE 3000
 ENV NODE_ENV=production

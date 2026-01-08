@@ -1,105 +1,116 @@
+
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Car, Wrench, Zap, Search, Filter, SlidersHorizontal, ChevronDown, CheckCircle2 } from 'lucide-react';
-import { cn } from '../../lib/utils';
-import backend from '../../lib/backend-client';
+import React, { useState, useRef, useEffect } from "react";
+import MasonryGrid from "../../components/marketplace/MasonryGrid";
+import MarketplaceCard from "../../components/marketplace/MarketplaceCard";
+import MarketplaceSkeleton from "../../components/marketplace/MarketplaceSkeleton";
+import { useInfiniteMarketplace } from "../../hooks/useInfiniteMarketplace";
+import { Search, Filter, Sparkles } from "lucide-react";
 
 export default function MarketplacePage() {
-    const [activeCategory, setActiveCategory] = useState<'ALL' | 'CARS' | 'PARTS' | 'SERVICES'>('ALL');
-    const [items, setItems] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filters, setFilters] = useState({ q: "" });
 
+    const { items, loading, loadingMore, loadMore } = useInfiniteMarketplace(filters);
+    const scrollSentinelRef = useRef<HTMLDivElement>(null);
+
+    // Intersection Observer for Infinite Scroll
     useEffect(() => {
-        const fetchItems = async () => {
-            setIsLoading(true);
-            try {
-                const res = await backend.getListings();
-                if (res.success) setItems(res.data);
-            } catch (e) {
-                console.error(e);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchItems();
-    }, []);
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !loading && !loadingMore) {
+                    loadMore();
+                }
+            },
+            { threshold: 0.1 }
+        );
 
-    const categories = [
-        { id: 'ALL', label: 'Todo', icon: SlidersHorizontal },
-        { id: 'CARS', label: 'Vehículos', icon: Car },
-        { id: 'PARTS', label: 'Refacciones', icon: Wrench },
-        { id: 'SERVICES', label: 'Servicios', icon: Zap },
-    ];
+        if (scrollSentinelRef.current) {
+            observer.observe(scrollSentinelRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [loadMore, loading, loadingMore]);
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        setFilters({ ...filters, q: searchQuery });
+    };
 
     return (
-        <div className="min-h-screen bg-[#050505] text-white">
-            {/* Nav Space */}
-            <header className="px-6 py-8 flex flex-col items-center">
-                <h1 className="text-4xl font-black tracking-tighter mb-8">Quantum <span className="text-[#39FF14]">Marketplace</span></h1>
+        <main className="min-h-screen pb-20">
+            {/* Header / Search Section */}
+            <section className="pt-32 pb-12 px-6 max-w-7xl mx-auto">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                    <div>
+                        <h1 className="text-5xl font-black text-[var(--fg)] tracking-tighter mb-2">
+                            QUANTUM <span className="text-emerald-400">MARKET</span>
+                        </h1>
+                        <p className="text-gray-500 font-medium">Verified items, ultra-secure trading.</p>
+                    </div>
 
-                {/* Category Filters */}
-                <div className="flex bg-white/5 p-1 rounded-full border border-white/10 backdrop-blur-xl mb-12">
-                    {categories.map((cat) => (
-                        <button
-                            key={cat.id}
-                            onClick={() => setActiveCategory(cat.id as any)}
-                            className={cn(
-                                "px-6 py-2.5 rounded-full text-xs font-bold tracking-widest transition-all",
-                                activeCategory === cat.id ? "bg-white text-black shadow-lg" : "text-gray-500 hover:text-white"
-                            )}
-                        >
-                            <span className="flex items-center gap-2">
-                                <cat.icon className="w-3 h-3" /> {cat.label}
-                            </span>
+                    <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto">
+                        <div className="relative flex-1 md:w-80">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                            <input
+                                type="text"
+                                placeholder="Search anything..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[var(--card)] border border-[var(--border)] text-[var(--fg)] focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+                            />
+                        </div>
+                        <button type="submit" className="p-4 rounded-2xl bg-emerald-400 text-black hover:scale-105 active:scale-95 transition-all shadow-lg shadow-emerald-500/20">
+                            <Filter size={20} />
+                        </button>
+                    </form>
+                </div>
+
+                {/* Categories / Quick Filters */}
+                <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar">
+                    {["All Items", "Electronics", "Luxury", "Vehicles", "Art", "Verified Only"].map((cat) => (
+                        <button key={cat} className="px-6 py-2 rounded-full border border-[var(--border)] bg-[var(--card)] text-[var(--fg)] text-xs font-bold whitespace-nowrap hover:bg-emerald-400 hover:text-black transition-all">
+                            {cat}
                         </button>
                     ))}
                 </div>
-            </header>
+            </section>
 
-            <main className="max-w-[1400px] mx-auto px-6 pb-20">
-                {isLoading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {[1, 2, 3, 4, 5, 1, 2, 3].map(i => (
-                            <div key={i} className="h-[350px] bg-white/5 rounded-3xl animate-pulse border border-white/5" />
-                        ))}
+            {/* Grid Section */}
+            <section className="px-6 max-w-7xl mx-auto">
+                {loading ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {[...Array(8)].map((_, i) => <MarketplaceSkeleton key={i} />)}
                     </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        <AnimatePresence mode="popLayout">
-                            {items.map((item, idx) => (
-                                <motion.div
-                                    key={item.id}
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ duration: 0.4, delay: idx * 0.05 }}
-                                    className="group relative bg-[#111] border border-white/5 rounded-3xl overflow-hidden hover:border-[#39FF14]/30 transition-all hover:-translate-y-2"
-                                >
-                                    <div className="aspect-[4/3] overflow-hidden">
-                                        <img src={item.images?.[0] || 'https://placehold.co/400x300'} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                    </div>
-                                    <div className="p-6">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <h3 className="font-bold text-lg truncate pr-2">{item.title}</h3>
-                                            <span className="text-[10px] font-mono bg-[#39FF14]/10 text-[#39FF14] px-2 py-0.5 rounded border border-[#39FF14]/20">VERIFIED</span>
-                                        </div>
-                                        <p className="text-2xl font-black text-white mb-4">
-                                            ${item.price.toLocaleString()} <span className="text-[10px] text-gray-500 font-mono">MXN</span>
-                                        </p>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <button className="py-2.5 rounded-xl bg-white/5 text-[10px] font-bold tracking-widest hover:bg-white/10 transition-colors uppercase">Detalles</button>
-                                            <button className="py-2.5 rounded-xl bg-[#39FF14] text-black text-[10px] font-black tracking-widest hover:brightness-110 transition-all uppercase">Comprar</button>
-                                        </div>
-                                    </div>
-                                </motion.div>
+                ) : items.length > 0 ? (
+                    <>
+                        <MasonryGrid
+                            columns={4}
+                            items={items.map((item) => (
+                                <MarketplaceCard key={item.id} item={{
+                                    ...item,
+                                    price: Number(item.price),
+                                    image: item.attrs?.image || `https://placehold.co/400x250/1a1a1a/FFF?text=${item.title.split(' ')[0]}`,
+                                    badge: item.attrs?.badge || "Verified"
+                                }} />
                             ))}
-                        </AnimatePresence>
+                        />
+                        {/* Sentinel for Infinite Scroll */}
+                        <div ref={scrollSentinelRef} className="h-20 flex items-center justify-center">
+                            {loadingMore && <div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />}
+                        </div>
+                    </>
+                ) : (
+                    <div className="py-40 text-center">
+                        <div className="inline-flex p-6 rounded-full bg-white/5 mb-6">
+                            <Sparkles size={40} className="text-gray-600" />
+                        </div>
+                        <h3 className="text-xl font-bold text-[var(--fg)]">No results found</h3>
+                        <p className="text-gray-500">Try adjusting your filters or search query.</p>
                     </div>
                 )}
-            </main>
-        </div>
+            </section>
+        </main>
     );
 }

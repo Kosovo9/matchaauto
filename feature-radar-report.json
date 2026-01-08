@@ -1,0 +1,93 @@
+{
+  "generatedAt": "2026-01-08T09:18:43.502Z",
+  "counts": {
+    "files": 1396,
+    "sql": {
+      "tables": 42,
+      "unusedTables": 9,
+      "functions": 5,
+      "unusedFunctions": 5
+    }
+  },
+  "orphans": {
+    "unusedTables": [
+      {
+        "name": "saved_searches",
+        "file": "/world-assets-exchange/backend/db/schema.sql",
+        "type": "unused_table"
+      },
+      {
+        "name": "security_audit",
+        "file": "/world-assets-exchange/backend/db/schema.sql",
+        "type": "unused_table"
+      },
+      {
+        "name": "barter_confirmations",
+        "file": "/world-assets-exchange/backend/src/database/community-resilience-migrations.sql",
+        "type": "unused_table"
+      },
+      {
+        "name": "spatial_grid_index",
+        "file": "/world-assets-exchange/backend/src/database/geo-migrations-block1-fix.sql",
+        "type": "unused_table"
+      },
+      {
+        "name": "security_audit_log",
+        "file": "/world-assets-exchange/backend/src/database/security-migrations.sql",
+        "type": "unused_table"
+      },
+      {
+        "name": "honeypot_hits",
+        "file": "/world-assets-exchange/backend/src/database/security-migrations.sql",
+        "type": "unused_table"
+      },
+      {
+        "name": "marketplace_items",
+        "file": "/docker/postgres/init_extra.sql",
+        "type": "unused_table"
+      },
+      {
+        "name": "identity_verifications",
+        "file": "/docker/postgres/init_extra.sql",
+        "type": "unused_table"
+      },
+      {
+        "name": "search_heatmaps",
+        "file": "/docker/postgres/init_extra.sql",
+        "type": "unused_table"
+      }
+    ],
+    "unusedFunctions": [
+      {
+        "name": "update_listing_geom",
+        "file": "/backend/sql/0001_trinity_setup.sql",
+        "type": "unused_function"
+      },
+      {
+        "name": "update_timestamp_column",
+        "file": "/world-assets-exchange/backend/src/database/geo-migrations-v2.sql",
+        "type": "unused_function"
+      },
+      {
+        "name": "calculate_bearing",
+        "file": "/world-assets-exchange/backend/src/database/geo-migrations.sql",
+        "type": "unused_function"
+      },
+      {
+        "name": "update_location_timestamp",
+        "file": "/world-assets-exchange/backend/src/database/geo-migrations.sql",
+        "type": "unused_function"
+      },
+      {
+        "name": "vehicles_search_trigger",
+        "file": "/world-assets-exchange/backend/src/database/listings-migrations.sql",
+        "type": "unused_function"
+      }
+    ]
+  },
+  "featureRadar": {
+    "sqlEvidence": [
+      "barter_escrows"
+    ]
+  }
+}

@@ -1,0 +1,79 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - heading "Quantum Marketplace" [level=1] [ref=e5]
+        - generic [ref=e6]:
+          - button "Todo" [ref=e7] [cursor=pointer]:
+            - generic [ref=e8]:
+              - img [ref=e9]
+              - text: Todo
+          - button "Vehículos" [ref=e10] [cursor=pointer]:
+            - generic [ref=e11]:
+              - img [ref=e12]
+              - text: Vehículos
+          - button "Refacciones" [ref=e16] [cursor=pointer]:
+            - generic [ref=e17]:
+              - img [ref=e18]
+              - text: Refacciones
+          - button "Servicios" [ref=e20] [cursor=pointer]:
+            - generic [ref=e21]:
+              - img [ref=e22]
+              - text: Servicios
+      - main [ref=e24]
+  - contentinfo [ref=e25]:
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - link "MATCHAUTO" [ref=e29] [cursor=pointer]:
+            - /url: /
+            - img [ref=e32]
+            - generic [ref=e34]: MATCHAUTO
+          - paragraph [ref=e35]: The world's first AI-powered, Solana-secured global automotive marketplace. Connecting buyers and sellers across 150+ countries with quantum security.
+        - generic [ref=e36]:
+          - heading "Platform" [level=3] [ref=e37]
+          - list [ref=e38]:
+            - listitem [ref=e39]:
+              - link "Marketplace" [ref=e40] [cursor=pointer]:
+                - /url: /marketplace
+            - listitem [ref=e41]:
+              - link "VIN Decoder" [ref=e42] [cursor=pointer]:
+                - /url: /vin-decoder
+            - listitem [ref=e43]:
+              - link "Escrow Service" [ref=e44] [cursor=pointer]:
+                - /url: /escrow
+            - listitem [ref=e45]:
+              - link "Pricing" [ref=e46] [cursor=pointer]:
+                - /url: /pricing
+        - generic [ref=e47]:
+          - heading "Support" [level=3] [ref=e48]
+          - list [ref=e49]:
+            - listitem [ref=e50]:
+              - link "Help Center" [ref=e51] [cursor=pointer]:
+                - /url: /help
+            - listitem [ref=e52]:
+              - link "API Documentation" [ref=e53] [cursor=pointer]:
+                - /url: /api-docs
+            - listitem [ref=e54]:
+              - link "System Status" [ref=e55] [cursor=pointer]:
+                - /url: /status
+            - listitem [ref=e56]:
+              - link "Contact Us" [ref=e57] [cursor=pointer]:
+                - /url: /contact
+      - generic [ref=e58]:
+        - generic [ref=e59]: © 2026 Match-Auto Global. All rights reserved.
+        - generic [ref=e60]:
+          - link [ref=e61] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e62]
+          - link [ref=e64] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e65]
+          - link [ref=e68] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e69]
+  - alert [ref=e73]
+```

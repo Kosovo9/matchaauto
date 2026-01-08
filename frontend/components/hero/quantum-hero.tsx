@@ -1,11 +1,10 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { CarFront, Home, Package, Search, Zap, Shield, TrendingUp, Menu, Bell, ShoppingCart, User } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import HeroAuto from './hero-auto'
 import HeroRealEstate from './hero-realestate'
 import HeroMarketplace from './hero-marketplace'
+import { ThemeProvider } from '../../shared/ui-theme/ThemeProvider'
 
 // --- THEME DEFINITIONS ---
 const THEMES = {
@@ -53,9 +52,13 @@ const THEMES = {
     }
 }
 
+import { actions } from '../../shared/core/actions'
+import { ROUTES } from '../../shared/core/routes'
+
 export default function QuantumHero() {
     const [activeTheme, setActiveTheme] = useState<'active' | 'home' | 'store'>('active')
     const [mounted, setMounted] = useState(false)
+    const router = useRouter()
     const theme = THEMES[activeTheme]
 
     useEffect(() => {
@@ -157,9 +160,22 @@ export default function QuantumHero() {
 
                     {/* NAV LINKS (Desktop) */}
                     <nav className="hidden md:flex gap-8 text-sm font-medium tracking-wide" style={{ color: activeTheme === 'store' ? '#1A1A1A' : 'white' }}>
-                        {['MARKETPLACE', 'VIN DECODER', 'ESCROW', 'AI ANALYSIS'].map((item) => (
-                            <a key={item} href="#" className="hover:opacity-70 transition-opacity relative group">
-                                {item}
+                        {[
+                            { label: 'MARKETPLACE', route: ROUTES.marketplace },
+                            { label: 'VIN DECODER', route: ROUTES.vin },
+                            { label: 'ESCROW', route: ROUTES.escrow },
+                            { label: 'AI ANALYSIS', route: ROUTES.ai }
+                        ].map((item) => (
+                            <a
+                                key={item.label}
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    actions.nav.go(router, item.route)
+                                }}
+                                className="hover:opacity-70 transition-opacity relative group"
+                            >
+                                {item.label}
                                 <span
                                     className="absolute -bottom-1 left-0 w-0 h-[2px] bg-current transition-all group-hover:w-full"
                                     style={{ backgroundColor: theme.primaryColor }}
@@ -172,14 +188,21 @@ export default function QuantumHero() {
                     <div className="flex items-center gap-4 text-white">
                         {/* Adapt color for Store theme */}
                         <div style={{ color: activeTheme === 'store' ? '#1A1A1A' : 'white' }} className="flex gap-4">
-                            <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                            <button
+                                onClick={() => actions.nav.go(router, ROUTES.notifications)}
+                                className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                            >
                                 <Bell size={20} />
                             </button>
-                            <button className="p-2 hover:bg-white/10 rounded-full transition-colors relative">
+                            <button
+                                onClick={() => actions.nav.go(router, ROUTES.cart)}
+                                className="p-2 hover:bg-white/10 rounded-full transition-colors relative"
+                            >
                                 <ShoppingCart size={20} />
                                 <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                             </button>
                             <button
+                                onClick={() => actions.nav.go(router, ROUTES.wallet)}
                                 className="flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-md border transition-all font-medium text-sm"
                                 style={{
                                     borderColor: theme.primaryColor,
@@ -199,12 +222,16 @@ export default function QuantumHero() {
                     <AnimatePresence mode="wait">
                         {activeTheme === 'home' && (
                             <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full h-full">
-                                <HeroRealEstate />
+                                <ThemeProvider theme="assets">
+                                    <HeroRealEstate />
+                                </ThemeProvider>
                             </motion.div>
                         )}
                         {activeTheme === 'store' && (
                             <motion.div key="store" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full h-full">
-                                <HeroMarketplace />
+                                <ThemeProvider theme="marketplace">
+                                    <HeroMarketplace />
+                                </ThemeProvider>
                             </motion.div>
                         )}
                     </AnimatePresence>

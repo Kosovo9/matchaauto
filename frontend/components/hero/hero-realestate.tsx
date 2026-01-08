@@ -5,6 +5,9 @@ import { motion } from 'framer-motion'
 import { MapPin, ArrowRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
+import { actions } from '../../shared/core/actions'
+import { ROUTES } from '../../shared/core/routes'
+
 export default function HeroRealEstate() {
     const router = useRouter()
 
@@ -31,7 +34,7 @@ export default function HeroRealEstate() {
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-6 md:mb-8"
                 >
-                    <span className="text-[#FFB347] text-[10px] md:text-xs font-sans font-bold tracking-[0.3em] uppercase border-b border-[#FFB347] pb-2">
+                    <span className="text-[var(--primary)] text-[10px] md:text-xs font-sans font-bold tracking-[0.3em] uppercase border-b border-[var(--primary)] pb-2">
                         Global Assets Exchange
                     </span>
                 </motion.div>
@@ -53,9 +56,9 @@ export default function HeroRealEstate() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="w-full max-w-3xl bg-white/10 backdrop-blur-xl border border-white/20 p-2 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center shadow-2xl gap-2 md:gap-0"
+                    className="w-full max-w-3xl bg-[var(--card)] backdrop-blur-xl border border-[var(--border)] p-2 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center shadow-[var(--shadow)] gap-2 md:gap-0"
                 >
-                    <div className="hidden md:flex pl-6 pr-4 border-r border-white/20 items-center gap-2 text-white/70 h-full">
+                    <div className="hidden md:flex pl-6 pr-4 border-r border-[var(--border)] items-center gap-2 text-white/70 h-full">
                         <MapPin size={18} />
                         <span className="text-sm font-sans">Global</span>
                     </div>
@@ -67,8 +70,8 @@ export default function HeroRealEstate() {
                     />
 
                     <button
-                        onClick={() => router.push('/escrow')}
-                        className="w-full md:w-auto bg-[#FFB347] text-[#121212] hover:bg-[#ffe3b0] h-12 px-8 rounded-xl md:rounded-full font-sans font-bold text-sm tracking-wide transition-colors flex items-center justify-center gap-2"
+                        onClick={() => actions.nav.go(router, ROUTES.escrow)}
+                        className="w-full md:w-auto bg-[var(--primary)] text-[var(--bg)] hover:opacity-90 h-12 px-8 rounded-xl md:rounded-full font-sans font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2"
                     >
                         DISCOVER <ArrowRight size={16} />
                     </button>
@@ -87,7 +90,7 @@ export default function HeroRealEstate() {
                         { label: 'Market Cap', value: '$840M', sub: 'Tokenized' },
                     ].map((stat, i) => (
                         <div key={i} className="text-center md:text-left font-sans min-w-[100px]">
-                            <div className="text-[#FFB347] text-2xl md:text-3xl font-light">{stat.value}</div>
+                            <div className="text-[var(--primary)] text-2xl md:text-3xl font-light">{stat.value}</div>
                             <div className="text-white/40 text-[10px] md:text-xs uppercase tracking-widest">{stat.label}</div>
                         </div>
                     ))}
@@ -98,3 +101,4 @@ export default function HeroRealEstate() {
         </div>
     )
 }
+

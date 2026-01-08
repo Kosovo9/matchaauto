@@ -1,0 +1,63 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - heading "404" [level=1] [ref=e4]
+      - paragraph [ref=e5]: Quantum uplink lost. Page not found in this dimension.
+      - link "Return to Base" [ref=e6] [cursor=pointer]:
+        - /url: /
+  - contentinfo [ref=e7]:
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]:
+          - link "MATCHAUTO" [ref=e11] [cursor=pointer]:
+            - /url: /
+            - img [ref=e14]
+            - generic [ref=e16]: MATCHAUTO
+          - paragraph [ref=e17]: The world's first AI-powered, Solana-secured global automotive marketplace. Connecting buyers and sellers across 150+ countries with quantum security.
+        - generic [ref=e18]:
+          - heading "Platform" [level=3] [ref=e19]
+          - list [ref=e20]:
+            - listitem [ref=e21]:
+              - link "Marketplace" [ref=e22] [cursor=pointer]:
+                - /url: /marketplace
+            - listitem [ref=e23]:
+              - link "VIN Decoder" [ref=e24] [cursor=pointer]:
+                - /url: /vin-decoder
+            - listitem [ref=e25]:
+              - link "Escrow Service" [ref=e26] [cursor=pointer]:
+                - /url: /escrow
+            - listitem [ref=e27]:
+              - link "Pricing" [ref=e28] [cursor=pointer]:
+                - /url: /pricing
+        - generic [ref=e29]:
+          - heading "Support" [level=3] [ref=e30]
+          - list [ref=e31]:
+            - listitem [ref=e32]:
+              - link "Help Center" [ref=e33] [cursor=pointer]:
+                - /url: /help
+            - listitem [ref=e34]:
+              - link "API Documentation" [ref=e35] [cursor=pointer]:
+                - /url: /api-docs
+            - listitem [ref=e36]:
+              - link "System Status" [ref=e37] [cursor=pointer]:
+                - /url: /status
+            - listitem [ref=e38]:
+              - link "Contact Us" [ref=e39] [cursor=pointer]:
+                - /url: /contact
+      - generic [ref=e40]:
+        - generic [ref=e41]: © 2026 Match-Auto Global. All rights reserved.
+        - generic [ref=e42]:
+          - link [ref=e43] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e44]
+          - link [ref=e46] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e47]
+          - link [ref=e50] [cursor=pointer]:
+            - /url: "#"
+            - img [ref=e51]
+  - alert [ref=e55]
+```

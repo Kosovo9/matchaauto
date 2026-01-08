@@ -3,7 +3,7 @@
 services:
   # PostgreSQL (PostGIS) – persistent data
   postgres:
-    image: postgis/postgis:15-3.3-alpine
+    build: ./postgres
     container_name: match-auto-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER}

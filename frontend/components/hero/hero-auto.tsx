@@ -1,174 +1,180 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Car, Settings, Wrench, Search, Zap, ChevronDown, Globe } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { actions, Domain } from "../../shared/core/actions";
+import { ROUTES } from "../../shared/core/routes";
+
+type Tab = "cars" | "parts" | "services";
+type Mode = "rent" | "buy";
+
+const TAB_TO_QUERY: Record<Tab, string> = {
+    cars: "cars",
+    parts: "parts",
+    services: "services",
+};
 
 export default function HeroAuto() {
-    const router = useRouter()
-    const [activeTab, setActiveTab] = useState('CARS')
-    const [mode, setMode] = useState('BUY') // RENT | BUY
+    const router = useRouter();
+    const [tab, setTab] = useState<Tab>("cars");
+    const [mode, setMode] = useState<Mode>("buy");
+    const [q, setQ] = useState("Tesla");
+    const [loading, setLoading] = useState(false);
 
-    const vehicles = [
-        { name: "Tesla Model S Plaid", price: "$ 129,000", img: "/heroes/tesla.png", tag: "Hot/New" }, // Placeholder img logic
-        { name: "Porsche Taycan Turbo S", price: "$ 185,000", img: "/heroes/porsche.png", tag: "Hot/New" },
-        { name: "Ferrari 296 GTB", price: "$ 345,000", img: "/heroes/ferrari.png", tag: "Hot/New" },
-        { name: "Lucid Air Sapphire", price: "$ 249,000", img: "/heroes/lucid.png", tag: "Hot/New" },
-    ]
+    const domain: Domain = "auto";
 
-    // Mock images for demonstration (using placeholders if local assets missing)
-    const getImg = (name: string) => `https://placehold.co/400x250/1a1a1a/FFF?text=${name.split(' ')[0]}`
+    const placeholder = useMemo(() => {
+        if (tab === "cars") return "Busca Tesla, BMW, camionetas…";
+        if (tab === "parts") return "Busca motor, llantas, frenos…";
+        return "Busca grúa, mecánico, detailing…";
+    }, [tab]);
+
+    const onSearch = async () => {
+        // P0: Navegación + query params. (Si ya renderizas resultados server-side, esto es perfecto.)
+        const qp = new URLSearchParams();
+        qp.set("q", q.trim() || "");
+        qp.set("tab", TAB_TO_QUERY[tab]);
+        qp.set("mode", mode);
+        router.push(`${ROUTES.auto}?${qp.toString()}`);
+    };
+
+    const onQuickBuy = async (listingId?: string) => {
+        // P0: si no hay listingId, manda a marketplace de autos o a /auto con query.
+        if (!listingId) return onSearch();
+
+        try {
+            setLoading(true);
+            await actions.checkout.quickBuy(listingId, domain);
+            router.push(ROUTES.checkout);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
-        <div className="relative w-full min-h-screen bg-black overflow-hidden font-sans text-white flex flex-col">
+        <section className="relative mx-auto max-w-6xl px-6 pt-14 pb-10">
+            {/* background glow */}
+            <div className="pointer-events-none absolute inset-0 -z-10 opacity-70 blur-2xl"
+                style={{ background: "radial-gradient(900px circle at 20% 10%, rgba(16,185,129,0.18), transparent 55%), radial-gradient(900px circle at 80% 30%, rgba(59,130,246,0.14), transparent 60%)" }}
+            />
 
-            {/* --- BACKGROUND AURORA --- */}
-            <div className="absolute inset-0 pointer-events-none">
-                {/* Green/Blue Gradient Glow */}
-                <div className="absolute top-[-20%] left-[20%] w-[60%] h-[60%] bg-[#00F0FF] rounded-full blur-[150px] opacity-20" />
-                <div className="absolute top-[10%] left-[30%] w-[40%] h-[40%] bg-[#00C853] rounded-full blur-[120px] opacity-20" />
+            <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-white/5 ring-1 ring-white/10 grid place-items-center">
+                        <span className="text-xl">⚡</span>
+                    </div>
+                    <div className="font-semibold tracking-wide text-white">MatchaAuto</div>
+                </div>
+
+                <div className="hidden md:flex items-center gap-3 rounded-full bg-black/30 px-4 py-2 ring-1 ring-white/10 backdrop-blur">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                    <span className="text-xs text-white/80">LIVE:</span>
+                    <span className="text-xs font-semibold text-white">8,432</span>
+                    <span className="text-xs text-white/60">Active Matchers</span>
+                </div>
+
+                <div className="flex items-center gap-2 rounded-full bg-black/30 px-3 py-2 ring-1 ring-white/10 backdrop-blur">
+                    <span className="text-xs text-white/80">ES / EN / PT</span>
+                </div>
             </div>
 
-            {/* --- TOP HEADER --- */}
-            <header className="relative z-20 flex justify-between items-center px-6 md:px-12 py-6 w-full max-w-[1440px] mx-auto">
-                {/* LOGO */}
-                <div className="flex items-center gap-2">
-                    <div className="text-[#00F0FF]"><Zap size={24} fill="currentColor" /></div>
-                    <span className="text-xl font-bold tracking-tight">MatchaAuto</span>
-                </div>
+            <div className="mt-10 text-center">
+                <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white drop-shadow">
+                    Muévete a la velocidad <br className="hidden md:block" /> del pensamiento.
+                </h1>
 
-                {/* LIVE COUNTER */}
-                <div className="hidden md:flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full backdrop-blur-md">
-                    <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C853] opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00C853]"></span>
-                    </span>
-                    <span className="text-[#00C853] font-bold text-xs tracking-wider">LIVE:</span>
-                    <span className="text-gray-300 text-xs">8,432 Active Matchers</span>
-                </div>
-
-                {/* LANGUAGE */}
-                <div className="flex items-center gap-1 text-gray-400 text-sm font-medium cursor-pointer hover:text-white transition-colors">
-                    <span>ES</span> <span className="text-gray-600">/</span> <span>EN</span> <span className="text-gray-600">/</span> <span>PT</span>
-                    <ChevronDown size={14} className="ml-1" />
-                </div>
-            </header>
-
-            {/* --- MAIN CONTENT CENTER --- */}
-            <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 mt-8 md:mt-0 w-full max-w-6xl mx-auto text-center">
-
-                {/* TITLE */}
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-10 text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400"
-                >
-                    Múevete a la velocidad <br />
-                    del pensamiento.
-                </motion.h1>
-
-                {/* TABS CONTAINER */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="flex flex-wrap justify-center gap-4 mb-8"
-                >
-                    {[
-                        { id: 'CARS', icon: Car, label: 'CARS' },
-                        { id: 'PARTS', icon: Settings, label: 'PARTS' },
-                        { id: 'SERVICES', icon: Wrench, label: 'SERVICES' },
-                    ].map((tab) => (
+                <div className="mt-8 mx-auto max-w-3xl rounded-3xl bg-black/25 ring-1 ring-white/10 backdrop-blur p-4">
+                    {/* Tabs */}
+                    <div className="flex gap-3 justify-center">
                         <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`flex items-center gap-3 px-8 py-3 rounded-full border transition-all duration-300 ${activeTab === tab.id
-                                    ? 'bg-white/10 border-white/30 text-white shadow-[0_0_20px_rgba(255,255,255,0.1)]'
-                                    : 'bg-transparent border-white/5 text-gray-400 hover:border-white/20'
+                            onClick={() => setTab("cars")}
+                            className={`px-6 py-3 rounded-full text-xs font-black tracking-widest ring-1 ring-white/10 transition-colors ${tab === "cars" ? "bg-white/10 text-white" : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white"
                                 }`}
                         >
-                            <tab.icon size={18} className={activeTab === tab.id ? 'text-[#00F0FF]' : ''} />
-                            <span className="font-semibold tracking-wide text-sm">[ {tab.label} ]</span>
+                            🚗 CARS
                         </button>
-                    ))}
-                </motion.div>
-
-                {/* TOGGLE & SEARCH */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="w-full max-w-2xl flex flex-col items-center gap-6 mb-16"
-                >
-                    {/* TOGGLE RENT | BUY */}
-                    <div className="flex items-center gap-4 text-sm font-bold tracking-widest text-gray-400">
-                        <span className={mode === 'RENT' ? 'text-white' : ''}>RENT</span>
-                        <div
-                            className="w-14 h-7 bg-white/10 rounded-full relative cursor-pointer border border-white/10"
-                            onClick={() => setMode(mode === 'BUY' ? 'RENT' : 'BUY')}
+                        <button
+                            onClick={() => setTab("parts")}
+                            className={`px-6 py-3 rounded-full text-xs font-black tracking-widest ring-1 ring-white/10 transition-colors ${tab === "parts" ? "bg-white/10 text-white" : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white"
+                                }`}
                         >
-                            <motion.div
-                                layout
-                                className="absolute top-1 bottom-1 w-8 bg-[#FF9500] rounded-full flex items-center justify-center text-[10px] text-black font-black"
-                                style={{ left: mode === 'BUY' ? 'calc(100% - 34px)' : '2px' }}
-                            >
-                                {mode}
-                            </motion.div>
-                        </div>
-                        <span className={mode === 'BUY' ? 'text-white' : ''}>BUY</span>
+                            ⚙️ PARTS
+                        </button>
+                        <button
+                            onClick={() => setTab("services")}
+                            className={`px-6 py-3 rounded-full text-xs font-black tracking-widest ring-1 ring-white/10 transition-colors ${tab === "services" ? "bg-white/10 text-white" : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white"
+                                }`}
+                        >
+                            🛠️ SERVICES
+                        </button>
                     </div>
 
-                    {/* SEARCH BAR */}
-                    <div className="w-full relative group">
-                        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                            <Search className="text-gray-400" size={20} />
-                        </div>
+                    {/* Mode */}
+                    <div className="mt-4 flex items-center justify-center gap-2 text-xs text-white/70">
+                        <span>RENT</span>
+                        <button
+                            onClick={() => setMode(mode === "rent" ? "buy" : "rent")}
+                            className="relative h-7 w-14 rounded-full bg-white/10 ring-1 ring-white/10"
+                            aria-label="Toggle rent/buy"
+                        >
+                            <span
+                                className={`absolute top-1 h-5 w-6 rounded-full bg-amber-400 transition-all ${mode === "buy" ? "left-7" : "left-1"
+                                    }`}
+                            />
+                        </button>
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${mode === "buy" ? "bg-amber-400 text-black" : "bg-white/10 text-white/70"}`}>
+                            BUY
+                        </span>
+                    </div>
+
+                    {/* Search */}
+                    <div className="mt-5 flex items-center gap-3 rounded-full bg-white/5 ring-1 ring-white/10 px-4 py-3">
+                        <span className="text-white/60">🔎</span>
                         <input
-                            type="text"
-                            defaultValue="Tesla"
-                            className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-[#00F0FF]/50 focus:bg-white/10 transition-all font-medium text-lg"
+                            value={q}
+                            onChange={(e) => setQ(e.target.value)}
+                            onKeyDown={(e) => e.key === "Enter" && onSearch()}
+                            placeholder={placeholder}
+                            className="w-full bg-transparent outline-none text-white placeholder:text-white/40"
                         />
-                        <div className="absolute inset-0 rounded-full border border-white/5 group-hover:border-white/20 pointer-events-none" />
+                        <button
+                            onClick={onSearch}
+                            className="px-5 py-2 rounded-full bg-white text-black font-black text-xs tracking-widest hover:opacity-90"
+                        >
+                            SEARCH
+                        </button>
                     </div>
-                </motion.div>
 
-                {/* CARDS GRID */}
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full"
-                >
-                    {vehicles.map((car, i) => (
-                        <div key={i} className="group relative bg-[#0F1115] border border-white/5 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 hover:shadow-2xl hover:shadow-[#00F0FF]/10 hover:-translate-y-1">
-                            {/* BADGE */}
-                            <div className="absolute top-3 right-3 bg-[#FF9500] text-black text-[10px] font-bold px-2 py-1 rounded-md z-10">
-                                {car.tag}
+                    {/* Featured cards placeholder hook */}
+                    <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {["Tesla Model S Plaid", "Porsche Taycan Turbo S", "Ferrari 296 GTB", "Lucid Air Sapphire"].map((title, i) => (
+                            <div key={title} className="rounded-2xl bg-white/5 ring-1 ring-white/10 overflow-hidden text-left hover:ring-white/30 transition-shadow group">
+                                <div className="h-28 bg-gradient-to-b from-white/10 to-transparent flex items-center justify-center">
+                                    <div className="text-4xl opacity-20 transition-transform group-hover:scale-110">🚗</div>
+                                </div>
+                                <div className="p-4">
+                                    <div className="flex items-center justify-between">
+                                        <div className="text-sm font-semibold text-white truncate mr-2">{title}</div>
+                                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-black font-black whitespace-nowrap">Hot/New</span>
+                                    </div>
+                                    <div className="mt-2 text-white/70 text-xs">$ 000,000</div>
+                                    <button
+                                        disabled={loading}
+                                        onClick={() => onQuickBuy(`demo-${i}`)}
+                                        className="mt-3 w-full rounded-xl bg-amber-400 text-black font-black py-2 text-xs tracking-widest hover:bg-amber-300 transition-colors disabled:opacity-60"
+                                    >
+                                        ⚡ Quick-Buy
+                                    </button>
+                                </div>
                             </div>
+                        ))}
+                    </div>
 
-                            {/* IMAGE AREA */}
-                            <div className="h-40 w-full bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-4 relative">
-                                {/* Glow behind car */}
-                                <div className="absolute inset-0 bg-radial-gradient from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                {/* Placeholder Car Image */}
-                                <img src={getImg(car.name)} alt={car.name} className="max-h-full object-contain drop-shadow-2xl relative z-10" />
-                            </div>
-
-                            {/* CONTENT */}
-                            <div className="p-4 text-left">
-                                <h3 className="font-bold text-white text-sm mb-1 truncate">{car.name}</h3>
-                                <p className="text-gray-400 text-xs mb-4">{car.price}</p>
-
-                                <button className="w-full bg-[#FF9500] hover:bg-[#ffaa33] text-black font-bold text-xs py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors">
-                                    <Zap size={14} fill="currentColor" /> Quick-Buy
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </motion.div>
-
-            </main>
-        </div>
-    )
+                    <div className="mt-4 text-center text-[11px] text-white/50">
+                        P0: Quick-Buy navega a Checkout. P1: Quick-Buy crea orden real con listingId real.
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
 }

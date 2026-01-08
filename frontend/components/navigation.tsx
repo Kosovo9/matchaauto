@@ -26,16 +26,21 @@ const quickActions = [
     { label: 'Live Auction', href: '/auctions', color: 'from-purple-500 to-pink-600' },
 ]
 
+import { actions } from '../shared/core/actions'
+import { ROUTES } from '../shared/core/routes'
+import { useRouter } from 'next/navigation'
+
 export function Navigation() {
     const [isOpen, setIsOpen] = useState(false)
     const { data: session } = useSession()
+    const router = useRouter()
 
     return (
         <nav className="sticky top-0 z-50 border-b border-white/5 bg-black/40 backdrop-blur-2xl">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-3 group">
+                    <div onClick={() => actions.nav.go(router, ROUTES.home)} className="flex items-center space-x-3 group cursor-pointer">
                         <div className="relative">
                             <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#39FF14] to-[#009EE3] flex items-center justify-center p-[1px]">
                                 <div className="w-full h-full bg-black rounded-[0.9rem] flex items-center justify-center">
@@ -50,7 +55,7 @@ export function Navigation() {
                             </h1>
                             <p className="text-[10px] font-mono tracking-[0.3em] text-gray-500 uppercase">Quantum Marketplace</p>
                         </div>
-                    </Link>
+                    </div>
 
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center space-x-1">
@@ -82,11 +87,17 @@ export function Navigation() {
 
                     {/* User Actions */}
                     <div className="flex items-center space-x-4">
-                        <button className="p-2 rounded-lg hover:bg-white/5 transition">
+                        <button
+                            onClick={() => actions.nav.go(router, ROUTES.notifications)}
+                            className="p-2 rounded-lg hover:bg-white/5 transition"
+                        >
                             <Bell className="w-5 h-5" />
                         </button>
 
-                        <button className="p-2 rounded-lg hover:bg-white/5 transition relative">
+                        <button
+                            onClick={() => actions.nav.go(router, ROUTES.cart)}
+                            className="p-2 rounded-lg hover:bg-white/5 transition relative"
+                        >
                             <ShoppingCart className="w-5 h-5" />
                             <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full text-xs flex items-center justify-center">
                                 3
@@ -101,22 +112,23 @@ export function Navigation() {
                                 >
                                     <User className="w-5 h-5" />
                                 </button>
-                                <Link
-                                    href="/dashboard"
+                                <button
+                                    onClick={() => actions.nav.go(router, ROUTES.dashboard)}
                                     className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-600 hover:opacity-90 transition"
                                 >
                                     Dashboard
-                                </Link>
+                                </button>
                             </>
                         ) : (
                             <button
-                                onClick={() => signIn()}
+                                onClick={() => actions.nav.go(router, ROUTES.wallet)}
                                 className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-600 hover:opacity-90 transition"
                             >
                                 <User className="w-4 h-4" />
                                 <span>Connect</span>
                             </button>
                         )}
+
 
                         {/* Mobile menu button */}
                         <button

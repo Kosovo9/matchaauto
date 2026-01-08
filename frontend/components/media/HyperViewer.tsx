@@ -44,7 +44,12 @@ export const HyperViewer: React.FC<MediaViewerProps> = ({ type, src, plan }) => 
 
             {/* OVERLAY DE VENTA RÁPIDA */}
             <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="w-full py-3 bg-white text-black font-bold rounded-xl">Contactar Vendedor</button>
+                <button
+                    onClick={handleContact}
+                    className="w-full py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-100 transition-colors"
+                >
+                    Contactar Vendedor
+                </button>
             </div>
         </div>
     );
