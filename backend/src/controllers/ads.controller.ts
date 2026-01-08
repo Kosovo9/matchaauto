@@ -1,4 +1,6 @@
 import { Hono } from 'hono';
+import { auditLog } from '../middleware/security.middleware';
+import { Pool } from 'pg';
 
 const ads = new Hono();
 
@@ -24,8 +26,17 @@ ads.post('/plans', async (c) => {
  */
 ads.post('/escrow/verify-eligibility', async (c) => {
     const { price, category } = await c.req.json();
+    const pool = c.get('pg') as Pool;
 
     if (category === 'real_estate' && price >= ESCROW_THRESHOLD_MXN) {
+        await auditLog(pool, {
+            action: 'ESCROW_ELIGIBILITY_CHECK',
+            entityType: 'real_estate',
+            severity: 'info',
+            metadata: { price, category, status: 'eligible' },
+            ip: c.req.header('x-forwarded-for')
+        });
+
         return c.json({
             eligible: true,
             message: "Este activo califica para Escrow de Alta Seguridad (Opcional).",

@@ -49,6 +49,7 @@ import { GeoRAGService } from './services/ai/geo-rag.service';
 import { GeoRAGController } from './controllers/geo-rag.controller';
 import { UniversalRAGService } from './services/ai/universal-rag.service';
 import { RAGController } from './controllers/rag.controller';
+import { honeypotGuard } from './middleware/security.middleware';
 
 export { RateLimitStore } from './middleware/rateLimiter';
 export { ChatRoom } from './chat/durable';
@@ -126,6 +127,9 @@ const start = async () => {
             c.set('proService', new ProEngineService(pgPool, redis));
             await next();
         });
+
+        // 🛡️ Global Security Guard (Traps bots before they hit logic)
+        app.use('*', honeypotGuard());
 
         // Core Shared Services
         const geocodingService = new GeocodingService(redis, pgPool);

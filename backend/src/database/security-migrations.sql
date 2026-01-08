@@ -1,33 +1,28 @@
--- Security Tables Migration
--- 1. IP Blacklist (Persistent Bans)
-CREATE TABLE IF NOT EXISTS ip_blacklist (
-    ip_address VARCHAR(45) PRIMARY KEY,
-    reason TEXT,
-    banned_at TIMESTAMPTZ DEFAULT NOW(),
-    expires_at TIMESTAMPTZ,
-    is_permanent BOOLEAN DEFAULT FALSE
-);
-CREATE INDEX IF NOT EXISTS idx_ip_blacklist_ip ON ip_blacklist(ip_address);
--- 2. Audit Log (Deep Tracking)
-CREATE TABLE IF NOT EXISTS security_audit_log (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    actor_id UUID,
-    -- User ID or System ID
-    action VARCHAR(50) NOT NULL,
-    resource_type VARCHAR(50),
-    resource_id VARCHAR(50),
-    ip_address VARCHAR(45),
-    user_agent TEXT,
-    metadata JSONB,
-    severity VARCHAR(20) CHECK (severity IN ('info', 'warning', 'critical')),
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
--- 3. Honeypot Traps (Backend)
--- We track interactions with non-existent resources here
+-- 🛡️ SECURITY: HONEYPOT & AUDIT LOGS
 CREATE TABLE IF NOT EXISTS honeypot_hits (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    ip_address VARCHAR(45),
-    trap_name VARCHAR(100),
-    payload JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    ip_address VARCHAR(45) NOT NULL,
+    user_agent TEXT,
+    path VARCHAR(255) NOT NULL,
+    payload_hash VARCHAR(64),
+    -- SHA-256 of the trapped payload
+    trapped_fields JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+CREATE TABLE IF NOT EXISTS security_audit_log (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE
+    SET NULL,
+        action VARCHAR(100) NOT NULL,
+        entity_type VARCHAR(50),
+        entity_id UUID,
+        severity VARCHAR(20) DEFAULT 'info',
+        -- info, warning, critical
+        ip_address VARCHAR(45),
+        metadata JSONB,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_honeypot_ip ON honeypot_hits(ip_address);
+CREATE INDEX IF NOT EXISTS idx_audit_user ON security_audit_log(user_id);
+CREATE INDEX IF NOT EXISTS idx_audit_action ON security_audit_log(action);
+CREATE INDEX IF NOT EXISTS idx_audit_created ON security_audit_log(created_at);
