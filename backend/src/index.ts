@@ -81,7 +81,12 @@ import { HybridSyncController } from './controllers/hybrid-sync.controller';
 // Global Middleware
 app.use('*', honoLogger());
 app.use('*', cors());
-app.use('*', clerkMiddleware()); // 🔥 CLERK LIVE MODE ACTIVE
+
+// 🔥 CLERK LIVE MODE (Only if keys present)
+if (process.env.CLERK_SECRET_KEY) {
+    app.use('*', clerkMiddleware());
+}
+
 app.use('*', hybridModeMiddleware); // 🧠 Hybrid Detection Layer Active
 
 // Health Check

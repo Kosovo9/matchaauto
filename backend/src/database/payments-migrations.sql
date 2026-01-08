@@ -3,7 +3,7 @@
 CREATE TABLE IF NOT EXISTS boost_orders (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    listing_id UUID NOT NULL,
+    listing_id TEXT NOT NULL,
     -- Logical link to listing/vehicle
     plan_id VARCHAR(50) NOT NULL,
     -- basic, premium, diamond
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS boost_orders (
 );
 CREATE TABLE IF NOT EXISTS boosts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    listing_id UUID NOT NULL UNIQUE,
+    listing_id TEXT NOT NULL UNIQUE,
     -- Only one active boost per listing
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     placement VARCHAR(50) DEFAULT 'featured',

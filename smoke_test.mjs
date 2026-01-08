@@ -7,8 +7,8 @@ const fetchJSON = async (url, options) => {
 const run = async () => {
     const userId = "00000000-0000-0000-0000-000000000001";
     const unverifiedId = "00000000-0000-0000-0000-000000000002";
-    const baseUrl = "http://localhost:3002/api/verifications";
-    const boostUrl = "http://localhost:3002/api/boosts/checkout";
+    const baseUrl = "http://127.0.0.1:3003/api/verifications";
+    const boostUrl = "http://127.0.0.1:3003/api/boosts/checkout";
     const headers = {
         "Content-Type": "application/json",
         "x-user-id": userId

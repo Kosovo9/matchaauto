@@ -1,0 +1,19 @@
+[INFO] ­ƒöî Connecting to Redis at redis://localhost:6379
+[INFO] GeolocationService Orchestrator initialized with 10x architecture
+­ƒÜÇ Match-Auto Backend starting on port 3003
+[INFO] ­ƒÜÇ MatchaAuto 1000x Backend initialized in development mode
+[INFO] Ô£à Redis Connected
+[INFO] ­ƒºá Universal RAG Embedder Initialized (Offline Ready)
+<-- POST /api/verifications/request
+[INFO] [Verification] User 00000000-0000-0000-0000-000000000001 requested verification ebebc71d-bfb2-432a-948a-495930610ee7
+--> POST /api/verifications/request [32m201[0m 26ms
+<-- GET /api/verifications/me
+--> GET /api/verifications/me [32m200[0m 3ms
+<-- POST /api/verifications/decide
+[INFO] [Verification] Request ebebc71d-bfb2-432a-948a-495930610ee7 approved by 00000000-0000-0000-0000-000000000000
+--> POST /api/verifications/decide [32m200[0m 10ms
+<-- POST /api/boosts/checkout
+--> POST /api/boosts/checkout [33m403[0m 3ms
+<-- POST /api/boosts/checkout
+[INFO] [MP MOCK] Creating mock preference for order 01bc4b41-c9c5-48bf-bfc8-b27640611839
+--> POST /api/boosts/checkout [32m200[0m 13ms
