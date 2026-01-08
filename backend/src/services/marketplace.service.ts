@@ -104,9 +104,10 @@ export class MarketplaceService {
                 if (validated.sortBy === 'price_desc') orderBy = 'v.price DESC';
 
                 const sql = `
-            SELECT v.*, ${distanceField}, COUNT(*) OVER() as full_count
+            SELECT v.*, u.trust_badge as "sellerTrustBadge", ${distanceField}, COUNT(*) OVER() as full_count
             FROM vehicles v
             LEFT JOIN vehicle_locations_static vl ON v.id = vl.vehicle_id
+            LEFT JOIN users u ON v.owner_id = u.id
             WHERE ${conditions.join(' AND ')}
             ORDER BY ${orderBy}
             LIMIT $${pIdx} OFFSET $${pIdx + 1}
