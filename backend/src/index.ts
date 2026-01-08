@@ -244,10 +244,13 @@ const start = async () => {
             const domain = c.req.query('domain') || 'auto';
             const { Pool } = await import('pg');
             const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-            const { rows } = await pool.query(
-                'SELECT * FROM listings WHERE domain=$1 AND (title ILIKE $2 OR description ILIKE $2) LIMIT 20',
-                [domain, `%${q}%`]
-            );
+            const { rows } = await pool.query(`
+                SELECT l.*, u.trust_badge as "sellerTrustBadge"
+                FROM listings l
+                LEFT JOIN users u ON l.user_id = u.id
+                WHERE l.domain=$1 AND (l.title ILIKE $2 OR l.description ILIKE $2) 
+                LIMIT 20
+            `, [domain, `%${q}%`]);
             return c.json(rows);
         });
 

@@ -155,8 +155,9 @@ export class MarketplaceService {
         const client = await this.pgPool.connect();
         try {
             const res = await client.query(`
-            SELECT v.* 
+            SELECT v.*, u.trust_badge as "sellerTrustBadge"
             FROM vehicles v 
+            LEFT JOIN users u ON v.owner_id = u.id
             WHERE v.status = 'published' AND (v.metadata->>'isFeatured')::boolean = true
             ORDER BY RANDOM() 
             LIMIT $1
