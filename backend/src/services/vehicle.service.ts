@@ -33,6 +33,7 @@ export const VehicleSchema = z.object({
     }).optional(),
     status: z.enum(['draft', 'published', 'sold', 'reserved', 'maintenance']).default('draft'),
     metadata: z.record(z.string(), z.any()).optional(),
+    sellerTrustBadge: z.string().optional(),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional()
 });
@@ -140,12 +141,13 @@ export class VehicleService {
         const client = await this.pgPool.connect();
         try {
             const res = await client.query(`
-        SELECT v.*, 
+        SELECT v.*, u.trust_badge as "sellerTrustBadge",
                ST_Y(vl.location::geometry) as lat, 
                ST_X(vl.location::geometry) as lng,
                vl.address_text as address
         FROM vehicles v
         LEFT JOIN vehicle_locations_static vl ON v.id = vl.vehicle_id
+        LEFT JOIN users u ON v.owner_id = u.id
         WHERE v.id = $1
       `, [id]);
 
@@ -173,6 +175,7 @@ export class VehicleService {
                 description: row.description,
                 status: row.status,
                 metadata: row.metadata,
+                sellerTrustBadge: row.sellerTrustBadge,
                 location: row.lat ? { lat: row.lat, lng: row.lng, address: row.address } : undefined,
                 createdAt: row.created_at,
                 updatedAt: row.updated_at

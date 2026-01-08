@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-01-08T09:43:13.132Z",
+  "timestamp": "2026-01-08T09:51:23.262Z",
   "projectRoot": "C:\\Match-auto-1",
   "scanStrategy": "Surgical (Allowlist + .radarignore)",
   "stats": {
     "totalFilesScanned": 689,
     "totalTables": 50,
-    "unusedTables": 10,
+    "unusedTables": 11,
     "totalFunctions": 5,
     "unusedFunctions": 5
   },
@@ -13,65 +13,106 @@
     "unusedTables": [
       {
         "name": "saved_searches",
-        "file": "backend\\db\\schema.sql"
+        "fullName": "saved_searches",
+        "file": "backend\\db\\schema.sql",
+        "codeRefs": 0
       },
       {
         "name": "security_audit",
-        "file": "backend\\db\\schema.sql"
+        "fullName": "security_audit",
+        "file": "backend\\db\\schema.sql",
+        "codeRefs": 0
       },
       {
         "name": "barter_confirmations",
-        "file": "backend\\src\\database\\community-resilience-migrations.sql"
+        "fullName": "barter_confirmations",
+        "file": "backend\\src\\database\\community-resilience-migrations.sql",
+        "codeRefs": 0
       },
       {
         "name": "spatial_grid_index",
-        "file": "backend\\src\\database\\geo-migrations-block1-fix.sql"
+        "fullName": "spatial_grid_index",
+        "file": "backend\\src\\database\\geo-migrations-block1-fix.sql",
+        "codeRefs": 0
       },
       {
         "name": "security_audit_log",
-        "file": "backend\\src\\database\\security-migrations.sql"
+        "fullName": "security_audit_log",
+        "file": "backend\\src\\database\\security-migrations.sql",
+        "codeRefs": 0
       },
       {
         "name": "honeypot_hits",
-        "file": "backend\\src\\database\\security-migrations.sql"
+        "fullName": "honeypot_hits",
+        "file": "backend\\src\\database\\security-migrations.sql",
+        "codeRefs": 0
       },
       {
         "name": "marketplace_items",
-        "file": "docker\\postgres\\init_extra.sql"
+        "fullName": "marketplace_items",
+        "file": "docker\\postgres\\init_extra.sql",
+        "codeRefs": 0
       },
       {
         "name": "real_estate_assets",
-        "file": "docker\\postgres\\init_extra.sql"
+        "fullName": "real_estate_assets",
+        "file": "docker\\postgres\\init_extra.sql",
+        "codeRefs": 0
       },
       {
         "name": "identity_verifications",
-        "file": "docker\\postgres\\init_extra.sql"
+        "fullName": "identity_verifications",
+        "file": "docker\\postgres\\init_extra.sql",
+        "codeRefs": 0
+      },
+      {
+        "name": "offers",
+        "fullName": "offers",
+        "file": "docker\\postgres\\init_extra.sql",
+        "codeRefs": 0
       },
       {
         "name": "search_heatmaps",
-        "file": "docker\\postgres\\init_extra.sql"
+        "fullName": "search_heatmaps",
+        "file": "docker\\postgres\\init_extra.sql",
+        "codeRefs": 0
       }
     ],
     "unusedFunctions": [
       {
         "name": "update_listing_geom",
-        "file": "backend\\sql\\0001_trinity_setup.sql"
+        "fullName": "update_listing_geom",
+        "file": "backend\\sql\\0001_trinity_setup.sql",
+        "codeRefs": 0,
+        "sqlRefs": 1
       },
       {
         "name": "update_timestamp_column",
-        "file": "backend\\src\\database\\geo-migrations-v2.sql"
+        "fullName": "update_timestamp_column",
+        "file": "backend\\src\\database\\geo-migrations-v2.sql",
+        "codeRefs": 0,
+        "sqlRefs": 1
       },
       {
         "name": "calculate_bearing",
-        "file": "backend\\src\\database\\geo-migrations.sql"
+        "fullName": "calculate_bearing",
+        "file": "backend\\src\\database\\geo-migrations.sql",
+        "codeRefs": 0,
+        "sqlRefs": 1
       },
       {
         "name": "update_location_timestamp",
-        "file": "backend\\src\\database\\geo-migrations.sql"
+        "fullName": "update_location_timestamp",
+        "file": "backend\\src\\database\\geo-migrations.sql",
+        "codeRefs": 0,
+        "sqlRefs": 1
       },
       {
         "name": "vehicles_search_trigger",
-        "file": "backend\\src\\database\\listings-migrations.sql"
+        "fullName": "vehicles_search_trigger",
+        "file": "backend\\src\\database\\listings-migrations.sql",
+        "codeRefs": 0,
+        "sqlRefs": 1
       }
     ]
   },

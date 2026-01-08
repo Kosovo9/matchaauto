@@ -38,4 +38,13 @@ export const actions = {
             return api(`/api/rag/search?${params.toString()}`);
         },
     },
+
+    identity: {
+        requestVerification: (docType: string, fileUrl: string) =>
+            api('/api/verifications/request', {
+                method: 'POST',
+                body: JSON.stringify({ docType, fileUrl })
+            }),
+        fetchStatus: () => api('/api/verifications/me')
+    },
 };
