@@ -5,7 +5,8 @@ import { logger } from '../utils/logger';
 import { metrics } from '../utils/metrics';
 import { CircuitBreaker } from '../patterns/circuit-breaker';
 import { LRUCache } from 'lru-cache';
-import { compress, decompress } from 'lz4';
+import lz4 from 'lz4';
+const { compress, decompress } = lz4;
 import { Mutex } from 'async-mutex';
 
 export const BoundsSchema = z.object({

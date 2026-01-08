@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://match-auto-backend.neocwolf.workers.dev'
 
-const backendClient = axios.create({
+export const backendClient = axios.create({
     baseURL: API_URL,
     timeout: 10000,
     headers: {

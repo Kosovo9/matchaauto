@@ -19,13 +19,13 @@ import {
     Video,
     Smartphone
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '../../../lib/utils';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
-import { usePushNotifications } from '@/hooks/use-notifications';
+import { usePushNotifications } from '../../../hooks/use-notifications';
 import toast from 'react-hot-toast';
-import { backendClient } from '@/lib/backend-client';
-import { getTreasuryStatus } from '@/lib/treasury-service';
+import { backendClient } from '../../../lib/backend-client';
+import { getTreasuryStatus } from '../../../lib/treasury-service';
 
 export default function AdminNexus() {
     const { data: session, status } = useSession();

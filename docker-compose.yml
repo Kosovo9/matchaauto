@@ -1,4 +1,4 @@
-version: "3.9"
+
 
 services:
   # PostgreSQL (PostGIS) – persistent data
@@ -42,7 +42,7 @@ services:
       - ollama_data:/root/.ollama
     command: ["serve"]
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434"]
+      test: ["CMD", "ollama", "list"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -50,8 +50,8 @@ services:
   # Backend (Hono + TypeScript)
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile.production
     container_name: match-auto-backend
     ports:
       - "3000:3000"
@@ -65,7 +65,7 @@ services:
       - redis
       - ollama
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:3000/api/health"]
       interval: 15s
       timeout: 5s
       retries: 3
@@ -77,13 +77,14 @@ services:
       dockerfile: Dockerfile
     container_name: match-auto-frontend
     ports:
-      - "80:80"
+      - "80:3000"
+    env_file: ./frontend/.env
     environment:
       - VITE_API_BASE_URL=http://backend:3000
     depends_on:
       - backend
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:3000/"]
       interval: 15s
       timeout: 5s
       retries: 3

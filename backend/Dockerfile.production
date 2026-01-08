@@ -1,24 +1,45 @@
-# Build stage
-FROM node:20-alpine AS builder
+# 🦾 TITAN-BASE: Debian Bookworm + Librerías de IA
+FROM node:20-bookworm AS builder
+
+# Instalar dependencias de compilación y librerías nativas
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    gcc \
+    git \
+    libgomp1 \
+    libpng-dev \
+    libjpeg-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+# Copiar archivos de dependencias
+COPY backend/package*.json ./
 
-COPY . .
-RUN npm run build
+# Instalar dependencias (incluyendo nativas para Linux)
+RUN npm install --legacy-peer-deps
 
-# Production stage
-FROM node:20-alpine
-
+# --- ETAPA DE RUNTIME ---
+FROM node:20-bookworm-slim AS runner
 WORKDIR /app
 
-COPY --from=builder /app/package*.json ./
-RUN npm install --omit=dev
+# Instalar solo librerías de ejecución necesarias
+RUN apt-get update && apt-get install -y \
+    libgomp1 \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /app/dist ./dist
+# Copiar node_modules compilados del builder
+COPY --from=builder /app/node_modules ./node_modules
+COPY backend/package*.json ./
+
+# Copiar el bundle pre-compilado desde el host
+COPY backend/dist/bundle.js ./dist/bundle.js
 
 EXPOSE 3000
+ENV NODE_ENV=production
 
-CMD ["node", "dist/server.js"]
+# Comando de inicio
+CMD ["node", "dist/bundle.js"]

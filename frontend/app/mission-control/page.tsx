@@ -1,4 +1,4 @@
-import { MissionControlDashboard } from '@/components/features/admin/MissionControlDashboard';
+import { MissionControlDashboard } from '../../components/features/admin/MissionControlDashboard';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

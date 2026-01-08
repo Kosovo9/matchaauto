@@ -58,7 +58,7 @@ export class ResourceAllocationController {
             );
             const pipe = this.redis.pipeline();
             ids.forEach(id => pipe.hgetall(id));
-            const results = await pipe.exec();
+            const results = await pipe.exec() || [];
             const needs = results.map(r => r[1]);
             return c.json({ success: true, data: needs });
         } catch (error) {

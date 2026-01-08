@@ -3,10 +3,10 @@
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { Shield, Bell, Zap, Save, Trash2, List } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '../../../lib/utils';
 
-const LiveMap = dynamic(() => import('@/components/maps/LiveMap'), { ssr: false });
-const GeofenceEditor = dynamic(() => import('@/components/maps/GeofenceEditor'), { ssr: false });
+const LiveMap = dynamic(() => import('../../../components/maps/LiveMap'), { ssr: false });
+const GeofenceEditor = dynamic(() => import('../../../components/maps/GeofenceEditor'), { ssr: false });
 
 export default function GeofencingPage() {
     const [draftGeofence, setDraftGeofence] = useState<any>(null);

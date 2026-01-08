@@ -52,14 +52,12 @@ export class ReverseGeocodingController {
             };
             const validated = ReverseGeocodeRequestSchema.parse(query);
 
-            const result = await this.reverseGeocodingService.reverseGeocode(
-                validated.lat,
-                validated.lng,
-                {
-                    language: validated.language,
-                    radius: validated.radius
-                }
-            );
+            const result = await this.reverseGeocodingService.reverseGeocode({
+                latitude: validated.lat,
+                longitude: validated.lng,
+                language: validated.language,
+                radius: validated.radius
+            });
 
             metrics.timing('reverse_geocoding.latency', Date.now() - start);
 
@@ -117,7 +115,7 @@ export class ReverseGeocodingController {
 
     private handleError(error: any, c: Context) {
         if (error instanceof z.ZodError) {
-            return c.json({ success: false, error: 'Validation Error', details: error.errors }, 400);
+            return c.json({ success: false, error: 'Validation Error', details: (error as any).errors }, 400);
         } else {
             logger.error('Reverse Geocoding Controller Error', error);
             return c.json({ success: false, error: 'Internal Server Error' }, 500);

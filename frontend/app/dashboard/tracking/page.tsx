@@ -2,11 +2,11 @@
 
 import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
-import { useActiveFleet } from '@/hooks/tracking/useVehicleTracking';
+import { useActiveFleet } from '../../../hooks/tracking/useVehicleTracking';
 import { Activity, Radio, AlertTriangle } from 'lucide-react';
 
 // Dynamically import map
-const LiveMap = dynamic(() => import('@/components/maps/LiveMap'), {
+const LiveMap = dynamic(() => import('../../../components/maps/LiveMap'), {
     ssr: false,
     loading: () => (
         <div className="h-full w-full bg-slate-900 animate-pulse flex flex-col items-center justify-center text-slate-500 gap-4">

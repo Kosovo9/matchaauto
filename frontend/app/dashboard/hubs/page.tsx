@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Box, Share2, Zap, Shield, Search, Plus, ArrowRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '../../../lib/utils';
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787';

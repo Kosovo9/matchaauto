@@ -2,487 +2,292 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Zap, Globe, ChevronDown, CheckCircle, Car, Wrench, ShieldCheck, Banknote, Truck, ArrowRight, ArrowLeft } from "lucide-react";
+import { Search, Zap, Globe, ChevronDown, CheckCircle, Car, Wrench, ShieldCheck, Banknote, Truck, ArrowRight, ArrowLeft, Sparkles, Home, Box, Shield, Zap as AI, BarChart } from "lucide-react";
 import { cn } from "@/lib/utils";
-import backend, { backendClient } from "@/lib/backend-client";
 
-// --- MOCK DATA WITH MULTI-IMAGE GALLERIES ---
+// --- THEME ENGINE ---
+type ProjectTheme = 'CARS' | 'REAL_ESTATE' | 'MARKETPLACE';
+
+const THEMES = {
+    CARS: {
+        id: 'CARS',
+        path: 'theme-cars',
+        name: 'MatchaAuto',
+        tagline: 'Quantum Marketplace',
+        headline: ['Muévete a la velocidad del', 'pensamiento.'],
+        primary: '#009EE3', // Cyber Blue
+        accent: '#FF9500',  // Tech Orange
+        categories: ['VEHÍCULOS', 'REFACCIONES', 'SERVICIOS'],
+        heroImage: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=1200",
+        stats: [
+            { label: 'Market Trends', value: 'UP 12%', icon: BarChart },
+            { label: 'Blockchain', value: 'SOLANA', icon: ShieldCheck },
+            { label: 'Active Matchers', value: '14,502', icon: AI }
+        ]
+    },
+    REAL_ESTATE: {
+        id: 'REAL_ESTATE',
+        path: 'theme-real',
+        name: 'LuxuryEstates',
+        tagline: 'Premier Investments',
+        headline: ['Curating the World\'s', 'Finest Properties.'],
+        primary: '#D4AF37', // Gold
+        accent: '#D4AF37',
+        categories: ['RESIDENTIAL', 'INVESTMENT', 'COMMERCIAL'],
+        heroImage: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=1200",
+        stats: [
+            { label: 'Portfolio Val', value: '$4.5B', icon: BarChart },
+            { label: 'Verified', value: 'ESCROW', icon: Shield },
+            { label: 'Investors', value: '2,430', icon: Sparkles }
+        ]
+    },
+    MARKETPLACE: {
+        id: 'MARKETPLACE',
+        path: 'theme-art',
+        name: 'MatchaStore',
+        tagline: 'Fresh Essentials',
+        headline: ['Todo lo que necesitas,', 'ahora mismo.'],
+        primary: '#39FF14', // Matcha Green
+        accent: '#000000',
+        categories: ['TECH', 'FASHION', 'LIFESTYLE'],
+        heroImage: "https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?auto=format&fit=crop&q=80&w=1200",
+        stats: [
+            { label: 'Eco Rating', value: 'A+', icon: Sparkles },
+            { label: 'Shipping', value: 'FREE', icon: Truck },
+            { label: 'Vendors', value: '892', icon: Globe }
+        ]
+    }
+};
+
 const CAR_RESULTS = [
     {
         id: "1",
         title: "Tesla Model S Plaid",
         price: "$129,990",
-        badge: "HOT",
-        images: [
-            "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=800", // Front
-            "https://images.unsplash.com/photo-1669828469339-c146d997f90c?auto=format&fit=crop&q=80&w=800", // Detail
-            "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&q=80&w=800"  // Interior/Similar
-        ]
+        specs: { hp: "1020", vin: "0xABC...DEF123", status: "VERIFIED" },
+        image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=800"
     },
     {
         id: "2",
         title: "Porsche Taycan Turbo",
         price: "$185,000",
-        badge: "NEW",
-        images: [
-            "https://images.unsplash.com/photo-1614205732726-939338755889?auto=format&fit=crop&q=80&w=800", // White Front
-            "https://images.unsplash.com/photo-1503376763036-066120622c74?auto=format&fit=crop&q=80&w=800", // Detail
-            "https://images.unsplash.com/photo-1580273916550-e323be2eb09c?auto=format&fit=crop&q=80&w=800"  // Interior
-        ]
+        specs: { hp: "750", vin: "0xPORS...911XYZ", status: "VERIFIED" },
+        image: "https://images.unsplash.com/photo-1614205732726-939338755889?auto=format&fit=crop&q=80&w=800"
     },
     {
         id: "3",
         title: "Ferrari 296 GTB",
         price: "$322,000",
-        badge: "EXOTIC",
-        images: [
-            "https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&q=80&w=800", // Red Front
-            "https://images.unsplash.com/photo-1583121274602-3e2820c698d9?auto=format&fit=crop&q=80&w=800", // Red Side
-            "https://images.unsplash.com/photo-1597007030739-5d296c0966f2?auto=format&fit=crop&q=80&w=800"  // Wheel
-        ]
-    },
-    {
-        id: "4",
-        title: "Lucid Air Sapphire",
-        price: "$249,000",
-        badge: "LUXURY",
-        images: [
-            "https://images.unsplash.com/photo-1696355966237-75929a4bd793?auto=format&fit=crop&q=80&w=800", // Blue
-            "https://images.unsplash.com/photo-1662973418520-2527cc0a7d97?auto=format&fit=crop&q=80&w=800", // Interior/Screen
-            "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&q=80&w=800"  // Detail
-        ]
-    },
-    {
-        id: "5",
-        title: "Lamborghini Revuelto",
-        price: "$600,000",
-        badge: "RARE",
-        images: [
-            "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=800", // Grey
-            "https://images.unsplash.com/photo-1621135802920-133df287f89c?auto=format&fit=crop&q=80&w=800", // Rear
-            "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?auto=format&fit=crop&q=80&w=800"  // Interior
-        ]
-    },
-    {
-        id: "6",
-        title: "Rivian R1T",
-        price: "$73,000",
-        badge: "TRUCK",
-        images: [
-            "https://images.unsplash.com/photo-1662973168285-d601b072be2e?auto=format&fit=crop&q=80&w=800", // Green Truck
-            "https://images.unsplash.com/photo-1656517173950-7170e7e4a30e?auto=format&fit=crop&q=80&w=800", // Charging
-            "https://images.unsplash.com/photo-1669670088927-4a1801c402cd?auto=format&fit=crop&q=80&w=800"  // Camping/Detail
-        ]
-    },
+        specs: { hp: "818", vin: "0xRED...296GTB", status: "VERIFIED" },
+        image: "https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&q=80&w=800"
+    }
 ];
-
-const SERVICE_RESULTS = [
-    { id: "s1", title: "Mantenimiento Express", price: "$150", badge: "FAST", images: ["https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&q=80&w=800"] },
-    { id: "s2", title: "Diagnóstico Computadora", price: "$80", badge: "TECH", images: ["https://images.unsplash.com/photo-1517524285303-d75439c8ce8d?auto=format&fit=crop&q=80&w=800"] },
-    { id: "s3", title: "Alineación y Balanceo", price: "$90", badge: "TIRES", images: ["https://images.unsplash.com/photo-1580234599554-4a572a15320c?auto=format&fit=crop&q=80&w=800"] },
-];
-
-// --- HELPER COMPONENTS ---
-
-const Badge = ({ children, color = "green" }: { children: React.ReactNode; color?: "green" | "blue" | "orange" }) => {
-    const colors = {
-        green: "bg-[#39FF14]/20 text-[#39FF14] border-[#39FF14]/50 shadow-[0_0_10px_rgba(57,255,20,0.2)]",
-        blue: "bg-[#00B3FF]/20 text-[#00B3FF] border-[#00B3FF]/50 shadow-[0_0_10px_rgba(0,179,255,0.2)]",
-        orange: "bg-[#FF9500]/20 text-[#FF9500] border-[#FF9500]/50 shadow-[0_0_10px_rgba(255,149,0,0.2)]",
-    };
-    return (
-        <span className={cn("px-2 py-1 text-[10px] font-bold uppercase tracking-wider border rounded-full backdrop-blur-md", colors[color])}>
-            {children}
-        </span>
-    );
-};
-
-// --- QUANTUM CARD (Handles Multi-Image Transitions) ---
-const QuantumCard = ({ item, mode, accentColor, accentBg, handlePayment }: any) => {
-    const [currentImgIdx, setCurrentImgIdx] = useState(0);
-    const [isHovered, setIsHovered] = useState(false);
-
-    // Auto-cycle images when hovered
-    useEffect(() => {
-        let interval: any;
-        if (isHovered && item.images.length > 1) {
-            interval = setInterval(() => {
-                setCurrentImgIdx((prev) => (prev + 1) % item.images.length);
-            }, 1200); // 1.2s transition speed on hover
-        } else {
-            // Reset to 0 when not hovered (optional, or keep last)
-            setCurrentImgIdx(0);
-        }
-        return () => clearInterval(interval);
-    }, [isHovered, item.images.length]);
-
-    return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="group relative bg-[#151515] rounded-[2rem] overflow-hidden border border-white/5 hover:border-white/20 transition-all hover:-translate-y-2 hover:shadow-2xl cursor-pointer"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
-            {/* DYNAMIC IMAGE GALLERY */}
-            <div className="relative h-48 w-full overflow-hidden bg-gray-900">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#151515] to-transparent z-10 opacity-60" />
-
-                <AnimatePresence mode="wait">
-                    <motion.img
-                        key={currentImgIdx}
-                        src={item.images[currentImgIdx]}
-                        alt={item.title}
-                        initial={{ opacity: 0.8, scale: 1.1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="absolute inset-0 w-full h-full object-cover"
-                    />
-                </AnimatePresence>
-
-                {/* IMAGE INDICATORS (Pills) */}
-                {item.images.length > 1 && (
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex gap-1">
-                        {item.images.map((_: any, idx: number) => (
-                            <div
-                                key={idx}
-                                className={cn("h-1 rounded-full transition-all duration-300",
-                                    currentImgIdx === idx ? "w-6 bg-white" : "w-1 bg-white/30"
-                                )}
-                            />
-                        ))}
-                    </div>
-                )}
-
-                <div className="absolute top-3 right-3 z-20">
-                    <Badge color={item.badge === "HOT" ? "orange" : "blue"}>{item.badge}</Badge>
-                </div>
-            </div>
-
-            {/* INFO */}
-            <div className="p-5 relative z-20 -mt-2">
-                <h4 className="text-lg font-bold text-white leading-tight mb-1 truncate">{item.title}</h4>
-                <p className={cn("text-xl font-black mb-4", accentColor)}>{item.price}</p>
-
-                {/* ACTION BUTTONS */}
-                <div className="grid grid-cols-2 gap-2">
-                    <button
-                        onClick={(e) => { e.stopPropagation(); window.location.href = `/sell?mode=rent&item=${item.id}`; }}
-                        className="py-2 rounded-xl bg-white/5 hover:bg-blue-500/20 text-[10px] font-bold text-blue-400 border border-white/5 transition-all flex flex-col items-center justify-center gap-1"
-                    >
-                        <Banknote className="w-3 h-3" />
-                        PRE-RENT
-                    </button>
-                    <button
-                        onClick={(e) => { e.stopPropagation(); window.location.href = `/sell?mode=buy&item=${item.id}`; }}
-                        className={cn("py-2 rounded-xl text-[10px] font-bold text-black flex flex-col items-center justify-center gap-1 transition-all shadow-lg hover:brightness-110", accentBg)}
-                    >
-                        <Zap className="w-3 h-3 fill-black" />
-                        {mode === "BUY" ? "QUICK-SELL" : "LIST NOW"}
-                    </button>
-                </div>
-            </div>
-        </motion.div>
-    );
-};
-
-
-// --- MAIN HERO COMPONENT ---
 
 export default function QuantumHero() {
-    const [activeTab, setActiveTab] = useState<"CARS" | "PARTS" | "SERVICES" | "INSURANCE">("CARS");
-    const [mode, setMode] = useState<"BUY" | "RENT">("BUY");
+    const [theme, setTheme] = useState<ProjectTheme>('CARS');
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearching, setIsSearching] = useState(false);
-    const [liveUsers, setLiveUsers] = useState(14502);
-    const [showPaymentModal, setShowPaymentModal] = useState<{ item: any, provider: 'PayPal' | 'MercadoPago' } | null>(null);
+    const [liveUsers, setLiveUsers] = useState(8432);
 
-    // Auto-expand search demonstration
-    useEffect(() => {
-        setTimeout(() => {
-            setSearchQuery("Tesla"); // Simulate typing
-            setIsSearching(true);
-        }, 1500);
-    }, []);
+    const active = THEMES[theme];
 
-    // Live Counter Logic
     useEffect(() => {
-        const interval = setInterval(() => {
-            setLiveUsers(prev => prev + Math.floor(Math.random() * 7) - 2);
-        }, 1500);
+        // Sync body class with theme
+        document.body.className = `${active.path} antialiased`;
+        const interval = setInterval(() => setLiveUsers(prev => prev + Math.floor(Math.random() * 5)), 2000);
         return () => clearInterval(interval);
-    }, []);
-
-    // Search Logic
-    useEffect(() => {
-        if (searchQuery.length > 2) setIsSearching(true);
-        else setIsSearching(false);
-    }, [searchQuery]);
-
-    const handlePayment = async (item: any, provider: 'PayPal' | 'MercadoPago' | 'Solana') => {
-        setShowPaymentModal({ item, provider });
-
-        try {
-            const response = await backendClient.post('/api/payments/create-preference', {
-                itemId: item.id,
-                provider: provider,
-                amount: typeof item.price === 'string' ? parseInt(item.price.replace(/[^0-9]/g, '')) : item.price,
-                title: item.title,
-                currency: 'MXN'
-            });
-
-            if (response.data.success) {
-                // REDIRECCIÓN REAL A PASARELA (O FLUJO WEB3)
-                window.location.href = response.data.data.redirectUrl;
-            } else {
-                alert("Error al iniciar pago. Intente más tarde.");
-                setShowPaymentModal(null);
-            }
-        } catch (e) {
-            console.error("Payment initiation error:", e);
-            setShowPaymentModal(null);
-            alert("Error de conexión con la pasarela.");
-        }
-    }
-
-    const results = activeTab === "CARS" ? CAR_RESULTS : SERVICE_RESULTS;
-    const accentColor = mode === "BUY" ? "text-[#FF9500]" : "text-[#00B3FF]";
-    const accentBg = mode === "BUY" ? "bg-[#FF9500]" : "bg-[#00B3FF]";
+    }, [theme, active.path]);
 
     return (
-        <div className="relative min-h-screen w-full bg-[#050505] text-white overflow-x-hidden font-sans selection:bg-[#39FF14] selection:text-black">
+        <div className="relative min-h-screen w-full flex flex-col items-center overflow-x-hidden pt-6">
 
-            {/* --- AMBIENT NEBULA BACKGROUND --- */}
-            <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] bg-[#39FF14] opacity-[0.06] blur-[200px] rounded-full animate-pulse-slow" />
-                <div className={cn("absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] opacity-[0.08] blur-[220px] rounded-full pointer-events-none transition-colors duration-1000", mode === "BUY" ? "bg-[#FF9500]" : "bg-[#00B3FF]")} />
-                <div className="absolute inset-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
+            {/* 🌌 AMBIENT VISION LAYER */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={theme}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1 }}
+                        className="absolute inset-0"
+                    >
+                        {/* THEME GRIDS */}
+                        <div className={cn(
+                            "absolute inset-0 opacity-10",
+                            theme === 'CARS' ? "bg-grid-cyber" :
+                                theme === 'REAL_ESTATE' ? "bg-[radial-gradient(#D4AF37_1px,transparent_1px)] bg-[size:20px_20px]" : "bg-white"
+                        )} />
+
+                        {/* NEBULA HOLES */}
+                        <div className={cn(
+                            "absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] blur-[200px] rounded-full opacity-[0.08]",
+                            theme === 'CARS' ? "bg-[#009EE3]" : theme === 'REAL_ESTATE' ? "bg-[#D4AF37]" : "bg-[#39FF14]"
+                        )} />
+                    </motion.div>
+                </AnimatePresence>
             </div>
 
-            {/* --- HEADER --- */}
-            <header className="relative z-50 flex items-center justify-between px-6 py-6 lg:px-12 w-full max-w-[1800px] mx-auto">
-                <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg ring-1 ring-white/5 hover:ring-[#39FF14]/50 transition-all cursor-pointer">
-                        <Zap className="w-6 h-6 text-[#39FF14] fill-[#39FF14]/20" />
-                    </div>
-                    <span className="text-2xl font-bold tracking-tighter">Match<span className="text-[#39FF14]">Auto</span><span className="text-xs align-top opacity-50 ml-1">v.Pro</span></span>
-                </div>
-
-                <div className="flex items-center gap-4 lg:gap-8">
-                    <div className="hidden lg:flex items-center gap-2 text-xs font-mono text-[#39FF14] bg-[#39FF14]/5 px-4 py-2 rounded-full border border-[#39FF14]/20 shadow-[0_0_15px_rgba(57,255,20,0.1)]">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#39FF14] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#39FF14]"></span>
-                        </span>
-                        LIVE: {liveUsers.toLocaleString()} ACTIVE MATCHERS
+            {/* 🛰️ QUANTUM NAVIGATION (FLOATING) */}
+            <header className="relative z-[100] w-full max-w-[1400px] px-8 py-6 mb-12">
+                <div className="flex items-center justify-between glass-card p-4 rounded-3xl border border-white/10 backdrop-blur-3xl">
+                    <div className="flex items-center gap-4">
+                        <div className={cn("p-2 rounded-xl transition-all duration-500", theme === 'CARS' ? "bg-[#009EE3]" : theme === 'REAL_ESTATE' ? "bg-[#D4AF37]" : "bg-[#39FF14]")}>
+                            <Zap className="w-6 h-6 text-black" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-xl font-black tracking-tighter leading-none italic uppercase">
+                                {active.name}<span className="text-xs align-top ml-1 opacity-50 not-italic">v.TITAN</span>
+                            </span>
+                            <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-gray-500">{active.tagline}</span>
+                        </div>
                     </div>
 
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm text-gray-300">
-                        <Globe className="w-4 h-4" />
-                        <span>ES</span>
-                        <ChevronDown className="w-3 h-3 opacity-50" />
-                    </button>
+                    <div className="flex items-center gap-6">
+                        <div className="hidden lg:flex gap-2">
+                            {active.stats.map((stat, i) => (
+                                <div key={i} className="flex flex-col items-end px-4 border-r border-white/10 last:border-0">
+                                    <span className="text-[8px] font-mono text-gray-500 uppercase">{stat.label}</span>
+                                    <span className={cn("text-xs font-black", i === 1 ? "text-[#39FF14]" : "text-white")}>{stat.value}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="flex items-center gap-2 p-1.5 bg-black/40 rounded-2xl border border-white/5">
+                            <button onClick={() => setTheme('CARS')} className={cn("p-2 rounded-xl transition-all", theme === 'CARS' ? "bg-[#009EE3] text-black shadow-lg" : "hover:bg-white/5 text-white")}>
+                                <Car size={18} />
+                            </button>
+                            <button onClick={() => setTheme('REAL_ESTATE')} className={cn("p-2 rounded-xl transition-all", theme === 'REAL_ESTATE' ? "bg-[#D4AF37] text-black shadow-lg" : "hover:bg-white/5 text-white")}>
+                                <Home size={18} />
+                            </button>
+                            <button onClick={() => setTheme('MARKETPLACE')} className={cn("p-2 rounded-xl transition-all", theme === 'MARKETPLACE' ? "bg-[#39FF14] text-black shadow-lg" : "hover:bg-white/5 text-white")}>
+                                <Box size={18} />
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </header>
 
-            {/* --- MAIN INTERFACE --- */}
-            <main className="relative z-10 flex flex-col items-center pt-12 lg:pt-20 pb-32 px-4 w-full max-w-[1600px] mx-auto">
+            {/* ⚡ MAIN CONSOLE */}
+            <main className="relative z-10 w-full max-w-[1400px] flex flex-col items-center px-8">
 
-                {/* HEADLINE */}
+                {/* HEADLINE (DYNAMIC) */}
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
-                    className="mb-10 text-center space-y-4 max-w-5xl"
+                    key={theme}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-center mb-16 space-y-4"
                 >
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9]">
-                        Múevete a la velocidad del <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-gray-500">pensamiento.</span>
+                    <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-[0.8] text-white">
+                        {active.headline[0]}<br />
+                        <span className="text-gray-500">{active.headline[1]}</span>
                     </h1>
                 </motion.div>
 
-                {/* --- COMMAND CONSOLE --- */}
-                <div className="w-full flex flex-col items-center">
+                {/* COMMAND TABS */}
+                <div className="flex gap-2 p-2 bg-white/5 backdrop-blur-3xl rounded-full border border-white/10 mb-12 shadow-2xl">
+                    {active.categories.map((cat) => (
+                        <button key={cat} className="px-8 py-3 rounded-full text-[10px] font-black tracking-[0.2em] transition-all hover:bg-white/5 hover:text-white text-gray-400 uppercase">
+                            [ {cat} ]
+                        </button>
+                    ))}
+                </div>
 
-                    {/* TABS */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                        className="flex flex-wrap justify-center gap-2 mb-6"
-                    >
-                        <div className="flex bg-white/5 p-1.5 rounded-full border border-white/10 backdrop-blur-2xl shadow-2xl">
-                            {(["CARS", "PARTS", "SERVICES", "INSURANCE"] as const).map((tab) => (
-                                <button
-                                    key={tab}
-                                    onClick={() => setActiveTab(tab)}
-                                    className={cn(
-                                        "relative px-6 lg:px-10 py-3 rounded-full text-sm font-bold tracking-widest transition-all duration-300",
-                                        activeTab === tab ? "text-black" : "text-gray-400 hover:text-white"
-                                    )}
-                                >
-                                    {activeTab === tab && (
-                                        <motion.div
-                                            layoutId="activeTabHero"
-                                            className="absolute inset-0 bg-white rounded-full shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                                        />
-                                    )}
-                                    <span className="relative z-10 flex items-center gap-2">
-                                        {tab === "CARS" && <Car className="w-4 h-4" />}
-                                        {tab === "SERVICES" && <Zap className="w-4 h-4" />}
-                                        {tab}
-                                    </span>
-                                </button>
-                            ))}
+                {/* QUANTUM SEARCH BAR */}
+                <div className="w-full max-w-3xl relative mb-24">
+                    <div className="relative flex items-center p-2 bg-black/60 border border-white/10 rounded-full h-24 backdrop-blur-3xl group focus-within:ring-2 transition-all"
+                        style={{ boxShadow: `0 0 50px ${active.primary}15` }}>
+                        <div className="pl-8 flex items-center">
+                            <Search className="w-8 h-8 text-gray-500" />
                         </div>
-                    </motion.div>
+                        <input
+                            value={searchQuery}
+                            onChange={(e) => { setSearchQuery(e.target.value); setIsSearching(true); }}
+                            placeholder={`Buscar en ${active.name}...`}
+                            className="flex-1 bg-transparent border-none outline-none text-2xl font-bold px-6 placeholder:text-gray-700 text-white"
+                        />
+                        <button
+                            className="h-full px-12 rounded-full font-black text-xs tracking-widest uppercase transition-all hover:scale-105 active:scale-95 text-black"
+                            style={{ backgroundImage: `linear-gradient(135deg, ${active.primary}, ${active.accent})` }}
+                        >
+                            Execute Search
+                        </button>
+                    </div>
+                    {/* QUANTUM PARTICLES (EYE CANDY) */}
+                    <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-white/5 to-transparent blur-2xl -z-10 animate-pulse-glow" />
+                </div>
 
-                    {/* SEARCH BAR & PREDICTIVE GRID (WIDE SCREEN) */}
-                    <motion.div
-                        layout
-                        className={cn(
-                            "relative w-full max-w-4xl transition-all duration-500 z-30",
-                            isSearching ? "max-w-[1400px]" : "max-w-4xl"
-                        )}
-                    >
-                        <div className={cn(
-                            "relative bg-[#0F0F0F]/80 border border-white/10 backdrop-blur-3xl shadow-2xl transition-all duration-500 overflow-hidden",
-                            isSearching ? "rounded-[3rem]" : "rounded-full"
-                        )}>
+                {/* PREVIEW GRID (MATCHING VISIONS) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mb-40">
+                    {CAR_RESULTS.map((item, idx) => (
+                        <motion.div
+                            key={item.id}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: idx * 0.1 }}
+                            className="group relative h-[500px] rounded-[3rem] overflow-hidden border border-white/10 bg-black/40 hover:border-white/30 transition-all cursor-pointer shadow-2xl"
+                        >
+                            {/* DYNAMIC IMAGE LAYER */}
+                            <div className="absolute inset-0 z-0">
+                                <img src={item.image} className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10" />
+                            </div>
 
-                            {/* INPUT ROW */}
-                            <div className="flex flex-col md:flex-row p-2 gap-2">
-                                {/* TOGGLE */}
-                                <div className="relative bg-black/50 rounded-full p-1.5 flex shrink-0 border border-white/5 h-16 md:h-20 w-full md:w-auto">
-                                    {(["BUY", "RENT"] as const).map((m) => (
-                                        <button
-                                            key={m}
-                                            onClick={() => setMode(m)}
-                                            className={cn(
-                                                "relative w-1/2 md:w-32 h-full rounded-full text-sm font-black tracking-widest transition-all duration-500 overflow-hidden",
-                                                mode === m ? "text-white" : "text-gray-500 hover:text-gray-300"
-                                            )}
-                                        >
-                                            {mode === m && (
-                                                <motion.div
-                                                    layoutId="modeToggleHero"
-                                                    className={cn("absolute inset-0 w-full h-full", mode === "BUY" ? "bg-[#FF9500]" : "bg-[#00B3FF]")}
-                                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                                />
-                                            )}
-                                            <span className="relative z-10">{m}</span>
-                                        </button>
-                                    ))}
-                                </div>
+                            {/* 🔍 SCANNER EFFECT (IF CARS) */}
+                            {theme === 'CARS' && (
+                                <div className="scanner-line z-20 top-0 group-hover:animate-scan" />
+                            )}
 
-                                {/* TEXT INPUT */}
-                                <div className="relative flex-grow flex items-center px-6 group h-16 md:h-20">
-                                    <Search className={cn("w-6 h-6 mr-4 transition-colors", accentColor)} />
-                                    <input
-                                        type="text"
-                                        placeholder={activeTab === "CARS" ? "Tesla Model 3, Porsche 911..." : "Buscar servicios..."}
-                                        className="w-full h-full bg-transparent text-xl md:text-2xl text-white outline-none placeholder:text-gray-600 font-medium"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                    />
-                                    {searchQuery && (
-                                        <button onClick={() => { setSearchQuery(""); setIsSearching(false); }} className="p-2 hover:bg-white/10 rounded-full text-gray-500">
-                                            <span className="text-xs font-bold">CLEAR</span>
-                                        </button>
-                                    )}
-                                </div>
+                            {/* ITEM TECH DATA */}
+                            <div className="absolute inset-0 z-30 flex flex-col justify-end p-10">
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-end">
+                                        <div>
+                                            <h3 className="text-2xl font-black text-white leading-tight uppercase tracking-tight">{item.title}</h3>
+                                            <p className="text-3xl font-black" style={{ color: active.primary }}>{item.price}</p>
+                                        </div>
+                                        <div className="p-3 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md">
+                                            <ShieldCheck className="w-6 h-6" style={{ color: active.primary }} />
+                                        </div>
+                                    </div>
 
-                                {/* BIG BUTTON */}
-                                <div className="hidden md:flex items-center pr-2">
-                                    <button className={cn("h-16 w-16 md:h-20 md:w-20 rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-95 shadow-lg", mode === "BUY" ? "bg-[#FF9500] text-black shadow-[#FF9500]/20" : "bg-[#00B3FF] text-black shadow-[#00B3FF]/20")}>
-                                        <Zap className="w-8 h-8 fill-current" />
+                                    {/* TECH BOX (IMAGE 1 STYLE) */}
+                                    <div className="glass-card p-6 border-white/5 bg-black/60 rounded-3xl space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                        <div className="flex justify-between text-[10px] font-mono tracking-widest text-gray-500">
+                                            <span>SPEC: HP</span> <span className="text-white">{item.specs.hp}</span>
+                                        </div>
+                                        <div className="flex justify-between text-[10px] font-mono tracking-widest text-gray-500">
+                                            <span>BLOCKCHAIN:</span> <span className="text-[#39FF14]">{item.specs.status}</span>
+                                        </div>
+                                        <div className="flex justify-between text-[10px] font-mono tracking-widest text-gray-500 truncate">
+                                            <span>VIN:</span> <span className="text-white">{item.specs.vin}</span>
+                                        </div>
+                                    </div>
+
+                                    <button className="w-full py-5 rounded-2xl font-black text-xs tracking-[0.2em] uppercase transition-all hover:brightness-110 active:scale-95 text-black"
+                                        style={{ backgroundColor: active.accent }}>
+                                        Instant Connect
                                     </button>
                                 </div>
                             </div>
-
-                            {/* --- EXPANDED GRID WITH MULTI-IMAGE CARDS --- */}
-                            <AnimatePresence>
-                                {isSearching && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: "auto", opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        className="border-t border-white/5 bg-black/40"
-                                    >
-                                        <div className="p-6 md:p-10">
-                                            <div className="flex justify-between items-center mb-8">
-                                                <h3 className="text-sm font-mono text-gray-400 tracking-wider">
-                                                    RESULTADOS SUGERIDOS ({results.length})
-                                                </h3>
-                                                <div className="flex gap-2">
-                                                    <Badge color="green">INSTANT DELIVERY</Badge>
-                                                    <Badge color="blue">VERIFIED</Badge>
-                                                </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-                                                {results.map((item, idx) => (
-                                                    <motion.div
-                                                        key={item.id}
-                                                        initial={{ opacity: 0, y: 20 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        transition={{ delay: idx * 0.05 }}
-                                                    >
-                                                        <QuantumCard
-                                                            item={item}
-                                                            mode={mode}
-                                                            accentColor={accentColor}
-                                                            accentBg={accentBg}
-                                                            handlePayment={handlePayment}
-                                                        />
-                                                    </motion.div>
-                                                ))}
-                                            </div>
-
-                                            <button className="w-full mt-8 py-4 rounded-2xl border border-white/10 hover:bg-white/5 text-xs font-bold tracking-[0.2em] transition-all text-gray-400 hover:text-white group">
-                                                VER TODOS LOS 14,000 RESULTADOS
-                                                <ArrowRight className="inline-block w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                                            </button>
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                        </div>
-                    </motion.div>
-
+                        </motion.div>
+                    ))}
                 </div>
+
             </main>
 
-            {/* FOOTER */}
-            <div className="fixed bottom-6 left-0 right-0 flex justify-center gap-8 pointer-events-none opacity-40">
-                <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-gray-400">
-                    <ShieldCheck className="w-4 h-4 text-[#009EE3]" />
-                    MERCADOPAGO PROTECTED
+            {/* SYSTME FOOTER */}
+            <footer className="w-full py-12 border-t border-white/5 flex flex-col items-center gap-4 relative z-50">
+                <div className="flex gap-8 opacity-30">
+                    <div className="flex items-center gap-2 text-[10px] font-mono text-gray-500 tracking-widest">
+                        <ShieldCheck className="w-4 h-4" /> PAYPAL PROTECTED
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] font-mono text-gray-500 tracking-widest">
+                        <Globe className="w-4 h-4" /> GLOBAL DISPATCH
+                    </div>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-gray-400">
-                    <ShieldCheck className="w-4 h-4 text-[#003087]" />
-                    PAYPAL VERIFIED
-                </div>
-            </div>
-
-            {/* MODAL SIMULATION */}
-            <AnimatePresence>
-                {showPaymentModal && (
-                    <motion.div
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-xl p-4"
-                    >
-                        <motion.div className="bg-[#111] border border-white/10 rounded-3xl p-8 max-w-sm w-full shadow-2xl relative overflow-hidden">
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#009EE3] via-[#39FF14] to-[#003087] animate-pulse" />
-                            <div className="flex flex-col items-center text-center space-y-4">
-                                <h3 className="text-xl font-bold text-white">Conectando Pasarela...</h3>
-                                <div className="bg-white/5 p-4 rounded-xl w-full border border-white/5">
-                                    <p className="font-bold text-white">{showPaymentModal.item.title}</p>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                <span className="text-[10px] font-mono text-gray-800 tracking-[0.5em] uppercase">Built for Titans - 2026</span>
+            </footer>
 
         </div>
     );

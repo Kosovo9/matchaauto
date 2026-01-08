@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import QuantumUpload from '@/components/marketplace/quantum-upload';
-import { QuantumHeader } from '@/components/hero/QuantumHeader'; // Reusing header for consistency
+import QuantumUpload from '../../components/marketplace/quantum-upload';
+import { QuantumHeader } from '../../components/hero/QuantumHeader'; // Reusing header for consistency
 
 export default function SellPage() {
     return (

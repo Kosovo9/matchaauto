@@ -14,7 +14,7 @@ export const isModelAvailable = async (modelName: string): Promise<boolean> => {
         clearTimeout(timeoutId);
 
         if (!res.ok) return false;
-        const data = await res.json();
+        const data = await res.json() as any;
 
         // Verifica si algún modelo instalado coincide parcialmente con el nombre
         const available = data.models?.some((m: any) => m.name.includes(modelName));

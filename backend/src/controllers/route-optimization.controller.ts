@@ -60,7 +60,7 @@ export class RouteOptimizationController {
 
     private handleError(error: any, c: Context) {
         if (error instanceof z.ZodError) {
-            return c.json({ success: false, error: 'Validation Error', details: error.errors }, 400);
+            return c.json({ success: false, error: 'Validation Error', details: (error as any).errors }, 400);
         } else {
             logger.error('Route Optimization Error', error);
             return c.json({ success: false, error: 'Optimization Failed' }, 500);

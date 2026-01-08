@@ -27,11 +27,18 @@
             ],
             "@shared/*": [
                 "../shared/*"
+            ],
+            "*": [
+                "node_modules/*"
             ]
         }
     },
     "include": [
         "src/**/*",
         "../shared/**/*"
+    ],
+    "exclude": [
+        "src/tests/**/*",
+        "**/*.test.ts"
     ]
 }

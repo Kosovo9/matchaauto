@@ -57,7 +57,7 @@ export class SkillExchangeController {
             const ids = await this.redis.smembers('skill:open');
             const pipe = this.redis.pipeline();
             ids.forEach(id => pipe.hgetall(id));
-            const results = await pipe.exec();
+            const results = await pipe.exec() || [];
             const skills = results.map(r => r[1]);
             return c.json({ success: true, data: skills.slice(0, radiusKm) });
         } catch (error) {

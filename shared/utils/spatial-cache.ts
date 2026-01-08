@@ -57,7 +57,7 @@ export class SpatialCacheEngine {
      * Find nearby keys using Redis GEO (Ultra fast)
      */
     async findNearbyKeys(lat: number, lng: number, radiusMeters: number): Promise<string[]> {
-        return this.redis.georadius('spatial:index', lng, lat, radiusMeters, 'm');
+        return this.redis.georadius('spatial:index', lng, lat, radiusMeters, 'm') as Promise<string[]>;
     }
 
     /**

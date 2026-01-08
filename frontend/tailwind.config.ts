@@ -1,90 +1,57 @@
-/** @type {import('tailwindcss').Config} */
-const config = {
-    darkMode: 'class',
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+    darkMode: ["class"],
     content: [
-        './pages/**/*.{js,ts,jsx,tsx,mdx}',
-        './components/**/*.{js,ts,jsx,tsx,mdx}',
-        './app/**/*.{js,ts,jsx,tsx,mdx}',
+        "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+        "./components/**/*.{js,ts,jsx,tsx,mdx}",
+        "./app/**/*.{js,ts,jsx,tsx,mdx}",
     ],
     theme: {
         extend: {
+            colors: {
+                // 🏎️ CARS THEME (CYBER BLUE)
+                cyber: {
+                    blue: "#009EE3",
+                    orange: "#FF9500",
+                    deep: "#003087",
+                },
+                // 🏠 REAL ESTATE THEME (LUXURY GOLD)
+                luxury: {
+                    gold: "#D4AF37",
+                    black: "#050505",
+                },
+                // 📦 MARKETPLACE THEME (MATCHA GREEN)
+                matcha: {
+                    green: "#39FF14",
+                    white: "#FFFFFF",
+                },
+                border: "hsl(var(--border))",
+                input: "hsl(var(--input))",
+                ring: "hsl(var(--ring))",
+                background: "hsl(var(--background))",
+                foreground: "hsl(var(--foreground))",
+            },
+            borderRadius: {
+                lg: "var(--radius)",
+                md: "calc(var(--radius) - 2px)",
+                sm: "calc(var(--radius) - 4px)",
+            },
             fontFamily: {
-                sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-                mono: ['var(--font-space-grotesk)', 'monospace'],
+                sans: ["Inter", "sans-serif"],
+                mono: ["Space Grotesk", "monospace"],
             },
             animation: {
-                'gradient': 'gradient 8s ease infinite',
-                'float': 'float 6s ease-in-out infinite',
-                'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                'spin-slow': 'spin 3s linear infinite',
-                'bounce-slow': 'bounce 2s infinite',
+                "pulse-glow": "pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
             },
             keyframes: {
-                gradient: {
-                    '0%, 100%': {
-                        'background-size': '200% 200%',
-                        'background-position': 'left center',
-                    },
-                    '50%': {
-                        'background-size': '200% 200%',
-                        'background-position': 'right center',
-                    },
+                "pulse-glow": {
+                    "0%, 100%": { opacity: "1" },
+                    "50%": { opacity: "0.5" },
                 },
-                float: {
-                    '0%, 100%': { transform: 'translateY(0px)' },
-                    '50%': { transform: 'translateY(-20px)' },
-                },
-            },
-            backgroundImage: {
-                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-                'gradient-shimmer': 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
-            },
-            colors: {
-                border: 'hsl(var(--border))',
-                input: 'hsl(var(--input))',
-                ring: 'hsl(var(--ring))',
-                background: 'hsl(var(--background))',
-                foreground: 'hsl(var(--foreground))',
-                primary: {
-                    DEFAULT: 'hsl(var(--primary))',
-                    foreground: 'hsl(var(--primary-foreground))',
-                },
-                secondary: {
-                    DEFAULT: 'hsl(var(--secondary))',
-                    foreground: 'hsl(var(--secondary-foreground))',
-                },
-                destructive: {
-                    DEFAULT: 'hsl(var(--destructive))',
-                    foreground: 'hsl(var(--destructive-foreground))',
-                },
-                muted: {
-                    DEFAULT: 'hsl(var(--muted))',
-                    foreground: 'hsl(var(--muted-foreground))',
-                },
-                accent: {
-                    DEFAULT: 'hsl(var(--accent))',
-                    foreground: 'hsl(var(--accent-foreground))',
-                },
-                popover: {
-                    DEFAULT: 'hsl(var(--popover))',
-                    foreground: 'hsl(var(--popover-foreground))',
-                },
-                card: {
-                    DEFAULT: 'hsl(var(--card))',
-                    foreground: 'hsl(var(--card-foreground))',
-                },
-            },
-            backdropBlur: {
-                xs: '2px',
             },
         },
     },
-    plugins: [
-        require('@tailwindcss/forms'),
-        require('@tailwindcss/typography'),
-        require('@tailwindcss/aspect-ratio'),
-    ],
+    plugins: [require("tailwindcss-animate")],
 };
-
 export default config;

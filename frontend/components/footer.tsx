@@ -5,21 +5,23 @@ import { Sparkles, Twitter, Github, Linkedin, Globe } from 'lucide-react'
 
 export function Footer() {
     return (
-        <footer className="border-t border-white/10 bg-gray-950">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <footer className="border-t border-white/5 bg-black/40 backdrop-blur-2xl">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                     <div className="col-span-1 md:col-span-2">
-                        <Link href="/" className="flex items-center space-x-2 mb-4">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
-                                <Sparkles className="w-5 h-5 text-white" />
+                        <Link href="/" className="flex items-center space-x-3 mb-6">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#39FF14] to-[#009EE3] flex items-center justify-center p-[1px]">
+                                <div className="w-full h-full bg-black rounded-[0.8rem] flex items-center justify-center">
+                                    <Sparkles className="w-5 h-5 text-[#39FF14]" />
+                                </div>
                             </div>
-                            <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                                Match-Auto
+                            <span className="text-2xl font-black tracking-tighter text-white">
+                                MATCH<span className="text-[#39FF14]">AUTO</span>
                             </span>
                         </Link>
-                        <p className="text-gray-400 max-w-sm">
+                        <p className="text-gray-500 max-w-sm leading-relaxed">
                             The world's first AI-powered, Solana-secured global automotive marketplace.
-                            Connecting buyers and sellers across 150+ countries.
+                            Connecting buyers and sellers across 150+ countries with quantum security.
                         </p>
                     </div>
 

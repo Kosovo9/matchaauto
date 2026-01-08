@@ -1,9 +1,10 @@
+
 import { Hono } from 'hono';
 import { logger as honoLogger } from 'hono/logger';
 import { cors } from 'hono/cors';
 import { validateEnv } from './config/env';
 import { setupDatabase } from './config/database';
-import { setupRedis } from './config/redis';
+import { getRedis } from './lib/redis';
 import { setupGeolocationRoutes } from './routes/geolocation.routes';
 import { setupVehicleRoutes } from './routes/vehicle.routes';
 import { setupSearchRoutes } from './routes/search.routes';
@@ -21,6 +22,9 @@ import { GeocodingService } from './services/geocoding.service';
 import { errorMiddleware } from './middleware/error.middleware';
 import { logger } from './utils/logger';
 import { swaggerUI } from '@hono/swagger-ui';
+import { Redis } from 'ioredis';
+import { Pool } from 'pg';
+import { ProEngineService } from '../../shared/services/pro-engine.service';
 
 // 🔥 TITAN CONTROLLERS (TRILOGY ENGINE)
 import tradingController from './controllers/trading.controller';
@@ -50,7 +54,19 @@ export { RateLimitStore } from './middleware/rateLimiter';
 export { ChatRoom } from './chat/durable';
 export { BidStreamDO } from './durable-objects/bid-stream';
 
-const app = new Hono();
+// Define typed context for Hono
+type AppContext = {
+    Variables: {
+        redis: Redis;
+        pg: Pool;
+        proService: ProEngineService;
+    }
+}
+
+const app = new Hono<AppContext>();
+
+// Health Check
+app.get('/api/health', (c) => c.json({ status: 'OK', timestamp: new Date(), service: 'match-auto-backend' }));
 
 // Swagger UI
 app.get('/api-docs', swaggerUI({ url: '/doc' }));
@@ -75,7 +91,6 @@ app.get('/doc', (c) => {
                     }
                 }
             }
-            // Add more paths as needed
         }
     });
 });
@@ -96,14 +111,22 @@ const start = async () => {
     try {
         const env = validateEnv(process.env);
         const pgPool = setupDatabase(env);
-        const redis = setupRedis(env);
+        const redis = getRedis();
+
+        // Inject dependencies into context
+        app.use('*', async (c, next) => {
+            c.set('redis', redis);
+            c.set('pg', pgPool);
+            c.set('proService', new ProEngineService(pgPool, redis));
+            await next();
+        });
 
         // Core Shared Services
-        const geocodingService = new GeocodingService(redis as any, pgPool);
+        const geocodingService = new GeocodingService(redis, pgPool);
 
         // Routes - 1000x Modules
         setupGeolocationRoutes(app, pgPool, redis, geocodingService);
-        setupVehicleRoutes(app, pgPool);
+        setupVehicleRoutes(app, pgPool, redis, geocodingService);
         setupSearchRoutes(app, redis, pgPool);
         setupGeofenceRoutes(app, redis, pgPool);
         setupPlanningRoutes(app, redis, pgPool);
@@ -118,7 +141,7 @@ const start = async () => {
         setupGeospatialRoutes(app, redis as any, pgPool);
         setupHubsRoutes(app, redis as any, pgPool);
 
-        // Instantiate new services/controllers
+        // Instantiate new services/controllers with strict types (no casting needed with getRedis)
         const offlineSyncCtrl = new OfflineSyncController(redis, pgPool);
         const resourceCtrl = new ResourceAllocationController(redis);
         const skillCtrl = new SkillExchangeController(redis);
@@ -129,12 +152,26 @@ const start = async () => {
         const helpDeskCtrl = new HybridHelpDeskController(redis, pgPool, env);
 
         // Register routes for the new controllers
-        app.route('/api/offline-sync', offlineSyncCtrl);
-        app.route('/api/resources', resourceCtrl);
-        app.route('/api/skills', skillCtrl);
-        app.route('/api/currency', currencyCtrl);
-        app.route('/api/dispute', disputeCtrl);
-        app.route('/api/helpdesk', helpDeskCtrl);
+        app.post('/api/offline-sync/export', offlineSyncCtrl.export);
+        app.post('/api/offline-sync/import', offlineSyncCtrl.import);
+        app.get('/api/offline-sync/changes', offlineSyncCtrl.changes);
+
+        app.post('/api/resources/allocate', resourceCtrl.allocate);
+        app.get('/api/resources/needs', resourceCtrl.needs);
+
+        app.post('/api/skills/exchange', skillCtrl.requestSkill);
+        app.get('/api/skills/list', skillCtrl.availableSkills);
+        app.post('/api/skills/complete', skillCtrl.completeSkill);
+
+        app.post('/api/currency/issue', currencyCtrl.issue);
+        app.post('/api/currency/transfer', currencyCtrl.transfer);
+        app.get('/api/currency/balance/:userId', currencyCtrl.balance);
+
+        app.post('/api/dispute/create', disputeCtrl.openDispute);
+        app.post('/api/dispute/evidence', disputeCtrl.submitEvidence);
+        app.get('/api/dispute/:disputeId/resolution', disputeCtrl.resolution);
+
+        app.post('/api/helpdesk/query', helpDeskCtrl.query);
 
         // 🔥 TITAN SUITE (Global Functionalities)
         app.route('/api/trading', tradingController);
@@ -148,7 +185,7 @@ const start = async () => {
         app.route('/api/media', mediaController);
         app.route('/api/sync', syncController);
         app.route('/api/treasury', treasuryController);
-        app.route('/api/mega', megaProController);
+        // app.route('/api/mega', megaProController); // Pending implementation
         app.route('/api/mission-control', missionControlController);
 
         // 🌍 GeoRAG Engine
@@ -161,7 +198,6 @@ const start = async () => {
         const ragCtrl = new RAGController(universalRagService, pgPool);
         app.post('/api/rag/query', ragCtrl.query);
         app.post('/api/rag/ingest', ragCtrl.ingest); // Solo admin
-
 
         // Error Handling
         app.onError(errorMiddleware);

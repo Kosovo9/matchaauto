@@ -117,7 +117,7 @@ export class RadiusSearchController {
 
     private handleError(error: any, c: Context) {
         if (error instanceof z.ZodError) {
-            return c.json({ success: false, error: 'Validation Error', details: error.errors }, 400);
+            return c.json({ success: false, error: 'Validation Error', details: (error as any).errors }, 400);
         } else {
             logger.error('Radius Search Controller Error', error);
             return c.json({ success: false, error: 'Internal Server Error' }, 500);

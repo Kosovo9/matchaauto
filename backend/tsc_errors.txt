@@ -1,0 +1,276 @@
+src/controllers/address-validation.controller.ts(192,103): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/dispute-resolution.controller.ts(87,64): error TS2551: Property 'params' does not exist on type 'HonoRequest<any, unknown>'. Did you mean 'param'?
+src/controllers/distance-matrix.controller.ts(64,103): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/dynamic-pricing.controller.ts(77,36): error TS2339: Property 'attributes' does not exist on type '{ ownerId: string; make: string; model: string; year: number; mileage: number; mileageUnit: "km" | "mi"; features: string[]; images: string[]; currency: string; status: "draft" | "published" | "sold" | "reserved" | "maintenance"; ... 12 more ...; updatedAt?: Date | undefined; }'.
+src/controllers/dynamic-pricing.controller.ts(77,58): error TS2339: Property 'attributes' does not exist on type '{ ownerId: string; make: string; model: string; year: number; mileage: number; mileageUnit: "km" | "mi"; features: string[]; images: string[]; currency: string; status: "draft" | "published" | "sold" | "reserved" | "maintenance"; ... 12 more ...; updatedAt?: Date | undefined; }'.
+src/controllers/geo-analytics.controller.ts(207,103): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/geo-fencing.controller.ts(87,37): error TS2554: Expected 4-5 arguments, but got 2.
+src/controllers/geo-fencing.controller.ts(108,37): error TS2554: Expected 4-5 arguments, but got 2.
+src/controllers/geo-fencing.controller.ts(280,103): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/geo-search.controller.ts(44,17): error TS2739: Type '{}' is missing the following properties from type '{ sortBy: "speed" | "distance" | "availability" | "price_low" | "price_high" | "rating" | "relevance" | "battery"; sortOrder: "asc" | "desc"; limit: number; offset: number; minPrice?: number | undefined; ... 5 more ...; availability?: { ...; } | undefined; }': sortBy, sortOrder, limit, offset
+src/controllers/geocoding.controller.ts(106,103): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/local-currency.controller.ts(109,58): error TS2551: Property 'params' does not exist on type 'HonoRequest<any, unknown>'. Did you mean 'param'?
+src/controllers/marketplace.controller.ts(92,107): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/notification.controller.ts(36,103): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/offline-sync.controller.ts(60,49): error TS18047: 'redisResults' is possibly 'null'.
+src/controllers/offline-sync.controller.ts(82,26): error TS2769: No overload matches this call.
+  Argument of type '["*", ...unknown[]]' is not assignable to parameter of type '[...args: RedisValue[], callback: Callback<string | null>]'.
+    Source provides no match for required element at position 1 in target.
+  Overload 2 of 2, '(key: RedisKey, ...args: RedisValue[]): ChainableCommander', gave the following error.
+    Argument of type 'unknown' is not assignable to parameter of type 'RedisValue'.
+src/controllers/payment.controller.ts(59,103): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/reverse-geocoding.controller.ts(55,78): error TS2345: Argument of type '{ latitude: number; longitude: number; language: string; radius: number; }' is not assignable to parameter of type '{ latitude: number; longitude: number; language: string; radius: number; maxResults: number; resultType?: ("intersection" | "country" | "route" | "street_address" | "subpremise" | "locality" | ... 14 more ... | "point_of_interest")[] | undefined; locationType?: ("ROOFTOP" | ... 2 more ... | "APPROXIMATE")[] | undefi...'.
+  Property 'maxResults' is missing in type '{ latitude: number; longitude: number; language: string; radius: number; }' but required in type '{ latitude: number; longitude: number; language: string; radius: number; maxResults: number; resultType?: ("intersection" | "country" | "route" | "street_address" | "subpremise" | "locality" | ... 14 more ... | "point_of_interest")[] | undefined; locationType?: ("ROOFTOP" | ... 2 more ... | "APPROXIMATE")[] | undefi...'.
+src/controllers/timezone.controller.ts(49,47): error TS2339: Property 'getTimezoneByCoordinates' does not exist on type 'TimezoneService'.
+src/controllers/timezone.controller.ts(76,87): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/controllers/trading.controller.ts(51,16): error TS2528: A module cannot have multiple default exports.
+src/controllers/trading.controller.ts(66,16): error TS2528: A module cannot have multiple default exports.
+src/controllers/vehicle-tracking.controller.ts(90,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/controllers/vehicle-tracking.controller.ts(107,24): error TS2554: Expected 2-5 arguments, but got 1.
+src/controllers/vehicle-tracking.controller.ts(250,30): error TS2554: Expected 4-5 arguments, but got 3.
+src/controllers/vehicle-tracking.controller.ts(376,103): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/index.ts(117,54): error TS2345: Argument of type 'Redis' is not assignable to parameter of type 'Pool'.
+  Type 'Redis' is missing the following properties from type 'Pool': totalCount, idleCount, waitingCount, expiredCount, and 3 more.
+src/index.ts(125,32): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(126,28): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(127,27): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(128,29): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(129,29): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(130,29): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(131,30): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(132,29): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(133,28): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(136,40): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(137,32): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(138,31): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/index.ts(139,25): error TS2345: Argument of type 'Hono<AppContext, BlankSchema, "/">' is not assignable to parameter of type 'Hono<BlankEnv, BlankSchema, "/">'.
+  The types of 'get(...).get(...).on' are incompatible between these types.
+    Type 'OnHandlerInterface<AppContext, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">' is not assignable to type 'OnHandlerInterface<{}, { [x: string]: { $get: { input: any; output: {}; outputFormat: string; status: StatusCode; }; }; }, "/">'.
+      Types of parameters 'handlers_0' and 'handlers_0' are incompatible.
+        Type 'H<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+          Type 'Handler<{}, any, any, any>' is not assignable to type 'H<AppContext, any, any, any>'.
+            Type 'Handler<{}, any, any, any>' is not assignable to type 'Handler<AppContext, any, any, any>'.
+              Types of parameters 'c' and 'c' are incompatible.
+                Type 'Context<AppContext, any, any>' is not assignable to type 'Context<{}, any, any>'.
+                  Types of property 'set' are incompatible.
+                    Type 'Set<AppContext>' is not assignable to type 'Set<{}>'.
+                      Property 'Variables' is missing in type '{}' but required in type 'AppContext'.
+src/lib/monitoring.ts(27,48): error TS2353: Object literal may only specify known properties, and 'extra' does not exist in type 'EventHint'.
+src/lib/monitoring.ts(32,46): error TS2345: Argument of type '{ level: "error" | "info" | "warning"; extra: any; }' is not assignable to parameter of type 'SeverityLevel | undefined'.
+src/metrics/helpdesk.metrics.ts(2,20): error TS2307: Cannot find module 'prom-client' or its corresponding type declarations.
+src/middleware/sentinel-x-tii.ts(19,27): error TS2367: This comparison appears to be unintentional because the types '"normal"' and '"lockdown"' have no overlap.
+src/middleware/validation.middleware.ts(15,36): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/modules/community-resilience/emergency/emergency.service.ts(115,13): error TS2304: Cannot find name 'logger'.
+src/modules/community-resilience/health-barter/health-barter.service.ts(4,29): error TS2305: Module '"../edu-health-types"' has no exported member 'RuralClinic'.
+src/modules/community-resilience/health-barter/health-barter.service.ts(4,58): error TS2305: Module '"../edu-health-types"' has no exported member 'Medicine'.
+src/modules/hubs/hubs.controller.ts(13,17): error TS2322: Type '{ name: string; purpose: string; status: "active" | "dormant" | "archived"; memberCount: number; completedExchanges: number; language: string; id?: string | undefined; createdAt?: Date | undefined; moderatorId?: string | undefined; metadata?: Record<...> | undefined; }[]' is not assignable to type 'never[]'.
+  Type '{ name: string; purpose: string; status: "active" | "dormant" | "archived"; memberCount: number; completedExchanges: number; language: string; id?: string | undefined; createdAt?: Date | undefined; moderatorId?: string | undefined; metadata?: Record<...> | undefined; }' is not assignable to type 'never'.
+src/modules/hubs/hubs.controller.ts(17,21): error TS2322: Type '{ id: string; name: string; purpose: string; memberCount: number; completedExchanges: number; language: string; status: string; }' is not assignable to type 'never'.
+src/modules/hubs/hubs.controller.ts(18,21): error TS2322: Type '{ id: string; name: string; purpose: string; memberCount: number; completedExchanges: number; language: string; status: string; }' is not assignable to type 'never'.
+src/modules/hubs/hubs.controller.ts(19,21): error TS2322: Type '{ id: string; name: string; purpose: string; memberCount: number; completedExchanges: number; language: string; status: string; }' is not assignable to type 'never'.
+src/patterns/resilience.ts(1,24): error TS2307: Cannot find module './logger' or its corresponding type declarations.
+src/routes/admin.ts(13,41): error TS2339: Property 'ADMIN_API_KEY' does not exist on type 'Env'.
+src/routes/analytics.routes.ts(6,21): error TS2554: Expected 2 arguments, but got 1.
+src/routes/location.routes.ts(9,31): error TS2554: Expected 2 arguments, but got 1.
+src/routes/viral.ts(34,40): error TS2345: Argument of type '{ userId: any; type: any; metadata: any; }' is not assignable to parameter of type 'Omit<{ userId: string; type: "invite_sent" | "invite_accepted" | "conversion" | "churn" | "share"; timestamp: string; weight: number; metadata?: Record<string, any> | undefined; }, "timestamp">'.
+  Property 'weight' is missing in type '{ userId: any; type: any; metadata: any; }' but required in type 'Omit<{ userId: string; type: "invite_sent" | "invite_accepted" | "conversion" | "churn" | "share"; timestamp: string; weight: number; metadata?: Record<string, any> | undefined; }, "timestamp">'.
+src/services/address-validation.service.ts(217,47): error TS2345: Argument of type '{ street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }' is not assignable to parameter of type '{ street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }'.
+  Property 'validated' is missing in type '{ street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }' but required in type '{ street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }'.
+src/services/address-validation.service.ts(255,60): error TS2345: Argument of type '{ street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }' is not assignable to parameter of type '{ street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }'.
+  Property 'validated' is missing in type '{ street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }' but required in type '{ street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }'.
+src/services/address-validation.service.ts(339,17): error TS2741: Property 'validated' is missing in type '{ street: string; city: string; state: string; postalCode: string; country: string; accuracy?: number | undefined; metadata?: Record<string, any> | undefined; latitude?: number | undefined; ... 5 more ...; timezone?: string | undefined; }' but required in type '{ street: string; city: string; state: string; postalCode: string; country: string; validated: boolean; streetNumber?: string | undefined; unit?: string | undefined; countryName?: string | undefined; ... 8 more ...; metadata?: Record<...> | undefined; }'.
+src/services/address-validation.service.ts(350,35): error TS2552: Cannot find name 'ValidationRequest'. Did you mean 'ValidationRequestInput'?
+src/services/address-validation.service.ts(778,24): error TS18046: 'error' is of type 'unknown'.
+src/services/address-validation.service.ts(901,57): error TS2554: Expected 1 arguments, but got 2.
+src/services/community-resilience/matching/engines/redis.matcher.ts(41,42): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+src/services/community-resilience/matching/engines/redis.matcher.ts(41,65): error TS2571: Object is of type 'unknown'.
+src/services/geo-fencing.service.ts(70,17): error TS2554: Expected 2-3 arguments, but got 1.
+src/services/geo-fencing.service.ts(685,43): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/geolocation.service.ts(10,36): error TS2724: '"./address-validation.service"' has no exported member named 'ValidationRequest'. Did you mean 'ValidationRequestInput'?
+src/services/geolocation.service.ts(71,57): error TS2345: Argument of type '{ userId: string; entityId: string; entityType: "vehicle"; location: { latitude: number; longitude: number; }; }' is not assignable to parameter of type '{ userId: string; entityId: string; entityType: "user" | "vehicle" | "asset"; location: { latitude: number; longitude: number; }; checkTypes: ("entry" | "exit" | "inside" | "violation")[]; previousLocation?: { ...; } | undefined; accuracy?: number | undefined; speed?: number | undefined; heading?: number | undefined...'.
+  Property 'checkTypes' is missing in type '{ userId: string; entityId: string; entityType: "vehicle"; location: { latitude: number; longitude: number; }; }' but required in type '{ userId: string; entityId: string; entityType: "user" | "vehicle" | "asset"; location: { latitude: number; longitude: number; }; checkTypes: ("entry" | "exit" | "inside" | "violation")[]; previousLocation?: { ...; } | undefined; accuracy?: number | undefined; speed?: number | undefined; heading?: number | undefined...'.
+src/services/geospatial/isochrones.service.ts(71,26): error TS2345: Argument of type '{ time: number; geometry: any; metrics: { areaKm2: string; reachabilityIndex: number; }; }' is not assignable to parameter of type 'never'.
+src/services/location-cache.service.ts(59,17): error TS2554: Expected 2-3 arguments, but got 1.
+src/services/location-cache.service.ts(148,45): error TS2339: Property 'get' does not exist on type 'LocationCacheService'.
+src/services/location-cache.service.ts(458,13): error TS2322: Type 'string | undefined' is not assignable to type '"user" | "vehicle" | "service" | "asset" | undefined'.
+  Type 'string' is not assignable to type '"user" | "vehicle" | "service" | "asset" | undefined'.
+src/services/location-cache.service.ts(545,39): error TS2339: Property 'get' does not exist on type '{ increment: (name: string, value?: number | Record<string, any>, tags?: Record<string, any> | undefined) => void; timing: (name: string, durationMs: number, tags?: Record<...> | undefined) => void; gauge: (name: string, value: number, tags?: Record<...> | undefined) => void; }'.
+src/services/location-cache.service.ts(546,41): error TS2339: Property 'get' does not exist on type '{ increment: (name: string, value?: number | Record<string, any>, tags?: Record<string, any> | undefined) => void; timing: (name: string, durationMs: number, tags?: Record<...> | undefined) => void; gauge: (name: string, value: number, tags?: Record<...> | undefined) => void; }'.
+src/services/location-cache.service.ts(547,42): error TS2339: Property 'get' does not exist on type '{ increment: (name: string, value?: number | Record<string, any>, tags?: Record<string, any> | undefined) => void; timing: (name: string, durationMs: number, tags?: Record<...> | undefined) => void; gauge: (name: string, value: number, tags?: Record<...> | undefined) => void; }'.
+src/services/mexico-launcher.ts(24,39): error TS2339: Property 'SENTINEL_KV' does not exist on type 'Env'.
+src/services/mexico-launcher.ts(64,24): error TS2339: Property 'SENTINEL_KV' does not exist on type 'Env'.
+src/services/payment.service.ts(16,17): error TS2554: Expected 2-3 arguments, but got 1.
+src/services/reverse-geocoding.service.ts(716,56): error TS2345: Argument of type '{ latitude: number; longitude: number; language: string; maxResults: number; }' is not assignable to parameter of type '{ latitude: number; longitude: number; language: string; radius: number; maxResults: number; resultType?: ("intersection" | "country" | "route" | "street_address" | "subpremise" | "locality" | ... 14 more ... | "point_of_interest")[] | undefined; locationType?: ("ROOFTOP" | ... 2 more ... | "APPROXIMATE")[] | undefi...'.
+  Property 'radius' is missing in type '{ latitude: number; longitude: number; language: string; maxResults: number; }' but required in type '{ latitude: number; longitude: number; language: string; radius: number; maxResults: number; resultType?: ("intersection" | "country" | "route" | "street_address" | "subpremise" | "locality" | ... 14 more ... | "point_of_interest")[] | undefined; locationType?: ("ROOFTOP" | ... 2 more ... | "APPROXIMATE")[] | undefi...'.
+src/services/sales-ai.ts(49,24): error TS18046: 'result' is of type 'unknown'.
+src/services/sales-ai.ts(50,24): error TS18046: 'result' is of type 'unknown'.
+src/services/sales-ai.ts(57,24): error TS2532: Object is possibly 'undefined'.
+src/services/secret/DopamineEngine.ts(68,51): error TS2345: Argument of type '"📈 ALTA DEMANDA - 5 PERSONAS VIENDO"' is not assignable to parameter of type 'never'.
+src/services/secret/DopamineEngine.ts(69,39): error TS2345: Argument of type '"✨ RECIÉN LLEGADO - SÉ EL PRIMERO"' is not assignable to parameter of type 'never'.
+src/services/secret/DopamineEngine.ts(70,50): error TS2345: Argument of type '"🎯 MATCH 99% - DISEÑADO PARA TI"' is not assignable to parameter of type 'never'.
+src/services/secret/Escrow.ts(38,26): error TS2347: Untyped function calls may not accept type arguments.
+src/sockets/geofence.socket.ts(2,10): error TS2724: '"../services/geo-fencing.service"' has no exported member named 'GeofencingService'. Did you mean 'GeoFencingService'?
+src/sockets/tracking.socket.ts(9,46): error TS2339: Property 'updateLocation' does not exist on type 'VehicleTrackingService'.
+src/tests/distance-matrix.test.ts(24,25): error TS2353: Object literal may only specify known properties, and 'lat' does not exist in type '{ latitude: number; longitude: number; id?: string | undefined; }'.
+src/tests/distance-matrix.test.ts(25,30): error TS2353: Object literal may only specify known properties, and 'lat' does not exist in type '{ latitude: number; longitude: number; id?: string | undefined; }'.
+src/tests/geo-fencing.test.ts(2,10): error TS2724: '"../services/geo-fencing.service"' has no exported member named 'GeofencingService'. Did you mean 'GeoFencingService'?
+src/tests/geolocation.test.ts(18,110): error TS2353: Object literal may only specify known properties, and 'type' does not exist in type '{ latitude: number; longitude: number; radius: number; unit: "meters" | "kilometers" | "miles"; categories?: ("vehicle" | "service" | "part" | "dealer" | "mechanic" | "rental" | "charging" | ... 4 more ... | "finance")[] | undefined; filters?: { ...; } | undefined; }'.
+src/tests/geolocation.test.ts(29,54): error TS2554: Expected 1 arguments, but got 2.
+src/tests/help-desk.test.ts(18,20): error TS2339: Property 'success' does not exist on type 'JSONRespondReturn<{ success: true; userId: any; query: any; answer: string; timestamp: string; }, ContentfulStatusCode> | JSONRespondReturn<{ success: false; error: string; }, 500>'.
+  Property 'success' does not exist on type 'JSONRespondReturn<{ success: true; userId: any; query: any; answer: string; timestamp: string; }, ContentfulStatusCode>'.
+src/tests/help-desk.test.ts(19,20): error TS2339: Property 'answer' does not exist on type 'JSONRespondReturn<{ success: true; userId: any; query: any; answer: string; timestamp: string; }, ContentfulStatusCode> | JSONRespondReturn<{ success: false; error: string; }, 500>'.
+  Property 'answer' does not exist on type 'JSONRespondReturn<{ success: true; userId: any; query: any; answer: string; timestamp: string; }, ContentfulStatusCode>'.
+../shared/types/index.ts(38,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { emailNotifications: boolean; pushNotifications: boolean; language: "en" | "es" | "fr" | "de"; currency: "USD" | "EUR" | "GBP" | "SOL"; theme: "light" | "dark" | "auto"; }): ZodDefault<...>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ emailNotifications: boolean; pushNotifications: boolean; language: "en" | "es" | "fr" | "de"; currency: "USD" | "EUR" | "GBP" | "SOL"; theme: "light" | "dark" | "auto"; }'.
+      Type '{}' is missing the following properties from type '{ emailNotifications: boolean; pushNotifications: boolean; language: "en" | "es" | "fr" | "de"; currency: "USD" | "EUR" | "GBP" | "SOL"; theme: "light" | "dark" | "auto"; }': emailNotifications, pushNotifications, language, currency, theme
+  Overload 2 of 2, '(def: () => { emailNotifications: boolean; pushNotifications: boolean; language: "en" | "es" | "fr" | "de"; currency: "USD" | "EUR" | "GBP" | "SOL"; theme: "light" | "dark" | "auto"; }): ZodDefault<...>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { emailNotifications: boolean; pushNotifications: boolean; language: "en" | "es" | "fr" | "de"; currency: "USD" | "EUR" | "GBP" | "SOL"; theme: "light" | "dark" | "auto"; }'.
+      Type '{}' provides no match for the signature '(): { emailNotifications: boolean; pushNotifications: boolean; language: "en" | "es" | "fr" | "de"; currency: "USD" | "EUR" | "GBP" | "SOL"; theme: "light" | "dark" | "auto"; }'.
+../shared/types/index.ts(48,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { listingsCount: number; soldCount: number; purchasedCount: number; reviewsCount: number; averageRating: number; totalVolume: number; }): ZodDefault<ZodObject<{ listingsCount: ZodDefault<ZodNumber>; ... 4 more ...; totalVolume: ZodDefault<...>; }, $strip>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ listingsCount: number; soldCount: number; purchasedCount: number; reviewsCount: number; averageRating: number; totalVolume: number; }'.
+      Type '{}' is missing the following properties from type '{ listingsCount: number; soldCount: number; purchasedCount: number; reviewsCount: number; averageRating: number; totalVolume: number; }': listingsCount, soldCount, purchasedCount, reviewsCount, and 2 more.
+  Overload 2 of 2, '(def: () => { listingsCount: number; soldCount: number; purchasedCount: number; reviewsCount: number; averageRating: number; totalVolume: number; }): ZodDefault<ZodObject<{ listingsCount: ZodDefault<ZodNumber>; ... 4 more ...; totalVolume: ZodDefault<...>; }, $strip>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { listingsCount: number; soldCount: number; purchasedCount: number; reviewsCount: number; averageRating: number; totalVolume: number; }'.
+      Type '{}' provides no match for the signature '(): { listingsCount: number; soldCount: number; purchasedCount: number; reviewsCount: number; averageRating: number; totalVolume: number; }'.
+../shared/types/index.ts(210,16): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: { platformFee: number; processingFee: number; shippingFee: number; tax: number; totalFees: number; }): ZodDefault<ZodObject<{ platformFee: ZodDefault<ZodNumber>; processingFee: ZodDefault<...>; shippingFee: ZodDefault<...>; tax: ZodDefault<...>; totalFees: ZodDefault<...>; }, $strip>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '{ platformFee: number; processingFee: number; shippingFee: number; tax: number; totalFees: number; }'.
+      Type '{}' is missing the following properties from type '{ platformFee: number; processingFee: number; shippingFee: number; tax: number; totalFees: number; }': platformFee, processingFee, shippingFee, tax, totalFees
+  Overload 2 of 2, '(def: () => { platformFee: number; processingFee: number; shippingFee: number; tax: number; totalFees: number; }): ZodDefault<ZodObject<{ platformFee: ZodDefault<ZodNumber>; processingFee: ZodDefault<...>; shippingFee: ZodDefault<...>; tax: ZodDefault<...>; totalFees: ZodDefault<...>; }, $strip>>', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type '() => { platformFee: number; processingFee: number; shippingFee: number; tax: number; totalFees: number; }'.
+      Type '{}' provides no match for the signature '(): { platformFee: number; processingFee: number; shippingFee: number; tax: number; totalFees: number; }'.

@@ -1,9 +1,14 @@
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 // --- CONFIGURACIÓN QUANTUM SOLANA ---
-export const SOLANA_NETWORK = 'devnet';
-export const SOLANA_RPC_URL = 'https://api.devnet.solana.com';
-export const ADMIN_WALLET = new PublicKey('4p8S5H8yq1q5A5f8xK8R8z8j8L8M8N8P8Q8R8S8T8U'); // Wallet de tesorería del imperio
+export const SOLANA_NETWORK = process.env.NEXT_PUBLIC_SOLANA_NETWORK || 'devnet';
+export const SOLANA_RPC_URL = process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.devnet.solana.com';
+
+// Valid base58 dummy key: 4zMMC9srt5RyDk1x7wLFCN3h9pA8Kk5gHxX9qjN6Gd7U
+const FALLBACK_WALLET = '4zMMC9srt5RyDk1x7wLFCN3h9pA8Kk5gHxX9qjN6Gd7U';
+const walletStr = process.env.NEXT_PUBLIC_SOLANA_ADMIN_WALLET || FALLBACK_WALLET;
+
+export const ADMIN_WALLET = new PublicKey(walletStr);
 
 export const connection = new Connection(SOLANA_RPC_URL, 'confirmed');
 

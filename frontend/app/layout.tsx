@@ -1,12 +1,19 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { AuthProvider } from '@/providers/auth-provider'
-import { Navigation } from '@/components/navigation'
-import { Footer } from '@/components/Footer'
+import { AuthProvider } from '../providers/auth-provider'
+import { Navigation } from '../components/navigation'
+import { Footer } from '../components/Footer'
 import { Toaster } from 'react-hot-toast'
 
 const inter = Inter({ subsets: ['latin'] })
+
+export const dynamic = 'force-dynamic'
+
+export const viewport = {
+    width: 'device-width',
+    initialScale: 1,
+}
 
 export const metadata: Metadata = {
     title: {
@@ -16,7 +23,7 @@ export const metadata: Metadata = {
     description: 'Buscador inteligente AI, marketplace de autos, refacciones y servicios con seguridad presidencial y pagos instantáneos.',
     keywords: ['autos', 'compra-venta', 'refacciones', 'servicios automotrices', 'AI car search', 'México', 'Quantum Marketplace'],
     authors: [{ name: 'Match-Auto Team' }],
-    viewport: 'width=device-width, initial-scale=1',
+
     openGraph: {
         type: 'website',
         locale: 'es_MX',
@@ -43,6 +50,8 @@ export const metadata: Metadata = {
     }
 }
 
+import { Providers } from '../components/providers'
+
 export default function RootLayout({
     children,
 }: {
@@ -56,17 +65,19 @@ export default function RootLayout({
                 <meta name="apple-mobile-web-app-capable" content="yes" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
             </head>
-            <body className={`${inter.className} bg-gray-950 text-white`}>
-                <AuthProvider>
-                    <Navigation />
-                    <main className="min-h-screen">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            {children}
-                        </div>
-                    </main>
-                    <Footer />
-                    <Toaster position="top-right" reverseOrder={false} />
-                </AuthProvider>
+            <body className={`${inter.className} hero-gradient min-h-screen`}>
+                <Providers>
+                    <AuthProvider>
+                        <Navigation />
+                        <main className="min-h-screen">
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                {children}
+                            </div>
+                        </main>
+                        <Footer />
+                        <Toaster position="top-right" reverseOrder={false} />
+                    </AuthProvider>
+                </Providers>
             </body>
         </html>
     )

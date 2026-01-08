@@ -56,7 +56,7 @@ export const LocationUpdateSchema = z.object({
     speed: z.number().min(0).optional(),
     heading: z.number().min(0).max(360).optional(),
     batteryLevel: z.number().min(0).max(100).optional(),
-    metadata: z.record(z.any()).optional()
+    metadata: z.record(z.string(), z.any()).optional()
 });
 
 export type LocationData = z.infer<typeof LocationDataSchema>;
@@ -145,7 +145,8 @@ export class LocationCacheService {
                 // Redis can handle simple key pattern searches
                 if (query.entityIds && query.entityIds.length === 1) {
                     const key = this.getLocationKey(query.entityIds[0]);
-                    const data = await this.get(key);
+                    const cached = await this.redis.get(key);
+                    const data = cached ? LocationDataSchema.parse(JSON.parse(cached)) : null;
                     return data ? [data] : [];
                 }
                 return [];
@@ -455,7 +456,7 @@ export class LocationCacheService {
         const query: LocationQuery = {
             center: { lat: centerLat, lng: centerLng },
             radius,
-            entityType,
+            entityType: entityType as any,
             maxAge: 300,
             limit,
             orderBy: 'distance',
@@ -542,9 +543,9 @@ export class LocationCacheService {
                     byEntityType: entityStats.rows,
                     recentActivity: recentActivity.rows,
                     metrics: {
-                        hits: metrics.get('location_cache.redis_hits_total') || 0,
-                        misses: metrics.get('location_cache.misses_total') || 0,
-                        updates: metrics.get('location_cache.updates_total') || 0
+                        hits: (metrics as any).get('location_cache.redis_hits_total') || 0,
+                        misses: (metrics as any).get('location_cache.misses_total') || 0,
+                        updates: (metrics as any).get('location_cache.updates_total') || 0
                     }
                 };
             } finally {

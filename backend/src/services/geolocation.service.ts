@@ -60,7 +60,7 @@ export class GeolocationService {
     /**
      * Get density heatmap data for analytics
      */
-    async getDensityMap(request: AnalyticsRequest): Promise<any> {
+    async getDensityMap(request: any): Promise<any> {
         return this.analytics.calculateHeatmap(request);
     }
 

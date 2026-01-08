@@ -59,7 +59,7 @@ export type ProviderResult = Omit<ValidationResult, 'executionTimeMs' | 'cached'
 interface ValidationProvider {
     name: string;
     priority: number;
-    validate(address: Address): Promise<ProviderResult>;
+    validate(address: ValidationRequestInput['address']): Promise<ProviderResult>;
     getCost(): number;
     isAvailable(): boolean;
 }
@@ -82,7 +82,7 @@ export class AddressValidationService {
             this.providers.push({
                 name: 'google',
                 priority: 0,
-                validate: async (address: Address) => {
+                validate: async (address: ValidationRequestInput['address']) => {
                     const response = await axios.post(
                         `https://addressvalidation.googleapis.com/v1:validateAddress?key=${process.env.GOOGLE_MAPS_API_KEY}`,
                         {
@@ -122,7 +122,7 @@ export class AddressValidationService {
             this.providers.push({
                 name: 'here',
                 priority: 1,
-                validate: async (address: Address) => {
+                validate: async (address: ValidationRequestInput['address']) => {
                     const response = await axios.get(
                         'https://geocode.search.hereapi.com/v1/geocode',
                         {
@@ -156,7 +156,7 @@ export class AddressValidationService {
         this.providers.push({
             name: 'osm',
             priority: 2,
-            validate: async (address: Address) => {
+            validate: async (address: ValidationRequestInput['address']) => {
                 const response = await axios.get(
                     'https://nominatim.openstreetmap.org/search',
                     {
@@ -194,7 +194,7 @@ export class AddressValidationService {
         this.providers.push({
             name: 'database',
             priority: 3,
-            validate: async (address: Address) => {
+            validate: async (address: ValidationRequestInput['address']) => {
                 const res = await this.validateWithDatabase(address);
                 return res as ProviderResult;
             },
@@ -336,7 +336,7 @@ export class AddressValidationService {
 
             // Return minimal validation result
             return {
-                address: request.address,
+                address: request.address as any,
                 valid: false,
                 score: 0,
                 issues: ['Validation service unavailable'],
@@ -566,20 +566,20 @@ export class AddressValidationService {
         }
     }
 
-    private getCacheKey(address: Address): string {
+    private getCacheKey(address: Partial<Address>): string {
         const keyData = {
-            street: address.street.toLowerCase(),
-            streetNumber: address.streetNumber?.toLowerCase(),
-            city: address.city.toLowerCase(),
-            state: address.state.toLowerCase(),
-            postalCode: address.postalCode.toLowerCase(),
-            country: address.country.toLowerCase()
+            street: address.street?.toLowerCase() || '',
+            streetNumber: address.streetNumber?.toLowerCase() || '',
+            city: address.city?.toLowerCase() || '',
+            state: address.state?.toLowerCase() || '',
+            postalCode: address.postalCode?.toLowerCase() || '',
+            country: address.country?.toLowerCase() || ''
         };
 
         return `address_validation:${Buffer.from(JSON.stringify(keyData)).toString('base64').substring(0, 50)}`;
     }
 
-    private formatAddressForGeocoding(address: Address): string {
+    private formatAddressForGeocoding(address: Partial<Address>): string {
         const parts = [
             address.street,
             address.streetNumber,
@@ -624,7 +624,7 @@ export class AddressValidationService {
         };
     }
 
-    private parseHereValidation(item: any, original: Address): Address {
+    private parseHereValidation(item: any, original: Partial<Address>): Address {
         if (!item) return original;
 
         const address = item.address;
@@ -648,7 +648,7 @@ export class AddressValidationService {
         };
     }
 
-    private parseOsmValidation(result: any, original: Address): Address {
+    private parseOsmValidation(result: any, original: Partial<Address>): Address {
         if (!result) return original;
 
         const address = result.address;
@@ -671,7 +671,7 @@ export class AddressValidationService {
         };
     }
 
-    private async validateWithDatabase(address: Address): Promise<ProviderResult> {
+    private async validateWithDatabase(address: Partial<Address>): Promise<ProviderResult> {
         const client = await this.pgPool.connect();
 
         try {

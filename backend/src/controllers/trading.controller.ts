@@ -48,7 +48,7 @@ trading.post('/match/offer/respond', async (c) => {
     });
 });
 
-export default trading;
+
 
 /**
  * 🕵️ Plan "Sherlock" (Ads para los que BUSCAN)

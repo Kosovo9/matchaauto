@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react'
 import { ClerkProvider } from '@clerk/nextjs'
-import { SolanaProvider } from '@/components/solana-provider' // placeholder, adjust path if needed
+import { SolanaProvider } from './solana-provider' // placeholder, adjust path if needed
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const queryClient = new QueryClient()

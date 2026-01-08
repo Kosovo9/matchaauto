@@ -8,7 +8,7 @@ const pro = new Hono();
 pro.post('/all-in-one', async (c) => {
     const body = await c.req.json();
     const lang = getPersistentLang();
-    const service = c.get('proService') as ProEngineService;
+    const service = (c as any).get('proService') as ProEngineService;
 
     // Ejecución paralela de features para máximo rendimiento
     const [security, finance, geo] = await Promise.all([
@@ -30,7 +30,7 @@ pro.post('/all-in-one', async (c) => {
 // Feature 9: Chat con Traducción
 pro.post('/chat/v2/translate', async (c) => {
     const { text, targetLang } = await c.req.json();
-    const service = c.get('proService') as ProEngineService;
+    const service = (c as any).get('proService') as ProEngineService;
     const translated = await service.translateMessage(text, targetLang);
     return c.json({ translated });
 });
@@ -38,7 +38,7 @@ pro.post('/chat/v2/translate', async (c) => {
 // Feature 15: Offline Vault
 pro.get('/sync/offline-vault', async (c) => {
     const { lat, lng } = c.req.query();
-    const service = c.get('proService') as ProEngineService;
+    const service = (c as any).get('proService') as ProEngineService;
     const data = await service.getOfflineSyncPacket('user-id', parseFloat(lat), parseFloat(lng));
     return c.json({ data });
 });

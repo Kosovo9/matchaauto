@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 import { toast } from 'react-hot-toast'
-import { useMediaQuery } from '@/hooks/use-media-query'
+import { useMediaQuery } from '../hooks/use-media-query'
 
 // Hook para detectar dispositivos
 function useDeviceDetection() {

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, Zap, Camera, CheckCircle, Loader2, Play, AlertCircle } from 'lucide-react';
-import { backendClient } from '@/lib/backend-client';
+import { backendClient } from '../lib/backend-client';
 
 export default function QuantumStressTest() {
     const [status, setStatus] = useState<'IDLE' | 'LOADING' | 'SUCCESS' | 'ERROR'>('IDLE');

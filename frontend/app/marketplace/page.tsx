@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Car, Wrench, Zap, Search, Filter, SlidersHorizontal, ChevronDown, CheckCircle2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import backend from '@/lib/backend-client';
+import { cn } from '../../lib/utils';
+import backend from '../../lib/backend-client';
 
 export default function MarketplacePage() {
     const [activeCategory, setActiveCategory] = useState<'ALL' | 'CARS' | 'PARTS' | 'SERVICES'>('ALL');

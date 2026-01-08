@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Search, Loader2 } from 'lucide-react'
-import { backend } from '@/lib/backend-connection'
+import { backend } from '../lib/backend-connection'
 import { toast } from 'react-hot-toast'
 
 export default function VINDecoder() {

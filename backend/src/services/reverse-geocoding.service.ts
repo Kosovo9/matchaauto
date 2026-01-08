@@ -483,7 +483,8 @@ export class ReverseGeocodingService {
                 results,
                 status: results.length > 0 ? 'OK' : 'ZERO_RESULTS',
                 provider: 'database',
-                cached: true
+                cached: true,
+                timestamp: new Date()
             };
         } catch (error: any) {
             logger.error('Database reverse geocoding failed:', error);

@@ -1,78 +1,31 @@
-# Dockerfile
-FROM node:18-alpine AS development
-
+# Build stage
+FROM node:20-bookworm AS builder
 WORKDIR /app
 
-# Copy package files
+# Install build dependencies
+RUN apt-get update && apt-get install -y python3 make g++ gcc libusb-1.0-0-dev libudev-dev pkg-config && rm -rf /var/lib/apt/lists/*
+
 COPY package*.json ./
-COPY package-lock.json* ./
-
-# Install dependencies (using legacy-peer-deps for safety with certain packages)
-RUN npm install --legacy-peer-deps --ignore-scripts
-
-# Copy source code
+RUN npm install --legacy-peer-deps
 COPY . .
-
-# Create a non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-
-# Change ownership
-RUN chown -R nextjs:nodejs /app
-
-USER nextjs
-
-# Expose port
-EXPOSE 3000
-
-# Development command
-CMD ["npm", "run", "dev"]
-
-# Production build stage
-FROM node:18-alpine AS builder
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-COPY package-lock.json* ./
-
-# Install dependencies
-RUN npm install --only=production --legacy-peer-deps --ignore-scripts
-
-# Copy source code
-COPY . .
-
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-RUN chown -R nextjs:nodejs /app
-
-USER nextjs
-
-# Build the application
 RUN npm run build
 
-# Production stage
-FROM node:18-alpine AS production
-
+# Runtime stage
+FROM node:20-bookworm-slim AS runner
 WORKDIR /app
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Copy built application from builder stage
-COPY --from=builder /app/.next ./.next
+# Install runtime libs
+RUN apt-get update && apt-get install -y libusb-1.0-0 wget && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-RUN chown -R nextjs:nodejs /app
-
-USER nextjs
-
-# Expose port
 EXPOSE 3000
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
 
-# Start the application
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

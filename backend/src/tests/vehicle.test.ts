@@ -11,7 +11,7 @@ describe('VehicleService', () => {
     } as any;
 
     beforeEach(() => {
-        vehicleService = new VehicleService(mockPool);
+        vehicleService = new VehicleService({} as any, mockPool, {} as any, {} as any);
         vi.clearAllMocks();
     });
 
@@ -19,7 +19,7 @@ describe('VehicleService', () => {
         const mockResult = { rows: [{ id: '1', name: 'Tesla' }] };
         mockPool.connect().query.mockResolvedValue(mockResult);
 
-        const vehicles = await vehicleService.listVehicles();
+        const vehicles = await vehicleService.listVehicles({});
 
         expect(vehicles).toEqual(mockResult.rows);
         expect(mockPool.connect().query).toHaveBeenCalledWith(

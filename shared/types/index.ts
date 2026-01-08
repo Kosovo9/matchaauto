@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+
+
+
 // ==================== ESQUEMAS BASE ====================
 
 // Base schema para todos los modelos
@@ -45,7 +48,14 @@ export const UserSchema = BaseSchema.extend({
         reviewsCount: z.number().int().min(0).default(0),
         averageRating: z.number().min(0).max(5).default(0),
         totalVolume: z.number().min(0).default(0),
-    }).default({}),
+    }).default({
+        listingsCount: 0,
+        soldCount: 0,
+        purchasedCount: 0,
+        reviewsCount: 0,
+        averageRating: 0,
+        totalVolume: 0
+    }),
 
     // Social
     socialLinks: z.array(z.object({
@@ -207,7 +217,13 @@ export const TransactionSchema = BaseSchema.extend({
         shippingFee: z.number().min(0).default(0),
         tax: z.number().min(0).default(0),
         totalFees: z.number().min(0).default(0),
-    }).default({}),
+    }).default({
+        platformFee: 0,
+        processingFee: 0,
+        shippingFee: 0,
+        tax: 0,
+        totalFees: 0
+    }),
 
     // Desglose de montos
     breakdown: z.object({
