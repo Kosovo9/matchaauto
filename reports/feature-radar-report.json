@@ -1,0 +1,81 @@
+{
+  "timestamp": "2026-01-08T09:43:13.132Z",
+  "projectRoot": "C:\\Match-auto-1",
+  "scanStrategy": "Surgical (Allowlist + .radarignore)",
+  "stats": {
+    "totalFilesScanned": 689,
+    "totalTables": 50,
+    "unusedTables": 10,
+    "totalFunctions": 5,
+    "unusedFunctions": 5
+  },
+  "hiddenFeatures": {
+    "unusedTables": [
+      {
+        "name": "saved_searches",
+        "file": "backend\\db\\schema.sql"
+      },
+      {
+        "name": "security_audit",
+        "file": "backend\\db\\schema.sql"
+      },
+      {
+        "name": "barter_confirmations",
+        "file": "backend\\src\\database\\community-resilience-migrations.sql"
+      },
+      {
+        "name": "spatial_grid_index",
+        "file": "backend\\src\\database\\geo-migrations-block1-fix.sql"
+      },
+      {
+        "name": "security_audit_log",
+        "file": "backend\\src\\database\\security-migrations.sql"
+      },
+      {
+        "name": "honeypot_hits",
+        "file": "backend\\src\\database\\security-migrations.sql"
+      },
+      {
+        "name": "marketplace_items",
+        "file": "docker\\postgres\\init_extra.sql"
+      },
+      {
+        "name": "real_estate_assets",
+        "file": "docker\\postgres\\init_extra.sql"
+      },
+      {
+        "name": "identity_verifications",
+        "file": "docker\\postgres\\init_extra.sql"
+      },
+      {
+        "name": "search_heatmaps",
+        "file": "docker\\postgres\\init_extra.sql"
+      }
+    ],
+    "unusedFunctions": [
+      {
+        "name": "update_listing_geom",
+        "file": "backend\\sql\\0001_trinity_setup.sql"
+      },
+      {
+        "name": "update_timestamp_column",
+        "file": "backend\\src\\database\\geo-migrations-v2.sql"
+      },
+      {
+        "name": "calculate_bearing",
+        "file": "backend\\src\\database\\geo-migrations.sql"
+      },
+      {
+        "name": "update_location_timestamp",
+        "file": "backend\\src\\database\\geo-migrations.sql"
+      },
+      {
+        "name": "vehicles_search_trigger",
+        "file": "backend\\src\\database\\listings-migrations.sql"
+      }
+    ]
+  },
+  "possibleDuplications": [
+    "marketplace_items vs listings"
+  ]
+}
