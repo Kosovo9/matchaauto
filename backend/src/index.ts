@@ -1,7 +1,7 @@
 
 import { Hono } from 'hono';
 import { logger as honoLogger } from 'hono/logger';
-import { cors } from 'hono/cors';
+import { corsAllowlist } from './middleware/cors.middleware';
 import { validateEnv } from './config/env';
 import { setupDatabase } from './config/database';
 import { getRedis } from './lib/redis';
@@ -52,11 +52,13 @@ import { VerificationController } from './controllers/verification.controller';
 import { VerificationService } from './services/verification.service';
 import { MercadoPagoService } from './services/payments/mercadopago.service';
 import { PayPalService } from './services/payments/paypal.service';
+import { EmailService } from './services/email.service';
 import { requireVerifiedSeller } from './middleware/verification.middleware';
 import { RAGController } from './controllers/rag.controller';
 import { honeypotGuard } from './middleware/security.middleware';
 import { clerkMiddleware } from '@hono/clerk-auth';
 import { requireAdmin } from './middleware/admin.middleware';
+import { devRoutes } from './routes/dev.routes';
 import { getUserId } from './auth/getUserId';
 
 export { RateLimitStore } from './middleware/rateLimiter';
@@ -81,10 +83,10 @@ import { HybridSyncController } from './controllers/hybrid-sync.controller';
 
 // Global Middleware
 app.use('*', honoLogger());
-app.use('*', cors());
+app.use('*', corsAllowlist());
 
-// 🔥 CLERK LIVE MODE (Only if keys present)
-if (process.env.CLERK_SECRET_KEY) {
+// 🔥 CLERK LIVE MODE (Only in Staging/Prod)
+if (process.env.CLERK_SECRET_KEY && process.env.APP_ENV !== 'local') {
     app.use('*', clerkMiddleware());
 }
 
@@ -92,6 +94,9 @@ app.use('*', hybridModeMiddleware); // 🧠 Hybrid Detection Layer Active
 
 // Health Check
 app.get('/api/health', (c) => c.json({ status: 'OK', timestamp: new Date(), service: 'match-auto-backend' }));
+
+// 🧪 DEV-ONLY ROUTES (Windows Host + APP_ENV=local only)
+app.route('/api/dev', devRoutes);
 
 // Swagger UI
 app.get('/api-docs', swaggerUI({ url: '/doc' }));
@@ -369,14 +374,16 @@ const start = async () => {
 
         app.post('/api/boosts/checkout', requireVerifiedSeller(pgPool), async (c) => {
             const body = await c.req.json();
-            const { listingId, planId, provider = 'mercadopago' } = body;
-            const userId = getUserId(c) as string;
+            const { listingId, planId, provider = 'mercadopago', domain = 'auto', city = 'CDMX' } = body;
+            const userId = getUserId(c);
 
-            // Plan configuration
+            if (!userId) return c.json({ error: 'Unauthorized' }, 401);
+
+            // Plan configuration (Prices in Cents)
             const plans: any = {
-                basic: { amount: 99, title: 'Basic 1 Day' },
-                premium: { amount: 499, title: 'Premium 7 Days' },
-                diamond: { amount: 1200, title: 'Elite Diamond 30 Days' }
+                basic: { amountCents: 9900, title: 'Basic 1 Day' },
+                premium: { amountCents: 49900, title: 'Premium 7 Days' },
+                diamond: { amountCents: 120000, title: 'Elite Diamond 30 Days' }
             };
 
             const plan = plans[planId] || plans.basic;
@@ -384,7 +391,8 @@ const start = async () => {
             try {
                 if (provider === 'paypal') {
                     const order = await ppService.createBoostOrder({
-                        userId, listingId, planId, amount: plan.amount, title: plan.title
+                        userId, listingId, planId, amountCents: plan.amountCents,
+                        title: plan.title, domain, city
                     });
                     return c.json({
                         success: true,
@@ -396,7 +404,8 @@ const start = async () => {
 
                 // Default: Mercado Pago
                 const preference = await mpService.createBoostPreference({
-                    userId, listingId, planId, amount: plan.amount, title: plan.title
+                    userId, listingId, planId, amountCents: plan.amountCents,
+                    title: plan.title, domain, city
                 });
 
                 return c.json({

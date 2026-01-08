@@ -20,6 +20,11 @@ export const EnvSchema = z.object({
     PAYPAL_WEBHOOK_ID: z.string().optional(),
     BACKEND_URL: z.string().default('http://localhost:3000'),
     FRONTEND_URL: z.string().default('http://localhost:3000'),
+    SMTP_HOST: z.string().default('localhost'),
+    SMTP_PORT: z.coerce.number().default(1025),
+    MAIL_FROM: z.string().default('MatchaAuto <no-reply@match-autos.com>'),
+    APP_ENV: z.enum(['development', 'staging', 'production']).default('development'),
+    CORS_ALLOW_ORIGINS: z.string().optional(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

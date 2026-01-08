@@ -14,3 +14,5 @@
 <-- POST /api/webhooks/paypal
 [INFO] [PayPal Webhook] Received event: PAYMENT.CAPTURE.COMPLETED
 --> POST /api/webhooks/paypal [32m200[0m 3ms
+<-- GET /api/dev/test-email
+--> GET /api/dev/test-email [33m404[0m 3ms

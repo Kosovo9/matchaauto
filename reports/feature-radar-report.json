@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-01-08T09:51:23.262Z",
+  "timestamp": "2026-01-08T23:04:03.234Z",
   "projectRoot": "C:\\Match-auto-1",
   "scanStrategy": "Surgical (Allowlist + .radarignore)",
   "stats": {
-    "totalFilesScanned": 689,
-    "totalTables": 50,
-    "unusedTables": 11,
+    "totalFilesScanned": 716,
+    "totalTables": 52,
+    "unusedTables": 8,
     "totalFunctions": 5,
     "unusedFunctions": 5
   },
@@ -36,18 +36,6 @@
         "codeRefs": 0
       },
       {
-        "name": "security_audit_log",
-        "fullName": "security_audit_log",
-        "file": "backend\\src\\database\\security-migrations.sql",
-        "codeRefs": 0
-      },
-      {
-        "name": "honeypot_hits",
-        "fullName": "honeypot_hits",
-        "file": "backend\\src\\database\\security-migrations.sql",
-        "codeRefs": 0
-      },
-      {
         "name": "marketplace_items",
         "fullName": "marketplace_items",
         "file": "docker\\postgres\\init_extra.sql",
@@ -56,12 +44,6 @@
       {
         "name": "real_estate_assets",
         "fullName": "real_estate_assets",
-        "file": "docker\\postgres\\init_extra.sql",
-        "codeRefs": 0
-      },
-      {
-        "name": "identity_verifications",
-        "fullName": "identity_verifications",
         "file": "docker\\postgres\\init_extra.sql",
         "codeRefs": 0
       },
