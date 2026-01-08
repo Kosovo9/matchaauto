@@ -224,11 +224,18 @@ const start = async () => {
             const domain = c.req.query('domain') || 'auto';
             const { Pool } = await import('pg');
             const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-            const { rows } = await pool.query('SELECT * FROM listings WHERE domain=$1 ORDER BY created_at DESC LIMIT 10', [domain]);
+            const { rows } = await pool.query(`
+                SELECT l.*, u.trust_badge as "sellerTrustBadge"
+                FROM listings l
+                LEFT JOIN users u ON l.user_id = u.id
+                WHERE l.domain=$1
+                ORDER BY l.created_at DESC
+                LIMIT 10
+            `, [domain]);
             return c.json(rows.map(x => ({
                 ...x,
                 image: x.attrs?.image || `https://placehold.co/400x250/1a1a1a/FFF?text=${x.title.split(' ')[0]}`,
-                badge: x.attrs?.badge || 'Verified'
+                badge: x["sellerTrustBadge"] === 'VERIFIED' ? 'Verified' : (x.attrs?.badge || 'New')
             })));
         });
 
@@ -304,7 +311,12 @@ const start = async () => {
             const id = c.req.param('id');
             const { Pool } = await import('pg');
             const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-            const { rows } = await pool.query('SELECT * FROM listings WHERE id=$1', [id]);
+            const { rows } = await pool.query(`
+                SELECT l.*, u.trust_badge as "sellerTrustBadge"
+                FROM listings l
+                LEFT JOIN users u ON l.user_id = u.id
+                WHERE l.id=$1
+            `, [id]);
             return rows[0] ? c.json(rows[0]) : c.json({ error: 'Not found' }, 404);
         });
 
