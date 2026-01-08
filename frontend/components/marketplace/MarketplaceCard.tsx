@@ -31,6 +31,12 @@ export default function MarketplaceCard({ item }: { item: MarketplaceListing }) 
             <div className="relative h-40 bg-gradient-to-b from-black/10 to-transparent">
                 <div className="absolute top-3 left-3 z-10">
                     <span className={`${badgeClass} text-[10px] px-2 py-1 rounded-full font-black tracking-widest uppercase`}>{badge}</span>
+                    {/* Visual Verified Badge logic override for P0 demo */}
+                    {item.badge === "Verified" && (
+                        <div className="absolute -right-2 -bottom-2 translate-x-full translate-y-full">
+                            {/* Intentionally hidden here, we use the chip above for now to not break layout, can swap later */}
+                        </div>
+                    )}
                 </div>
 
                 {/* image */}

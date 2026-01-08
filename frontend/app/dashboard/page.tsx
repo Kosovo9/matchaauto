@@ -1,3 +1,5 @@
+import { IdentityPanel } from "@/components/profile/IdentityPanel";
+
 export default function DashboardPage() {
     return (
         <div className="space-y-8">
@@ -24,6 +26,14 @@ export default function DashboardPage() {
                         </p>
                     </div>
                 ))}
+            </div>
+
+            {/* IDENTITY VERIFICATION PANEL (P0) */}
+            <div className="rounded-xl border border-white/10 p-6 bg-slate-900/50">
+                <h3 className="text-lg font-medium text-white mb-4">Sovereign Identity</h3>
+                <div className="max-w-md">
+                    <IdentityPanel />
+                </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
