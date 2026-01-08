@@ -360,6 +360,21 @@ const start = async () => {
             return c.json({ ok: true });
         });
 
+        // 💰 MONETIZATION: BOOST CHECKOUT (Verified Only)
+        const { requireVerifiedSeller } = await import('./middleware/verification.middleware');
+        app.post('/api/boosts/checkout', requireVerifiedSeller(pgPool), async (c) => {
+            const body = await c.req.json();
+            const { listingId, planId } = body;
+
+            logger.info(`[BOOST] Verification passed! Processing checkout for ${listingId} with plan ${planId}`);
+
+            return c.json({
+                success: true,
+                checkoutUrl: `https://checkout.match-auto.com/pay?plan=${planId}&listing=${listingId}`,
+                message: "Proceed to payment to activate your boost."
+            });
+        });
+
         // Error Handling
         app.onError(errorMiddleware);
 

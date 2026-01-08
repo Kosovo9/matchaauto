@@ -22,6 +22,7 @@ RUN npm install --legacy-peer-deps
 # Luego el código
 COPY backend/src ./src
 COPY backend/tsconfig.json ./
+COPY shared ../shared
 
 # Compilar
 RUN npm run build
