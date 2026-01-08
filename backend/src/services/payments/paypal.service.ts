@@ -57,32 +57,15 @@ export class PayPalService {
         const orderId = orderRes.rows[0].id;
 
         // 2. Create PayPal Order
-        const token = await this.getAccessToken().catch(err => {
-            if (process.env.NODE_ENV !== 'production' && !this.clientId) return 'mock-token';
-            throw err;
-        });
-
-        // MOCK MODE
-        if (!this.clientId && process.env.NODE_ENV !== 'production') {
-            logger.info(`[PayPal MOCK] Creating mock order for ${orderId}`);
-            const mockPaypalId = `PAYPAL-MOCK-${Date.now()}`;
-            await this.pgPool.query(
-                'UPDATE boost_orders SET provider_ref = $1 WHERE id = $2',
-                [mockPaypalId, orderId]
-            );
-
-            return {
-                orderId,
-                paypalOrderId: mockPaypalId,
-                approveUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/mock-paypal-check?order=${orderId}`
-            };
-        }
+        const token = await this.getAccessToken();
+        const requestId = orderId; // Use our UUID as idempotency key for PayPal
 
         const response = await fetch(`${this.baseUrl}/v2/checkout/orders`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'PayPal-Request-Id': requestId // 🛡️ PayPal-Idempotency
             },
             body: JSON.stringify({
                 intent: 'CAPTURE',
@@ -93,7 +76,7 @@ export class PayPalService {
                         value: amount.toString()
                     },
                     description: `Boost: ${title}`,
-                    custom_id: orderId // Critically important for webhooks
+                    custom_id: orderId // 🔗 Link to our DB record
                 }],
                 application_context: {
                     return_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard/boosts/success?provider=paypal`,
@@ -129,24 +112,13 @@ export class PayPalService {
      * ✅ Capture PayPal Order (Instant UX)
      */
     async captureOrder(paypalOrderId: string) {
-        // MOCK MODE
-        if (!this.clientId && process.env.NODE_ENV !== 'production' && paypalOrderId.startsWith('PAYPAL-MOCK-')) {
-            logger.info(`[PayPal MOCK] Capturing mock order ${paypalOrderId}`);
-            // Extract internal orderId from DB using provider_ref
-            const orderRes = await this.pgPool.query('SELECT id FROM boost_orders WHERE provider_ref = $1', [paypalOrderId]);
-            if (orderRes.rows[0]) {
-                await this.activateBoost(orderRes.rows[0].id, paypalOrderId);
-                return { success: true, mock: true };
-            }
-            return { success: false, error: 'Order not found' };
-        }
-
         const token = await this.getAccessToken();
         const response = await fetch(`${this.baseUrl}/v2/checkout/orders/${paypalOrderId}/capture`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
+                // No PayPal-Request-Id needed here as capture is usually the final step
             }
         });
 
@@ -157,8 +129,8 @@ export class PayPalService {
         }
 
         const captureData: any = await response.json();
-        const orderId = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.custom_id
-            || captureData.purchase_units?.[0]?.reference_id;
+        // custom_id is where we stored our internal orderId
+        const orderId = captureData.purchase_units?.[0]?.payments?.captures?.[0]?.custom_id;
 
         if (captureData.status === 'COMPLETED' && orderId) {
             await this.activateBoost(orderId, paypalOrderId);
@@ -172,18 +144,58 @@ export class PayPalService {
      * 🔔 Webhook Handler (Source of Truth)
      */
     async handleWebhook(headers: Record<string, string>, body: any) {
-        // Verification step (simplified for now, in prod call PayPal to verify signature)
+        // 1. Verify Signature (Bulletproof)
+        const isVerified = await this.verifySignature(headers, body);
+        if (!isVerified) {
+            logger.warn('[PayPal Webhook] Signature verification failed');
+            return;
+        }
+
         const eventType = body.event_type;
-        logger.info(`[PayPal Webhook] Received event: ${eventType}`);
+        logger.info(`[PayPal Webhook] Processing event: ${eventType}`);
 
         if (eventType === 'PAYMENT.CAPTURE.COMPLETED') {
             const capture = body.resource;
-            const orderId = capture.custom_id || capture.reference_id;
+            const orderId = capture.custom_id; // Our internal UUID
             const paypalOrderId = body.resource.supplementary_data?.related_ids?.order_id || capture.id;
 
             if (orderId) {
                 await this.activateBoost(orderId, paypalOrderId);
             }
+        }
+    }
+
+    private async verifySignature(headers: Record<string, string>, body: any): Promise<boolean> {
+        const webhookId = process.env.PAYPAL_WEBHOOK_ID;
+        if (!webhookId) {
+            logger.error('PAYPAL_WEBHOOK_ID is missing - skipping verification');
+            return false;
+        }
+
+        try {
+            const token = await this.getAccessToken();
+            const response = await fetch(`${this.baseUrl}/v1/notifications/verify-webhook-signature`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    transmission_id: headers['paypal-transmission-id'],
+                    transmission_time: headers['paypal-transmission-time'],
+                    cert_url: headers['paypal-cert-url'],
+                    auth_algo: headers['paypal-auth-algo'],
+                    transmission_sig: headers['paypal-transmission-sig'],
+                    webhook_id: webhookId,
+                    webhook_event: body
+                })
+            });
+
+            const result: any = await response.json();
+            return result.verification_status === 'SUCCESS';
+        } catch (error) {
+            logger.error('[PayPal Webhook] Verification error:', error);
+            return false;
         }
     }
 

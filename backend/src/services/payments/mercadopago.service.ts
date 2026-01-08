@@ -35,27 +35,6 @@ export class MercadoPagoService {
         const orderRes = await this.pgPool.query(orderQuery, [userId, listingId, planId, amount]);
         const orderId = orderRes.rows[0].id;
 
-        // 2. Build MP Preference
-        // MOCK MODE: If no access token and not in production, return dummy preference
-        if (!process.env.MERCADO_PAGO_ACCESS_TOKEN && process.env.NODE_ENV !== "production") {
-            logger.info(`[MP MOCK] Creating mock preference for order ${orderId}`);
-            const mockResult = {
-                id: `mock-pref-${Date.now()}`,
-                init_point: `http://localhost:3000/mock-mp-checkout?pref=${orderId}`
-            };
-
-            await this.pgPool.query(
-                'UPDATE boost_orders SET provider_ref = $1 WHERE id = $2',
-                [mockResult.id, orderId]
-            );
-
-            return {
-                preferenceId: mockResult.id,
-                initPoint: mockResult.init_point,
-                orderId
-            };
-        }
-
         const preference = new Preference(this.client);
         const result = await preference.create({
             body: {
