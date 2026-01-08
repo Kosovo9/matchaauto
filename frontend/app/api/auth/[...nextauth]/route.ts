@@ -1,58 +1,47 @@
-import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
+import NextAuth, { NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
-import GitHubProvider from "next-auth/providers/github"
+import CredentialsProvider from "next-auth/providers/credentials"
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID || "",
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-            allowDangerousEmailAccountLinking: true,
-        }),
-        GitHubProvider({
-            clientId: process.env.GITHUB_CLIENT_ID || "",
-            clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
-            allowDangerousEmailAccountLinking: true,
         }),
         CredentialsProvider({
-            name: "credentials",
+            name: "Credentials",
             credentials: {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) {
-                    return null
+                // TODO: Implementar lógica de autenticación con tu backend
+                // Por ahora, permitimos cualquier login para demo
+                if (credentials?.email && credentials?.password) {
+                    return {
+                        id: "1",
+                        email: credentials.email,
+                        name: "Demo User",
+                    }
                 }
-                // Mock user for development - in production connect to backend
-                const mockUser = {
-                    id: "1",
-                    email: credentials.email,
-                    name: typeof credentials.email === 'string' ? credentials.email.split("@")[0] : 'User',
-                    role: "user",
-                    walletAddress: "So1A...mock"
-                }
-                return mockUser
+                return null
             }
         })
     ],
+    pages: {
+        signIn: '/auth/signin',
+        signOut: '/auth/signout',
+        error: '/auth/error',
+    },
     session: {
         strategy: "jwt",
-        maxAge: 30 * 24 * 60 * 60,
-    },
-    pages: {
-        signIn: "/auth/signin",
-        signOut: "/auth/signout",
-        error: "/auth/error",
-        newUser: "/auth/register",
+        maxAge: 30 * 24 * 60 * 60, // 30 days
     },
     callbacks: {
         async jwt({ token, user, account }) {
             if (user) {
                 token.id = user.id
-                token.role = (user as any).role
-                token.walletAddress = (user as any).walletAddress
+                token.email = user.email
             }
             if (account) {
                 token.accessToken = account.access_token
@@ -61,16 +50,15 @@ export const authOptions = {
         },
         async session({ session, token }) {
             if (session.user) {
-                (session.user as any).id = token.id;
-                (session.user as any).role = token.role;
-                (session.user as any).walletAddress = token.walletAddress;
+                session.user.id = token.id as string
+                session.user.email = token.email as string
             }
             return session
-        },
+        }
     },
     secret: process.env.NEXTAUTH_SECRET,
-    debug: process.env.NODE_ENV === "development",
 }
 
-const handler = NextAuth(authOptions as any)
+const handler = NextAuth(authOptions)
+
 export { handler as GET, handler as POST }

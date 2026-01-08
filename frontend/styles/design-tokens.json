@@ -1,0 +1,49 @@
+{
+    "themes": {
+        "match-auto": {
+            "name": "Match-Auto Dashboard",
+            "colors": {
+                "background": "#0B0F1A",
+                "primary": "#00F0FF",
+                "secondary": "#FF4D00",
+                "text-primary": "#FFFFFF",
+                "text-secondary": "#A0B0C0",
+                "surface": "rgba(11, 15, 26, 0.7)"
+            },
+            "effects": {
+                "glass": "backdrop-filter: blur(12px)",
+                "neon-glow": "0 0 15px #00F0FF",
+                "hud-border": "1px solid rgba(0, 240, 255, 0.3)"
+            }
+        },
+        "match-home": {
+            "name": "World Assets Exchange",
+            "colors": {
+                "background": "#121212",
+                "primary": "#FFB347",
+                "secondary": "#E0E0E0",
+                "text-primary": "#FFFFFF",
+                "surface": "rgba(30, 30, 30, 0.7)"
+            },
+            "effects": {
+                "glass": "backdrop-filter: blur(20px)",
+                "gold-glow": "0 0 20px rgba(255, 179, 71, 0.3)",
+                "luxury-border": "1px solid rgba(255, 179, 71, 0.2)"
+            }
+        },
+        "match-store": {
+            "name": "Global Marketplace",
+            "colors": {
+                "background": "#F8FAFC",
+                "primary": "#00C853",
+                "secondary": "#FFFFFF",
+                "text-primary": "#1A1A1A",
+                "surface": "rgba(255, 255, 255, 0.9)"
+            },
+            "effects": {
+                "soft-shadow": "0 10px 40px rgba(0, 0, 0, 0.05)",
+                "card-radius": "1.5rem"
+            }
+        }
+    }
+}

@@ -68,11 +68,9 @@ export default function RootLayout({
             <body className={`${inter.className} hero-gradient min-h-screen`}>
                 <Providers>
                     <AuthProvider>
-                        <Navigation />
+                        {/* <Navigation /> */}
                         <main className="min-h-screen">
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                                {children}
-                            </div>
+                            {children}
                         </main>
                         <Footer />
                         <Toaster position="top-right" reverseOrder={false} />

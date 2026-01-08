@@ -65,6 +65,16 @@ type AppContext = {
 
 const app = new Hono<AppContext>();
 
+// Hybrid Core Imports
+import { hybridModeMiddleware } from './middleware/hybrid-mode.middleware';
+import { HybridAIService } from './services/hybrid-ai.service';
+import { HybridSyncController } from './controllers/hybrid-sync.controller';
+
+// Global Middleware
+app.use('*', honoLogger());
+app.use('*', cors());
+app.use('*', hybridModeMiddleware); // 🧠 Hybrid Detection Layer Active
+
 // Health Check
 app.get('/api/health', (c) => c.json({ status: 'OK', timestamp: new Date(), service: 'match-auto-backend' }));
 
@@ -101,10 +111,6 @@ app.get('/metrics', (c) => {
 # TYPE http_requests_total counter
 http_requests_total{method="GET",path="/api/locations/nearby"} 1`);
 });
-
-// Global Middleware
-app.use('*', honoLogger());
-app.use('*', cors());
 
 // Initialize App
 const start = async () => {
@@ -198,6 +204,18 @@ const start = async () => {
         const ragCtrl = new RAGController(universalRagService, pgPool);
         app.post('/api/rag/query', ragCtrl.query);
         app.post('/api/rag/ingest', ragCtrl.ingest); // Solo admin
+
+        // 🧠 HYBRID SYNC & AI ROUTES (REAL ONLINE/OFFLINE)
+        app.post('/api/hybrid/sync', HybridSyncController.syncBatch);
+        app.get('/api/hybrid/status', HybridSyncController.status);
+
+        // AI Endpoint inteligente switchable
+        app.post('/api/hybrid/ai/query', async (c) => {
+            const body = await c.req.json();
+            const aiService = HybridAIService.getInstance();
+            const result = await aiService.processRequest(c, body);
+            return c.json(result);
+        });
 
         // Error Handling
         app.onError(errorMiddleware);
