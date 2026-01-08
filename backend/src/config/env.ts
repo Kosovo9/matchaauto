@@ -10,6 +10,10 @@ export const EnvSchema = z.object({
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     PORT: z.string().default('3000'),
     HUGGING_FACE_API_KEY: z.string().optional(),
+    CLERK_PUBLISHABLE_KEY: z.string().optional(),
+    CLERK_SECRET_KEY: z.string().optional(),
+    ADMIN_USER_IDS: z.string().optional(),
+    MERCADO_PAGO_ACCESS_TOKEN: z.string().optional(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

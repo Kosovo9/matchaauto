@@ -2,11 +2,20 @@ function baseUrl() {
     return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 }
 
-export async function api<T>(path: string, init?: RequestInit): Promise<T> {
+export async function api<T>(path: string, init?: RequestInit & { token?: string }): Promise<T> {
     const url = baseUrl() + (path.startsWith("/") ? path : `/${path}`);
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        ...(init?.headers as Record<string, string> || {})
+    };
+
+    if (init?.token) {
+        headers["Authorization"] = `Bearer ${init.token}`;
+    }
+
     const res = await fetch(url, {
         ...init,
-        headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
+        headers,
     });
 
     if (!res.ok) {

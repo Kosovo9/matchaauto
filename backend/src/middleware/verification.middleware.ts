@@ -1,14 +1,14 @@
 
 import { Context, Next } from 'hono';
 import { Pool } from 'pg';
+import { getUserId } from '../auth/getUserId';
 
 /**
  * 🛡️ 10x Guard: Only Verified Sellers can access monetization features
  */
 export function requireVerifiedSeller(pool: Pool) {
     return async (c: Context, next: Next) => {
-        const user = c.get('user');
-        const userId = user?.id || c.req.header('x-user-id');
+        const userId = getUserId(c);
 
         if (!userId) {
             return c.json({ error: "Unauthorized - User ID required" }, 401);

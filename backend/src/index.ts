@@ -54,6 +54,9 @@ import { MercadoPagoService } from './services/payments/mercadopago.service';
 import { requireVerifiedSeller } from './middleware/verification.middleware';
 import { RAGController } from './controllers/rag.controller';
 import { honeypotGuard } from './middleware/security.middleware';
+import { clerkMiddleware } from '@hono/clerk-auth';
+import { requireAdmin } from './middleware/admin.middleware';
+import { getUserId } from './auth/getUserId';
 
 export { RateLimitStore } from './middleware/rateLimiter';
 export { ChatRoom } from './chat/durable';
@@ -78,6 +81,7 @@ import { HybridSyncController } from './controllers/hybrid-sync.controller';
 // Global Middleware
 app.use('*', honoLogger());
 app.use('*', cors());
+app.use('*', clerkMiddleware()); // 🔥 CLERK LIVE MODE ACTIVE
 app.use('*', hybridModeMiddleware); // 🧠 Hybrid Detection Layer Active
 
 // Health Check
@@ -210,27 +214,12 @@ const start = async () => {
         app.post('/api/rag/geo', geoRagCtrl.search);
 
         // 🛡️ IDENTITY VERIFICATION (Real SQL)
-        const { VerificationController } = await import('./controllers/verification.controller');
         const verificationCtrl = new VerificationController(pgPool);
 
-        // Custom simple auth middleware for P0 (since we assume c.get('user') logic)
-        // In reality, this should be your standard auth middleware.
-        const auth = async (c: any, next: any) => {
-            // Check headers or Clerk token
-            // MOCK for P0 wiring: If header x-user-id present, trust it.
-            // If strict security needed immediately, replace with proper JWT decode.
-            const userId = c.req.header('x-user-id');
-            if (userId) {
-                c.set('user', { id: userId });
-            }
-            await next();
-        };
-
         const vGroup = new Hono();
-        vGroup.use('*', auth);
         vGroup.post('/request', verificationCtrl.request);
         vGroup.get('/me', verificationCtrl.getStatus);
-        vGroup.post('/decide', verificationCtrl.decide); // Should be admin only
+        vGroup.post('/decide', requireAdmin(), verificationCtrl.decide); // 🧛 Admin Guarded
 
         app.route('/api/verifications', vGroup);
 
@@ -374,8 +363,7 @@ const start = async () => {
         app.post('/api/boosts/checkout', requireVerifiedSeller(pgPool), async (c) => {
             const body = await c.req.json();
             const { listingId, planId } = body;
-            const user = c.get('user');
-            const userId = user?.id || c.req.header('x-user-id');
+            const userId = getUserId(c) as string; // Guaranteed by requireVerifiedSeller guard
 
             // Plan configuration
             const plans: any = {

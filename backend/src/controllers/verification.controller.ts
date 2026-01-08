@@ -1,6 +1,7 @@
 import { Context } from 'hono';
 import { VerificationService, VerificationRequestSchema } from '../services/verification.service';
 import { Pool } from 'pg';
+import { getUserId } from '../auth/getUserId';
 
 export class VerificationController {
     private service: VerificationService;
@@ -11,12 +12,7 @@ export class VerificationController {
 
     request = async (c: Context) => {
         try {
-            // Mock auth for now - in production use c.get('user').id
-            // user_id MUST be UUID to match schema. 
-            // If auth middleware is not strict, we might fail here if user not logged in.
-            // Assuming strict auth middleware is applied on route.
-            const user = c.get('user'); // Depends on your auth middleware
-            const userId = user?.id;
+            const userId = getUserId(c);
 
             if (!userId) {
                 return c.json({ error: 'Unauthorized' }, 401);
@@ -35,8 +31,7 @@ export class VerificationController {
 
     getStatus = async (c: Context) => {
         try {
-            const user = c.get('user');
-            const userId = user?.id;
+            const userId = getUserId(c);
 
             if (!userId) {
                 return c.json({ error: 'Unauthorized' }, 401);
@@ -52,8 +47,7 @@ export class VerificationController {
     // Admin only
     decide = async (c: Context) => {
         try {
-            const user = c.get('user');
-            // Check if admin? Skipping for now for MVP speed.
+            const userId = getUserId(c);
 
             const body = await c.req.json();
             const { verificationId, decision, note } = body;
@@ -65,7 +59,7 @@ export class VerificationController {
             const result = await this.service.decideVerification({
                 verificationId,
                 decision,
-                reviewerId: user?.id || 'system-admin', // Fallback if no user
+                reviewerId: userId || 'system-admin', // Should be secured by requireAdmin middleware
                 note
             });
             return c.json(result);
