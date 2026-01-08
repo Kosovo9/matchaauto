@@ -1,19 +1,27 @@
 
 import { Context } from 'hono';
+import { HfInference } from '@huggingface/inference';
 
 interface AIRequest {
     prompt: string;
-    model?: string;
+    model?: 'qwen' | 'deepseek';
     context?: any;
 }
 
 export class HybridAIService {
     private static instance: HybridAIService;
     private readonly OLLAMA_URL = 'http://match-auto-ollama:11434/api/generate';
-    // En producción, aquí irían las URLs reales de DeepSeek/Qwen
-    private readonly CLOUD_AI_URL = 'https://api.deepseek.com/v1/chat/completions';
+    private hf: HfInference;
 
-    private constructor() { }
+    private readonly MODELS = {
+        qwen: "Qwen/Qwen2.5-72B-Instruct",
+        deepseek: "deepseek-ai/DeepSeek-Coder-V2-Instruct"
+    };
+
+    private constructor() {
+        // El token se inyecta vía variables de entorno en el contenedor
+        this.hf = new HfInference(process.env.HF_API_TOKEN || '');
+    }
 
     public static getInstance(): HybridAIService {
         if (!HybridAIService.instance) {
@@ -25,11 +33,11 @@ export class HybridAIService {
     public async processRequest(c: Context, data: AIRequest) {
         const isOnline = c.get('isOnline');
 
-        if (isOnline) {
+        if (isOnline && process.env.HF_API_TOKEN) {
             try {
-                return await this.callCloudAI(data);
+                return await this.callHuggingFace(data);
             } catch (error) {
-                console.warn('⚠️ Cloud AI failed, falling back to Local Ollama...');
+                console.warn('⚠️ HuggingFace failed, falling back to Local Ollama...', error);
                 return await this.callLocalOllama(data);
             }
         } else {
@@ -37,26 +45,37 @@ export class HybridAIService {
         }
     }
 
-    private async callCloudAI(data: AIRequest) {
-        // Implementación real lista para API Keys (se inyectarían desde .env)
-        // Por ahora simulamos la latencia de red real y una respuesta estructurada
-        // await fetch(this.CLOUD_AI_URL, ...) 
+    private async callHuggingFace(data: AIRequest) {
+        const modelId = data.model === 'deepseek' ? this.MODELS.deepseek : this.MODELS.qwen;
+
+        const startTime = Date.now();
+        const response = await this.hf.textGeneration({
+            model: modelId,
+            inputs: data.prompt,
+            parameters: {
+                max_new_tokens: 500,
+                temperature: 0.7,
+                return_full_text: false
+            }
+        });
+        const latency = `${Date.now() - startTime}ms`;
 
         return {
-            source: 'CLOUD-QWEN3-MAX',
-            latency: '45ms',
-            confidence: 0.99,
-            response: `[CLOUD ANALYTICS] Processed: ${data.prompt}. Market trend: BULLISH. Valuation: +15% vs Local.`
+            source: `HF-CLOUD-${data.model?.toUpperCase() || 'QWEN'}`,
+            latency,
+            confidence: 0.98,
+            response: response.generated_text
         };
     }
 
     private async callLocalOllama(data: AIRequest) {
         try {
+            const startTime = Date.now();
             const response = await fetch(this.OLLAMA_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    model: 'mistral', // O 'llama3' si está descargado
+                    model: 'qwen2.5:latest', // Asumimos que el usuario tiene qwen en Ollama
                     prompt: `[OFFLINE MODE] Analyze strictly: ${data.prompt}`,
                     stream: false
                 })
@@ -65,10 +84,12 @@ export class HybridAIService {
             if (!response.ok) throw new Error('Ollama connection failed');
 
             const result = await response.json();
+            const latency = `${Date.now() - startTime}ms`;
+
             return {
                 source: 'LOCAL-OLLAMA',
-                latency: '12ms', // Ultra-rápido local
-                confidence: 0.85,
+                latency,
+                confidence: 0.90,
                 response: result.response
             };
         } catch (e) {
