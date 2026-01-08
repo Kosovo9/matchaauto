@@ -48,6 +48,10 @@ import { DisputeResolutionController } from './controllers/dispute-resolution.co
 import { GeoRAGService } from './services/ai/geo-rag.service';
 import { GeoRAGController } from './controllers/geo-rag.controller';
 import { UniversalRAGService } from './services/ai/universal-rag.service';
+import { VerificationController } from './controllers/verification.controller';
+import { VerificationService } from './services/verification.service';
+import { MercadoPagoService } from './services/payments/mercadopago.service';
+import { requireVerifiedSeller } from './middleware/verification.middleware';
 import { RAGController } from './controllers/rag.controller';
 
 export { RateLimitStore } from './middleware/rateLimiter';
@@ -361,18 +365,54 @@ const start = async () => {
         });
 
         // 💰 MONETIZATION: BOOST CHECKOUT (Verified Only)
-        const { requireVerifiedSeller } = await import('./middleware/verification.middleware');
+        const mpService = new MercadoPagoService(pgPool);
+
         app.post('/api/boosts/checkout', requireVerifiedSeller(pgPool), async (c) => {
             const body = await c.req.json();
             const { listingId, planId } = body;
+            const user = c.get('user');
+            const userId = user?.id || c.req.header('x-user-id');
 
-            logger.info(`[BOOST] Verification passed! Processing checkout for ${listingId} with plan ${planId}`);
+            // Plan configuration
+            const plans: any = {
+                basic: { amount: 99, title: 'Basic 1 Day' },
+                premium: { amount: 499, title: 'Premium 7 Days' },
+                diamond: { amount: 1200, title: 'Elite Diamond 30 Days' }
+            };
 
-            return c.json({
-                success: true,
-                checkoutUrl: `https://checkout.match-auto.com/pay?plan=${planId}&listing=${listingId}`,
-                message: "Proceed to payment to activate your boost."
-            });
+            const plan = plans[planId] || plans.basic;
+
+            try {
+                const preference = await mpService.createBoostPreference({
+                    userId,
+                    listingId,
+                    planId,
+                    amount: plan.amount,
+                    title: plan.title
+                });
+
+                return c.json({
+                    success: true,
+                    checkoutUrl: preference.initPoint,
+                    preferenceId: preference.preferenceId,
+                    message: "Proceed to payment to activate your boost."
+                });
+            } catch (error) {
+                logger.error('Checkout failed:', error);
+                return c.json({ success: false, error: 'Failed to create checkout' }, 500);
+            }
+        });
+
+        // 🔔 WEBHOOKS: MERCADO PAGO
+        app.post('/api/webhooks/mercadopago', async (c) => {
+            const topic = c.req.query('topic');
+            const id = c.req.query('id') || c.req.query('data.id'); // handle different MP versions
+
+            if (topic === 'payment' && id) {
+                await mpService.handleWebhook(topic, id);
+            }
+
+            return c.json({ status: 'ok' });
         });
 
         // Error Handling
