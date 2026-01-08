@@ -112,8 +112,27 @@ const codeFiles = allFiles.filter(f =>
 
 console.log(`Scan Scope: ${allFiles.length} files (${sqlFiles.length} SQL, ${codeFiles.length} Code)`);
 
+
+// --- Helper Regex & Count ---
+function normalizeSqlIdent(raw) {
+    if (!raw) return raw;
+    return raw.replace(/"/g, '').trim();
+}
+
+function countRefsInFiles(entityName, files) {
+    if (!entityName) return 0;
+    // Escape regex special chars in entity name
+    const re = new RegExp(`\\b${entityName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+    let refs = 0;
+    for (const file of files) {
+        const content = fs.readFileSync(file, 'utf-8');
+        if (re.test(content)) refs++;
+    }
+    return refs;
+}
+
 // 3. SQL Scan
-console.log('[3/5] Scanning SQL for Hidden Features...');
+console.log('[3/5] Scanning SQL for Hidden Features (Advanced)...');
 
 const sqlEntities = {
     tables: [],
@@ -122,55 +141,79 @@ const sqlEntities = {
     indexes: []
 };
 
+// Advanced regex for schema.table support
+const TABLE_REGEX = /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:(?:"?([a-zA-Z0-9_]+)"?)\.)?(?:"?([a-zA-Z0-9_]+)"?)/gi;
+const FUNCTION_REGEX = /CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+(?:(?:"?([a-zA-Z0-9_]+)"?)\.)?(?:"?([a-zA-Z0-9_]+)"?)/gi;
+const TRIGGER_REGEX = /CREATE\s+TRIGGER\s+(?:(?:"?([a-zA-Z0-9_]+)"?)\.)?(?:"?([a-zA-Z0-9_]+)"?)/gi;
+
 sqlFiles.forEach(file => {
     const content = fs.readFileSync(file, 'utf-8');
 
-    const tableMatches = [...content.matchAll(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?([a-zA-Z0-9_]+)/gi)];
-    tableMatches.forEach(m => sqlEntities.tables.push({ name: m[1], file: path.relative(projectRoot, file) }));
+    // Tables
+    const tableMatches = [...content.matchAll(TABLE_REGEX)];
+    tableMatches.forEach(m => {
+        const schema = normalizeSqlIdent(m[1] || '');
+        const name = normalizeSqlIdent(m[2]);
+        const full = schema ? `${schema}.${name}` : name;
+        if (name && name.toUpperCase() !== 'IF' && name.toUpperCase() !== 'NOT' && name.toUpperCase() !== 'EXISTS') {
+            sqlEntities.tables.push({ name, fullName: full, file: path.relative(projectRoot, file) });
+        }
+    });
 
-    const funcMatches = [...content.matchAll(/CREATE\s+(?:OR\s+REPLACE\s+)?FUNCTION\s+([a-zA-Z0-9_]+)/gi)];
-    funcMatches.forEach(m => sqlEntities.functions.push({ name: m[1], file: path.relative(projectRoot, file) }));
+    // Functions
+    const funcMatches = [...content.matchAll(FUNCTION_REGEX)];
+    funcMatches.forEach(m => {
+        const schema = normalizeSqlIdent(m[1] || '');
+        const name = normalizeSqlIdent(m[2]);
+        const full = schema ? `${schema}.${name}` : name;
+        // Basic filter for keywords often matched by loose regex
+        if (name && name.toUpperCase() !== 'OR' && name.toUpperCase() !== 'REPLACE') {
+            sqlEntities.functions.push({ name, fullName: full, file: path.relative(projectRoot, file) });
+        }
+    });
 
-    const triggerMatches = [...content.matchAll(/CREATE\s+TRIGGER\s+([a-zA-Z0-9_]+)/gi)];
-    triggerMatches.forEach(m => sqlEntities.triggers.push({ name: m[1], file: path.relative(projectRoot, file) }));
+    // Triggers
+    const triggerMatches = [...content.matchAll(TRIGGER_REGEX)];
+    triggerMatches.forEach(m => {
+        const schema = normalizeSqlIdent(m[1] || '');
+        const name = normalizeSqlIdent(m[2]);
+        const full = schema ? `${schema}.${name}` : name;
+        sqlEntities.triggers.push({ name, fullName: full, file: path.relative(projectRoot, file) });
+    });
 });
 
-// Remove duplicates
+// Deduplicate
 sqlEntities.tables = [...new Set(sqlEntities.tables.map(JSON.stringify))].map(JSON.parse);
 sqlEntities.functions = [...new Set(sqlEntities.functions.map(JSON.stringify))].map(JSON.parse);
 
 // 4. Codebase Usage Scan
-console.log('[4/5] Checking Codebase Usage...');
-
-function checkUsage(entityName) {
-    let refs = 0;
-    for (const file of codeFiles) {
-        const content = fs.readFileSync(file, 'utf-8');
-        if (content.includes(entityName)) {
-            refs++;
-        }
-    }
-    return refs;
-}
+console.log('[4/5] Checking Codebase & Internal SQL Usage...');
 
 const unusedEntities = {
     tables: [],
     functions: []
 };
 
-// Check Tables
+// Check Tables: Referenced in Code?
 sqlEntities.tables.forEach(t => {
-    const usageCount = checkUsage(t.name);
-    if (usageCount === 0) {
-        unusedEntities.tables.push(t);
+    const codeRefs = countRefsInFiles(t.name, codeFiles) + (t.fullName !== t.name ? countRefsInFiles(t.fullName, codeFiles) : 0);
+    // Optional: check SQL refs too for foreign keys or views? For now, if unused in code, it's a "zombie feature candidate"
+    if (codeRefs === 0) {
+        unusedEntities.tables.push({ ...t, codeRefs });
     }
 });
 
-// Check Functions
+// Check Functions: Referenced in Code OR other SQL?
 sqlEntities.functions.forEach(f => {
-    const usageCount = checkUsage(f.name);
-    if (usageCount === 0) {
-        unusedEntities.functions.push(f);
+    // Check references in code
+    const codeRefs = countRefsInFiles(f.name, codeFiles) + (f.fullName !== f.name ? countRefsInFiles(f.fullName, codeFiles) : 0);
+    // Check references in SQL (e.g. triggers calling the function)
+    const sqlRefs = countRefsInFiles(f.name, sqlFiles) + (f.fullName !== f.name ? countRefsInFiles(f.fullName, sqlFiles) : 0);
+
+    // Logic: A function is "Defined" once in SQL. If it appears <= 1 time in SQL (just definition) AND 0 times in code, it is orphaned.
+    // If it appears > 1 in SQL, it's likely used by a trigger.
+    if (codeRefs === 0 && sqlRefs <= 1) {
+        unusedEntities.functions.push({ ...f, codeRefs, sqlRefs });
     }
 });
 
