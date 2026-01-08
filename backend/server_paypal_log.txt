@@ -1,0 +1,16 @@
+[INFO] ­ƒöî Connecting to Redis at redis://localhost:6379
+[INFO] GeolocationService Orchestrator initialized with 10x architecture
+­ƒÜÇ Match-Auto Backend starting on port 3003
+[INFO] Ô£à Redis Connected
+[INFO] ­ƒÜÇ MatchaAuto 1000x Backend initialized in development mode
+[INFO] ­ƒºá Universal RAG Embedder Initialized (Offline Ready)
+<-- POST /api/boosts/checkout
+[INFO] [PayPal MOCK] Creating mock order for 5f4c2889-b5af-43d0-a48c-f55e45365f90
+--> POST /api/boosts/checkout [32m200[0m 810ms
+<-- POST /api/payments/paypal/capture
+[INFO] [PayPal MOCK] Capturing mock order PAYPAL-MOCK-1767909585945
+[INFO] [BOOST] Activated (PayPal) for listing auto-1 until 2026-02-07T21:59:45.964Z
+--> POST /api/payments/paypal/capture [32m200[0m 9ms
+<-- POST /api/webhooks/paypal
+[INFO] [PayPal Webhook] Received event: PAYMENT.CAPTURE.COMPLETED
+--> POST /api/webhooks/paypal [32m200[0m 3ms

@@ -14,6 +14,12 @@ export const EnvSchema = z.object({
     CLERK_SECRET_KEY: z.string().optional(),
     ADMIN_USER_IDS: z.string().optional(),
     MERCADO_PAGO_ACCESS_TOKEN: z.string().optional(),
+    PAYPAL_CLIENT_ID: z.string().optional(),
+    PAYPAL_CLIENT_SECRET: z.string().optional(),
+    PAYPAL_ENV: z.enum(['sandbox', 'live']).default('sandbox'),
+    PAYPAL_WEBHOOK_ID: z.string().optional(),
+    BACKEND_URL: z.string().default('http://localhost:3000'),
+    FRONTEND_URL: z.string().default('http://localhost:3000'),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

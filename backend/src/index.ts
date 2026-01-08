@@ -51,6 +51,7 @@ import { UniversalRAGService } from './services/ai/universal-rag.service';
 import { VerificationController } from './controllers/verification.controller';
 import { VerificationService } from './services/verification.service';
 import { MercadoPagoService } from './services/payments/mercadopago.service';
+import { PayPalService } from './services/payments/paypal.service';
 import { requireVerifiedSeller } from './middleware/verification.middleware';
 import { RAGController } from './controllers/rag.controller';
 import { honeypotGuard } from './middleware/security.middleware';
@@ -364,11 +365,12 @@ const start = async () => {
 
         // 💰 MONETIZATION: BOOST CHECKOUT (Verified Only)
         const mpService = new MercadoPagoService(pgPool);
+        const ppService = new PayPalService(pgPool);
 
         app.post('/api/boosts/checkout', requireVerifiedSeller(pgPool), async (c) => {
             const body = await c.req.json();
-            const { listingId, planId } = body;
-            const userId = getUserId(c) as string; // Guaranteed by requireVerifiedSeller guard
+            const { listingId, planId, provider = 'mercadopago' } = body;
+            const userId = getUserId(c) as string;
 
             // Plan configuration
             const plans: any = {
@@ -380,24 +382,42 @@ const start = async () => {
             const plan = plans[planId] || plans.basic;
 
             try {
+                if (provider === 'paypal') {
+                    const order = await ppService.createBoostOrder({
+                        userId, listingId, planId, amount: plan.amount, title: plan.title
+                    });
+                    return c.json({
+                        success: true,
+                        checkoutUrl: order.approveUrl,
+                        paypalOrderId: order.paypalOrderId,
+                        orderId: order.orderId
+                    });
+                }
+
+                // Default: Mercado Pago
                 const preference = await mpService.createBoostPreference({
-                    userId,
-                    listingId,
-                    planId,
-                    amount: plan.amount,
-                    title: plan.title
+                    userId, listingId, planId, amount: plan.amount, title: plan.title
                 });
 
                 return c.json({
                     success: true,
                     checkoutUrl: preference.initPoint,
                     preferenceId: preference.preferenceId,
-                    message: "Proceed to payment to activate your boost."
+                    orderId: preference.orderId
                 });
             } catch (error) {
                 logger.error('Checkout failed:', error);
                 return c.json({ success: false, error: 'Failed to create checkout' }, 500);
             }
+        });
+
+        // ✅ PAYPAL SPECIAL: CAPTURE ENDPOINT (Instant UX)
+        app.post('/api/payments/paypal/capture', async (c) => {
+            const { paypalOrderId } = await c.req.json();
+            if (!paypalOrderId) return c.json({ error: 'Missing paypalOrderId' }, 400);
+
+            const result = await ppService.captureOrder(paypalOrderId);
+            return c.json(result);
         });
 
         // 🔔 WEBHOOKS: MERCADO PAGO
@@ -409,6 +429,14 @@ const start = async () => {
                 await mpService.handleWebhook(topic, id);
             }
 
+            return c.json({ status: 'ok' });
+        });
+
+        // 🔔 WEBHOOKS: PAYPAL
+        app.post('/api/webhooks/paypal', async (c) => {
+            const body = await c.req.json();
+            const headers = c.req.header() as any;
+            await ppService.handleWebhook(headers, body);
             return c.json({ status: 'ok' });
         });
 
