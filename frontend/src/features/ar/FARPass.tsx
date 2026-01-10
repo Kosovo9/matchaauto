@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, ViewInAr, Info, Download, Share2 } from 'lucide-react';
+import { Box, Boxes, Info, Download, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function FARPass({ modelId = 'QM-99' }) {
@@ -56,7 +56,7 @@ export default function FARPass({ modelId = 'QM-99' }) {
                     <div className="w-full h-full flex items-center justify-center relative">
                         <div className="absolute inset-0 border-[2px] border-blue-500/20 rounded-3xl animate-pulse" />
                         <div className="text-center">
-                            <ViewInAr className="w-24 h-24 text-blue-500/50 mx-auto mb-4" />
+                            <Boxes className="w-24 h-24 text-blue-500/50 mx-auto mb-4" />
                             <p className="text-blue-400 font-mono text-[10px] tracking-[0.5em]">SPATIAL_OBJECT_LOCK: {modelId}</p>
                         </div>
                     </div>

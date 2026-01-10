@@ -1,6 +1,17 @@
 "use client"
 
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+    CarFront,
+    Home,
+    Package,
+    Bell,
+    ShoppingCart,
+    User,
+    ChevronRight
+} from 'lucide-react'
 import HeroAuto from './hero-auto'
 import HeroRealEstate from './hero-realestate'
 import HeroMarketplace from './hero-marketplace'

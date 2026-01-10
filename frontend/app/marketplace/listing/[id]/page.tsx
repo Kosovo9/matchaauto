@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { actions } from "../../../shared/core/actions";
-import { ROUTES } from "../../../shared/core/routes";
+import { actions } from "@/shared/core/actions";
+import { ROUTES } from "@/shared/core/routes";
 
 export default function MarketplaceListingPage() {
     const { id } = useParams<{ id: string }>();

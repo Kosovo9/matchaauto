@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { actions, Domain } from "../../shared/core/actions";
+import { actions } from "../../shared/core/actions";
 import { ROUTES } from "../../shared/core/routes";
+
+export type Domain = "auto" | "marketplace" | "assets";
 
 type Tab = "cars" | "parts" | "services";
 type Mode = "rent" | "buy";

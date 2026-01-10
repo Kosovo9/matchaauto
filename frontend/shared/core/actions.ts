@@ -1,11 +1,8 @@
 // frontend/shared/core/actions.ts
 import axios from 'axios';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-
 const api = axios.create({
-    baseURL: API_BASE,
-    withCredentials: true,
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
 });
 
 export const actions = {
@@ -36,6 +33,23 @@ export const actions = {
         getModelMetadata: async (modelId: string) => {
             const response = await api.get(`/ar/models/${modelId}`);
             return response.data;
+        }
+    },
+    // 10x Legacy Compatibility
+    data: {
+        listing: async (domain: string, id: string) => {
+            const response = await api.get(`/listings/${id}`, { params: { domain } });
+            return response.data;
+        }
+    },
+    leads: {
+        contactSeller: async (payload: any) => {
+            return await api.post(`/leads/contact`, payload);
+        }
+    },
+    nav: {
+        go: (router: any, path: string) => {
+            router.push(path);
         }
     }
 };

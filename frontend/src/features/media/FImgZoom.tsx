@@ -36,13 +36,15 @@ export default function FImgZoom({ media }: { media: MediaItem[] }) {
                 onClick={() => setIsZoomed(!isZoomed)}
             >
                 <motion.div
-                    animate={{
-                        scale: isZoomed ? 2.5 : 1,
-                        x: isZoomed ? `${50 - mousePos.x}%` : 0,
-                        y: isZoomed ? `${50 - mousePos.y}%` : 0,
-                    }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className="w-full h-full"
+                    {...{
+                        animate: {
+                            scale: isZoomed ? 2.5 : 1,
+                            x: isZoomed ? `${50 - mousePos.x}%` : 0,
+                            y: isZoomed ? `${50 - mousePos.y}%` : 0,
+                        },
+                        transition: { type: 'spring', stiffness: 300, damping: 30 },
+                        className: "w-full h-full"
+                    } as any}
                 >
                     <Image
                         src={media[selectedIdx].src}

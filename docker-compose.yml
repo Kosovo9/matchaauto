@@ -23,6 +23,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3001:3001"
+    command: ["sh", "-c", "cd backend && npm start"]
     environment:
       DATABASE_URL: postgres://admin:secure_password_20k@db:5432/matchaauto
       REDIS_URL: redis://redis:6379
@@ -36,6 +37,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    command: ["sh", "-c", "cd frontend && npm start"]
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:3001/api
     depends_on:

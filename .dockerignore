@@ -1,12 +1,37 @@
+# 🚀 TRINITY DIAMOND - ULTRA-LIGHT DOCKER IGNORE
+# Ignore ALL heavy/unnecessary folders for the build context
 
-node_modules
+**/node_modules
+**/.next
+**/dist
+**/out
+**/build
+**/.vercel
+**/.wrangler
+
+# Version Control
 .git
-#.next
-#dist
-#build
+.github
+.gitignore
+
+# Environment & Secrets (Security Level 10)
 .env
 .env.*
 ! .env.production
+secrets/
+
+# IDE & OS
 .vscode
 .idea
+.DS_Store
 *.log
+*.tmp
+temp_extract/
+extracted_content/
+
+# Documentation & Assets (Already in Git/Registry)
+_mission_control/
+_meta/
+docs/
+repo-files*.txt
+*.zip
