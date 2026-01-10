@@ -1,41 +1,41 @@
-import { api } from "./apiClient";
-import { ROUTES } from "./routes";
+// frontend/shared/core/actions.ts
+import axios from 'axios';
 
-export type Domain = "auto" | "marketplace" | "assets";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
+const api = axios.create({
+    baseURL: API_BASE,
+    withCredentials: true,
+});
 
 export const actions = {
-    nav: {
-        go: (router: { push: (s: string) => void }, path: string) => router.push(path),
-        auto: (router: any) => router.push(ROUTES.auto),
-        marketplace: (router: any) => router.push(ROUTES.marketplace),
-        assets: (router: any) => router.push(ROUTES.assets),
-        cart: (router: any) => router.push(ROUTES.cart),
-        checkout: (router: any) => router.push(ROUTES.checkout),
-    },
-
-    data: {
-        featured: (domain: Domain) => api(`/api/featured?domain=${domain}`),
-        search: (domain: Domain, q: string) => api(`/api/search?domain=${domain}&q=${encodeURIComponent(q)}`),
-        listing: (domain: Domain, id: string) => api(`/api/listings/${id}?domain=${domain}`),
-    },
-
-    checkout: {
-        quickBuy: (listingId: string, domain: Domain) =>
-            api(`/api/checkout/quick-buy`, {
-                method: "POST",
-                body: JSON.stringify({ listingId, domain }),
-            }),
-    },
-
-    leads: {
-        contactSeller: (payload: { sellerId: string; listingId: string; message?: string }) =>
-            api(`/api/leads/contact`, { method: "POST", body: JSON.stringify(payload) }),
-    },
-
-    rag: {
-        search: (domain: Domain, q: string, filters?: Record<string, any>) => {
-            const params = new URLSearchParams({ domain, q, ...filters });
-            return api(`/api/rag/search?${params.toString()}`);
+    media: {
+        getListingMedia: async (id: string) => {
+            const response = await api.get(`/listings/${id}/media`);
+            return response.data;
         },
+        trackZoomInteraction: async (id: string, zoomLevel: number) => {
+            return await api.post(`/media/track-zoom`, { id, zoomLevel });
+        }
     },
+    geo: {
+        getNearbyObjects: async (lat: number, lng: number, radius: number = 10, category?: string) => {
+            const response = await api.get(`/geo/nearby`, {
+                params: { lat, lng, radius, category }
+            });
+            return response.data;
+        },
+        getDistanceMatrix: async (origins: string[], destinations: string[]) => {
+            const response = await api.get(`/geo/distance-matrix`, {
+                params: { origins: origins.join('|'), destinations: destinations.join('|') }
+            });
+            return response.data;
+        }
+    },
+    ar: {
+        getModelMetadata: async (modelId: string) => {
+            const response = await api.get(`/ar/models/${modelId}`);
+            return response.data;
+        }
+    }
 };

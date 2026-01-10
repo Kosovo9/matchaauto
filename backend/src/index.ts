@@ -49,6 +49,7 @@ import { GeoRAGService } from './services/ai/geo-rag.service';
 import { GeoRAGController } from './controllers/geo-rag.controller';
 import { UniversalRAGService } from './services/ai/universal-rag.service';
 import { RAGController } from './controllers/rag.controller';
+import geoRoutes from './routes/geo';
 
 export { RateLimitStore } from './middleware/rateLimiter';
 export { ChatRoom } from './chat/durable';
@@ -206,6 +207,8 @@ const start = async () => {
         const ragCtrl = new RAGController(universalRagService, pgPool);
         app.post('/api/rag/query', ragCtrl.query);
         app.post('/api/rag/ingest', ragCtrl.ingest); // Solo admin
+
+        app.route('/api/geo', geoRoutes);
 
         // 🧠 HYBRID SYNC & AI ROUTES (REAL ONLINE/OFFLINE)
         app.post('/api/hybrid/sync', HybridSyncController.syncBatch);
