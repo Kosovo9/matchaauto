@@ -50,6 +50,7 @@ import { GeoRAGController } from './controllers/geo-rag.controller';
 import { UniversalRAGService } from './services/ai/universal-rag.service';
 import { RAGController } from './controllers/rag.controller';
 import geoRoutes from './routes/geo';
+import { rewardsRouter } from './modules/rewards/router';
 
 export { RateLimitStore } from './middleware/rateLimiter';
 export { ChatRoom } from './chat/durable';
@@ -209,6 +210,7 @@ const start = async () => {
         app.post('/api/rag/ingest', ragCtrl.ingest); // Solo admin
 
         app.route('/api/geo', geoRoutes);
+        app.route('/api/rewards', rewardsRouter);
 
         // 🧠 HYBRID SYNC & AI ROUTES (REAL ONLINE/OFFLINE)
         app.post('/api/hybrid/sync', HybridSyncController.syncBatch);
