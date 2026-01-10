@@ -1,0 +1,594 @@
+Perfecto: 360/3D siempre + AR WebXR opcional. Ese es el sweet spot “wow sin romper nada”.
+
+Aquí van las instrucciones concretas para implementarlo sin dramas (y vendible), en formato que Antigravity/DeepSeek pueden ejecutar.
+
+1) Diseño de la feature (simple, robusta, escalable)
+Objetivo por dominio
+
+AUTO: 360 exterior/interior + (opcional) modelo 3D GLB + botón “Ver en AR” si el device soporta WebXR.
+
+ASSETS: 360 tour + (opcional) modelo 3D (maqueta/objeto) + AR opcional (colocar/escala/medidas simples).
+
+MARKETPLACE: solo Zoom Amazon-like + galería; AR opcional solo para productos “AR-enabled” (flag y media disponible).
+
+Regla de oro
+
+Nada de AR por defecto.
+Siempre: Viewer 360/3D.
+Opcional: AR si:
+
+hay media compatible (GLB),
+
+el navegador soporta WebXR,
+
+el feature flag está ON.
+
+2) Estructura de datos mínima (DB / API)
+Media model (mínimo)
+
+Cada listing puede tener:
+
+images[] (HD)
+
+video[] (opcional)
+
+tour360[] (equirectangular o set de 360)
+
+model3d_glb_url (opcional)
+
+ar_enabled (bool) o inferido por presencia de GLB
+
+Endpoint sugerido
+
+GET /api/listings/:id/media
+
+devuelve un JSON con urls y metadatos (type, width/height si aplica, poster, etc.)
+
+3) Frontend: componentes que NO rompen nada
+Componentes (reusables para los 3 UIs)
+
+MediaGallery (imágenes + zoom + video)
+
+Viewer360 (360 equirectangular)
+
+Viewer3D (three.js viewer GLB)
+
+ARButton (solo aparece si WebXR + GLB + flag)
+
+UI/UX premium
+
+Tab bar dentro del modal/section:
+
+Fotos | 360 | 3D | AR (si aplica)
+
+Si AR no disponible:
+
+el tab/btn se oculta (no error, no “warning feo”)
+
+4) WebXR: política “opcional y seguro”
+Gating lógico (must)
+
+if (!('xr' in navigator)) => no AR
+
+navigator.xr.isSessionSupported('immersive-ar') => si true, habilita botón
+
+Si falla => fallback silencioso (no crashea)
+
+Qué hace el AR (mínimo vendible)
+
+Abrir sesión AR
+
+Render del GLB en mundo real
+
+Tap para “colocar”
+
+Pinch/drag para escala/rotación (básico)
+
+Botón salir
+
+(Esto ya se ve “pro” sin meterte a mediciones complejas.)
+
+5) Feature Flags (obligatorio, por dominio)
+
+IDs sugeridos:
+
+media.imageZoom (Marketplace+Auto+Assets)
+
+media.viewer360 (Auto+Assets)
+
+media.viewer3d (Auto+Assets, opcional Marketplace)
+
+media.arPass (Auto+Assets, opcional Marketplace)
+
+Estados:
+
+OFF por default
+
+BETA cuando esté estable en local
+
+STABLE cuando pase smoke tests y performance
+
+6) Smoke tests (para no “valer madres”)
+
+Checklist mínimo:
+
+Abrir listing con imágenes → zoom OK (desktop+mobile)
+
+Abrir 360 → carga + giro fluido
+
+Abrir 3D → carga GLB + orbit controls
+
+AR:
+
+En PC: botón NO aparece (correcto)
+
+En móvil compatible: botón aparece y abre sesión
+
+7) Para el prompt maestro (DeepSeek / Antigravity)
+
+Pega esto tal cual:
+
+Implementa “AR Pass” con la política:
+360/3D siempre + AR WebXR opcional.
+
+1) Backend:
+- Crear endpoint GET /api/listings/:id/media
+- Media schema: images[], videos[], tours360[], model3d_glb_url, poster, metadata
+- Validar permisos, rate-limit, y no exponer paths internos.
+
+2) Frontend shared components:
+- MediaGallery: imágenes HD + zoom estilo Amazon + fullscreen + thumbnails + mobile pinch
+- Viewer360: equirectangular 360 viewer (WebGL) con fallback
+- Viewer3D: GLB viewer (three.js) orbit controls, loading states
+- ARButton + ARSession: WebXR immersive-ar opcional con gating:
+  a) navigator.xr existe
+  b) isSessionSupported('immersive-ar') true
+  c) model3d_glb_url existe
+  Si falla: ocultar botón, no romper nada
+
+3) UX:
+- Tabs: Fotos | 360 | 3D | AR (solo si disponible)
+- Mismo diseño en AUTO y ASSETS. Marketplace solo Fotos (y opcional 3D/AR si flag + media).
+
+4) Feature flags:
+- media.imageZoom
+- media.viewer360
+- media.viewer3d
+- media.arPass
+No implementar directo en UI sin registry wiring.
+
+5) Tests:
+- Unit de gating AR (mock navigator.xr)
+- Smoke local: listing con/ sin media extra
+
+Entrega: lista exacta de archivos a modificar/crear, con contenido por archivo y comandos de verificación.
+
+8) Nota rápida (realista) sobre AR offline
+
+360/3D offline: sí, si los assets están locales o cacheados.
+
+AR WebXR offline: también puede, siempre que el GLB esté local/cacheado (no depende de servidores).
+
+Si quieres, el siguiente upgrade “premium sin bugs” es:
+modo “Auto-detect media”: si el listing tiene 360/GLB, el UI automáticamente muestra tabs; si no, solo fotos.
+Cero fricción, cero confusión.
+
+si
+Pensó durante 3m 39s
+
+Sí, vas a poder trabajar fuera de línea (offline) siempre que:
+
+tus modelos estén locales en Ollama (ya “pulled”),
+
+y Aider/Continue ya estén instalados (la instalación inicial sí requiere internet).
+
+Y sí: Aider + Continue pueden convivir… pero NO dejes que los dos editen al mismo tiempo el mismo repo si no quieres “poltergeist commits”. Aider = cirujano en terminal; Continue = copiloto dentro de VS Code.
+
+0) Lo que te rompió Match Autos con Continue (la neta)
+
+Continue no debería “mover cosas solo”; lo que suele pasar es:
+
+Auto-Apply / Auto-accept diffs activado (aplica parches sin que lo notes),
+
+o un workflow de edición mal controlado (muchas ediciones + guardado + formatters + git hooks),
+
+o abriste carpeta equivocada y Continue indexó/reescribió cosas (cache, workspace, etc.).
+
+Arnés anti-desmadre (recomendado):
+
+En VS Code: desactiva auto-apply/auto-accept diffs y deja todo en modo “review + accept”. (Continue tiene roles “edit/apply”, o sea: puede aplicar cambios si lo dejas.)
+
+Para Match Autos: usa una rama exclusiva para IA: ai/continue-tests y solo mergeas cuando tú apruebes.
+
+Si vas a usar Aider para cambios grandes: cierra Continue o ponlo solo en autocomplete.
+
+1) FIX REAL: tu start-war-room.ps1 tronó por comillas (PS 5.1). Aquí va el parche “nivel acero”.
+
+Copia/pega este bloque en PowerShell (PS 5.1). Reescribe tus scripts en C:\War Room Local\ops sin dramas:
+
+# =========================
+# WAR ROOM LOCAL - START FIX v2 (PS 5.1 SAFE)
+# Ruta: C:\War Room Local
+# =========================
+
+$WRRoot = "C:\War Room Local"
+$opsDir = Join-Path $WRRoot "ops"
+New-Item -ItemType Directory -Force -Path $opsDir | Out-Null
+
+$paneOllama = Join-Path $opsDir "pane-ollama.ps1"
+$paneAider  = Join-Path $opsDir "pane-aider.ps1"
+$paneLogs   = Join-Path $opsDir "pane-logs.ps1"
+$startPath  = Join-Path $opsDir "start-war-room.ps1"
+
+# 1) Pane: Ollama
+@'
+param()
+
+Write-Host "=== War Room | Ollama ===" -ForegroundColor Cyan
+Write-Host "Tip: Si ya está corriendo, aquí solo verás status." -ForegroundColor DarkGray
+Write-Host ""
+
+# Si ollama ya vive, solo muestra status en loop; si no, levanta server.
+try { ollama ps | Out-Null; $ok = ($LASTEXITCODE -eq 0) } catch { $ok = $false }
+
+if (-not $ok) {
+  Write-Host "Levantando: ollama serve" -ForegroundColor Yellow
+  ollama serve
+} else {
+  while ($true) {
+    Clear-Host
+    Write-Host "=== War Room | Ollama (RUNNING) ===" -ForegroundColor Green
+    Write-Host ("Time: " + (Get-Date)) -ForegroundColor DarkGray
+    Write-Host ""
+    try { ollama ps } catch { Write-Host "ollama no responde" -ForegroundColor Red }
+    Start-Sleep -Seconds 2
+  }
+}
+'@ | Set-Content -Encoding UTF8 $paneOllama
+
+# 2) Pane: Aider
+@'
+param(
+  [Parameter(Mandatory=$true)][string]$RepoPath,
+  [Parameter(Mandatory=$true)][string]$Model
+)
+
+Write-Host "=== War Room | Aider ===" -ForegroundColor Cyan
+Write-Host ("Repo : " + $RepoPath) -ForegroundColor Yellow
+Write-Host ("Model: " + $Model) -ForegroundColor Yellow
+Write-Host ""
+
+if (-not (Test-Path -LiteralPath $RepoPath)) {
+  Write-Host ("❌ Repo no existe: " + $RepoPath) -ForegroundColor Red
+  exit 1
+}
+
+Set-Location -LiteralPath $RepoPath
+aider --model $Model
+'@ | Set-Content -Encoding UTF8 $paneAider
+
+# 3) Pane: Logs (status)
+@'
+param(
+  [Parameter(Mandatory=$true)][string]$RepoPath
+)
+
+while ($true) {
+  Clear-Host
+  Write-Host "=== War Room | Logs ===" -ForegroundColor Cyan
+  Write-Host ("Time: " + (Get-Date)) -ForegroundColor DarkGray
+  Write-Host ("Repo: " + $RepoPath) -ForegroundColor Yellow
+  Write-Host ""
+
+  Write-Host "Ollama models:" -ForegroundColor Yellow
+  try { ollama ps } catch { Write-Host "ollama no responde" -ForegroundColor Red }
+  Write-Host ""
+
+  Write-Host "Git status:" -ForegroundColor Yellow
+  try {
+    if (Test-Path (Join-Path $RepoPath ".git")) {
+      Set-Location -LiteralPath $RepoPath
+      git status -sb
+    } else {
+      Write-Host "(no es repo git)" -ForegroundColor DarkGray
+    }
+  } catch {
+    Write-Host "(git no disponible)" -ForegroundColor DarkGray
+  }
+
+  Start-Sleep -Seconds 2
+}
+'@ | Set-Content -Encoding UTF8 $paneLogs
+
+# 4) START maestro (usa wt si existe; si no, abre 3 PowerShell)
+@'
+param(
+  [string]$RepoPath = "",
+  [switch]$NoVSCode,
+  [switch]$AiderOnly,
+  [switch]$Quality,
+  [string]$Model = ""
+)
+
+$opsDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+$cfgPath = Join-Path $opsDir "war-room.config.json"
+if (-not (Test-Path $cfgPath)) {
+  Write-Host ("❌ Falta config: " + $cfgPath) -ForegroundColor Red
+  exit 1
+}
+
+$cfg = Get-Content $cfgPath -Raw | ConvertFrom-Json
+
+# Auto-detect repo si no pasas nada
+if ([string]::IsNullOrWhiteSpace($RepoPath)) { $RepoPath = $cfg.defaultRepo }
+$cwd = (Get-Location).Path
+if ((Test-Path (Join-Path $cwd ".git")) -or (Test-Path (Join-Path $cwd "package.json"))) {
+  # Si estás parado dentro de un repo y NO pasaste RepoPath explícito, usa el cwd
+  if ($RepoPath -eq $cfg.defaultRepo) { $RepoPath = $cwd }
+}
+
+if (-not (Test-Path -LiteralPath $RepoPath)) {
+  Write-Host ("❌ Repo no existe: " + $RepoPath) -ForegroundColor Red
+  exit 1
+}
+
+# Modelo Aider
+$aiderModel = $cfg.aiderModelFast
+if ($Quality) { $aiderModel = $cfg.aiderModelQuality }
+if (-not [string]::IsNullOrWhiteSpace($Model)) { $aiderModel = $Model }
+
+# Sync Continue (si existe el script)
+$sync = Join-Path $opsDir "sync-continue.ps1"
+if (Test-Path $sync) { & $sync | Out-Null }
+
+# VS Code opcional
+$openVS = $cfg.openVSCodeByDefault
+if ($NoVSCode -or $AiderOnly) { $openVS = $false }
+
+if ($openVS) {
+  if (Get-Command code -ErrorAction SilentlyContinue) {
+    Start-Process code -ArgumentList "`"$RepoPath`""
+  } else {
+    Write-Host "ℹ No existe 'code' en PATH. (VS Code -> Command Palette -> install code command)" -ForegroundColor Yellow
+  }
+}
+
+$paneOllama = Join-Path $opsDir "pane-ollama.ps1"
+$paneAider  = Join-Path $opsDir "pane-aider.ps1"
+$paneLogs   = Join-Path $opsDir "pane-logs.ps1"
+
+if (Get-Command wt.exe -ErrorAction SilentlyContinue) {
+
+  $args = @(
+    "-w","0",
+    "new-tab","--title","War Room | Ollama","powershell","-NoExit","-File",$paneOllama,
+    ";","split-pane","-H","--title","War Room | Aider","powershell","-NoExit","-File",$paneAider,"-RepoPath",$RepoPath,"-Model",$aiderModel
+  )
+
+  if (-not $AiderOnly) {
+    $args += @(
+      ";","split-pane","-V","--title","War Room | Logs","powershell","-NoExit","-File",$paneLogs,"-RepoPath",$RepoPath
+    )
+  }
+
+  Start-Process wt.exe -ArgumentList $args
+
+} else {
+  Start-Process powershell -ArgumentList "-NoExit","-File",$paneOllama
+  Start-Process powershell -ArgumentList "-NoExit","-File",$paneAider,"-RepoPath",$RepoPath,"-Model",$aiderModel
+  if (-not $AiderOnly) {
+    Start-Process powershell -ArgumentList "-NoExit","-File",$paneLogs,"-RepoPath",$RepoPath
+  }
+}
+
+Write-Host "✅ WAR ROOM arriba." -ForegroundColor Green
+Write-Host ("Repo: " + $RepoPath) -ForegroundColor Cyan
+Write-Host ("Aider model: " + $aiderModel) -ForegroundColor Cyan
+'@ | Set-Content -Encoding UTF8 $startPath
+
+Write-Host "✅ Reescrito START + panes:" -ForegroundColor Green
+Write-Host " - $startPath"
+Write-Host "Prueba: powershell -ExecutionPolicy Bypass -File `"$startPath`""
+
+2) Aider: qué hace en sí (y por qué te conviene)
+
+Aider = “ingeniero de cambios” en terminal:
+
+lee tu repo,
+
+propone cambios,
+
+edita archivos por ti (ideal con Git),
+
+y tú revisas/aceptas.
+
+Según su propia doc: “AI pair programming in your terminal” y lo usas ejecutándolo sobre tu código. 
+Aider
+
+3) Cómo trabaja Aider con Continue (sin pelearse)
+
+Continue: rápido para chat/autocomplete y ediciones pequeñas dentro de VS Code.
+
+Aider: para features grandes, refactors, wiring multi-archivo, y “hazlo bien con git”.
+
+Regla de oro:
+✅ Uno edita, el otro sugiere.
+Ej: Continue solo autocomplete + chat, y Aider hace los cambios grandes.
+
+4) ¿Ambos sirven offline?
+
+Sí.
+
+Continue offline: mientras el modelo sea local (Ollama) y ya tengas la extensión instalada. Además, Continue define roles como “edit/apply” (edición/aplicación de diffs).
+
+Aider offline: mientras tu modelo sea local en Ollama y Aider esté instalado. La instalación oficial en Windows suele ser con el one-liner que baja el instalador. 
+Aider
+
+5) BLOQUE para instalar Aider (online) + dejarlo listo para offline
+
+(Esto es lo oficial, Windows one-liner) 
+Aider
+
+# AIDER (Windows) - Install oficial
+powershell -ExecutionPolicy ByPass -c "irm https://aider.chat/install.ps1 | iex"
+
+# Verifica
+where.exe aider
+aider --version
+
+# Asegura modelos locales (para OFFLINE real)
+ollama pull qwen2.5-coder:7b
+ollama pull qwen2.5-coder:14b
+ollama pull starcoder2:3b
+
+6) “Un tool que entre al web y haga cosas por mí” (cuando estés online)
+
+Lo más parecido a “un yo chiquito” en tu PC es un browser-agent con Playwright:
+
+OpenHands (ex OpenDevin) o
+
+browser-use + Playwright (más directo),
+
+y para archivos: un MCP filesystem server.
+
+Realidad ejecutiva: eso ya es “agente con manos”; requiere que tú controles permisos, porque puede hacer daño si se equivoca.
+
+7) Blindaje anti-copia / anti-hack / anti-scrape (sin humo)
+
+No te puedo ayudar a montar “pantallas falsas” para engañar a quien inspeccione (“puro BS”).
+Sí te doy blindaje real:
+
+Cloudflare: WAF, DDoS, Bot Fight/Turnstile, Rate Limiting, Firewall Rules por país/ASN.
+
+API: rate-limit por IP + fingerprint, tokens cortos, firma HMAC, idempotency keys.
+
+Media: URLs firmadas (expiran), watermark dinámico, límites por sesión.
+
+Scraping: throttling, JS challenges/Turnstile en rutas de alto valor, honeypots éticos (telemetría, no engaño).
+
+App: CSP fuerte, headers, CORS estricto a https://www.match-autos.com, auditoría deps, SAST, secrets scanning.
+
+Si quieres, te hago un “Security Baseline” por entorno (local/staging/prod) con checklist de Cloudflare + headers + workers.
+
+8) MEGA PROMPT “WAR ROOM LOCAL” (para nuevo chat)
+
+Copia/pega tal cual:
+
+Continuamos proyecto: “War Room Local” (Windows, PS 5.1).
+
+OBJETIVO:
+Crear y mantener un kit vendible (ZIP) + modalidad UI premium para lanzar en 1 click un entorno local con:
+- Ollama (local LLM)
+- Aider (terminal AI editor)
+- Continue (VS Code assistant)
+- Logs/status en tiempo real
+Todo desde: C:\War Room Local
+
+ESTADO ACTUAL (verdad operativa):
+- Ruta base: C:\War Room Local
+- Scripts en: C:\War Room Local\ops
+- Aider instalado (aider.exe en %USERPROFILE%\.local\bin)
+- Continue config en: %USERPROFILE%\.continue\config.yaml (plantilla en ops\continue.config.yaml)
+- Start maestro: ops\start-war-room.ps1 abre tabs en Windows Terminal (wt) con:
+  - War Room | Ollama
+  - War Room | Aider
+  - War Room | Logs
+- Stop: ops\stop-war-room.ps1 (para matar aider y opcional ollama)
+- Necesito que todo sea PS 5.1 compatible (sin ternarios ? : y sin bugs de comillas).
+- Quiero dos modalidades:
+  (A) KIT ZIP vendible: scripts + config + readme + pack-zip.ps1 (1 click para generar zip)
+  (B) UI Premium: ventana/tabs “War Room” (puede ser Windows Terminal ultra pulido o Tauri/Electron si es estable)
+- Requisitos de calidad:
+  - cero prompts confusos
+  - comandos copy/paste
+  - “Stop” claro y limpio
+  - No tocar repos fuera de ruta indicada si el usuario no lo pide
+  - Offline-first: si hay modelos en Ollama, todo debe funcionar offline
+
+ENTREGABLES:
+1) Estructura completa del proyecto (carpetas + archivos)
+2) Scripts robustos start/stop/pack + shortcuts desktop
+3) README de uso y troubleshooting
+4) Plan de monetización del kit (pricing, licencia, limitaciones, soporte)
+
+Actúa como Senior Systems Engineer. Responde con bloques listos para pegar.
+
+9) MEGA PROMPT “MATCH AUTOS (TRINIDAD DIAMOND)” (para nuevo chat)
+
+Copia/pega tal cual (incluye lo que pediste: zoom tipo Amazon, 360/3D + AR opcional, geo, etc.):
+
+Continuamos: “Match Autos — Trinidad Diamond” (3 UIs + 1 backend compartido).
+
+ARQUITECTURA INAMOVIBLE:
+- Un solo backend compartido
+- 3 frontends UIs separadas visualmente:
+  1) AUTO (sci-fi premium)
+  2) MARKETPLACE (masonry/ecommerce)
+  3) ASSETS (inmobiliario mapa/geo/lujo)
+- Conexión obligatoria por: frontend/shared/core/actions.ts + apiClient.ts + Feature Registry + Feature Flags
+- Stack local ya estable: Docker Compose, frontend :80, backend :3000, Postgres+Redis+Ollama activos
+- DB: pgvector + postgis habilitados
+- RAG híbrido (vector + geo) con endpoint único:
+  /api/rag/search?domain=&q=&lat=&lng=&radiusKm=
+- Dominio prod real: https://www.match-autos.com (CORS_ALLOW_ORIGINS debe usarlo)
+
+MVP P0 (monetiza + protege):
+- Moderación AI media (imagenes/video): porno/armas/estafas/calidad
+- Messaging básico lead→chat
+- Video upload premium
+- Ads/boost con checkout real (NO comisión por transacción; sí visibilidad/boost)
+- Ejecutar Feature Radar “nivel Dios” para descubrir 80% de features huérfanas:
+  scripts/feature-radar.mjs -> feature-radar-report.json -> Feature Map
+
+FUNCIONALIDADES WOW (pero balance bugs):
+- Zoom tipo Amazon en fotos de producto (lupa + pan)
+- 360/3D SIEMPRE + AR WebXR OPCIONAL (feature flag) para:
+  - Autos (exterior/interior)
+  - Casas/terrenos (tours)
+- Geo marketplace: compradores/vendedores por zona, radius, mapa clusters
+- Multi-dominio de listings: mar/tierra/aire (categorías + filtros + atributos)
+
+SEGURIDAD REAL (sin humo):
+- Cloudflare WAF + Rate limiting + bot defense
+- API: rate limit, tokens cortos, firma, idempotencia, CORS estricto
+- Media: URLs firmadas + watermark dinámico + límites
+- Anti-scrape: throttling + Turnstile en rutas críticas
+(NO quiero “engaños” tipo fake code; quiero defensas reales)
+
+AUTENTICACIÓN + PAGOS:
+- Auth con Clerk
+- Pagos: PayPal + Mercado Pago + transferencias MX (por ahora)
+- No Stripe por ahora
+
+DESPLIEGUE:
+- Local primero con tests verdes
+- Luego staging y prod
+- Objetivo: despliegue inicial México en 3 horas, CAN/EU/LATAM 3 días, global 7 días
+
+INSTRUCCIONES PARA AGENTES:
+- Tú solo entregas: diagnóstico, plan, errores, wiring exacto, y lista de archivos a crear/modificar
+- DeepSeek genera el código de archivos
+- Antigravity en VS Code aplica cambios, acomoda carpetas, corre tests y despliega
+- No implementar a ciegas: todo por módulos + flags + tests
+
+ENTREGABLES:
+1) Feature Map completo y priorizado (P0/P1/P2)
+2) Especificación de implementación (por módulo) con wiring UI→actions→apiClient→backend→DB
+3) Plan de tests mínimo por feature (smoke + unit)
+4) Checklist de deploy + hardening
+
+Actúa como Senior VP Systems + Architect. Responde directo y ejecutable.
+
+10) Y tu pregunta: “¿puedes entrar a nuestros chats anteriores?”
+
+No puedo “abrirlos” como si fueran carpetas.
+Pero sí puedo continuar con lo que ya quedó en este chat y con lo que tú me pegues (como hiciste con el estado del repo). Si me copias 1–2 bloques clave del chat viejo, lo integro y listo.
+
+Si quieres, el siguiente movimiento más rentable es este:
+
+Deja War Room Local estable (ya te di el FIX).
+
+Usas War Room para correr Feature Radar en Match Autos sin volver a romper el repo.
+
+Convertimos War Room Local en producto vendible (ZIP + licencias + branding + “1-click launcher”).

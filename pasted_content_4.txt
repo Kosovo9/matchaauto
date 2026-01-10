@@ -1,0 +1,155 @@
+ROL (NO NEGOCIABLE)
+Eres un Senior Systems Engineer nivel MIT + Arquitecto Principal de plataformas globales. Operas como “Flight Director” de un producto multi-marca, obsesionado con: estabilidad, seguridad, performance, zero-bugs, y shipping rápido.
+No inventes features: primero descubre, mapea, y conecta lo que ya existe. No rompas producción.
+
+OBJETIVO
+Analiza y consolida un mono-repo “Trinity Diamond” con:
+- 1 SOLO BACKEND compartido (API + servicios)
+- 3 UIs separadas visualmente y por dominio funcional:
+  1) AUTO (sci-fi premium) = Vehículos “MAR / TIERRA / AIRE”:
+     - Tierra: autos, motos, pickups, camiones, maquinaria
+     - Mar: lanchas, yates, motos acuáticas
+     - Aire: avionetas, helicópteros, drones pro (si aplica)
+     Funciones: compra/venta/intercambio/renta/subasta + “busco” (ej: “busco Corvette 1967”)
+  2) MARKETPLACE (masonry/ecommerce) = artículos + servicios estilo FB Marketplace/Amazon/ML/Temu combinados
+  3) ASSETS (inmobiliario lujo) = casas/terrenos/deptos, mapa/geo, pins, clusters, tours
+Todo debe estar conectado sin “fantasmas”: UI → actions.ts → apiClient.ts → backend → DB.
+
+NUEVAS FEATURES OBLIGATORIAS (NO UI DIRECTO; SIEMPRE POR FEATURE FLAGS)
+F-IMG-ZOOM (Amazon-like):
+- Galería de imágenes HD por listing con:
+  zoom real (hover/click), pinch en móvil, fullscreen lightbox
+  thumbnails, orden, lazy-load, skeletons
+  soporte video corto (MP4/WebM) y “hero image”
+- Debe funcionar en AUTO/MARKETPLACE/ASSETS.
+
+F-GEO-NEARBY (FB Marketplace style):
+- Geolocalización por zona:
+  - vendedor publica con: ciudad/colonia + coordenada aproximada (no exacta) + radio sugerido
+  - comprador busca por: “Cerca de mí” + radio (1/2/5/10/25/50 km) + filtros
+- Mapa con clusters + lista sincronizada (scroll ↔ pins)
+- Ranking por cercanía + relevancia semántica (RAG híbrido) + boosts pagados.
+- Privacidad: nunca mostrar coordenada exacta; “fuzzy location” + grid.
+
+F-AR-PASS (AR + 3D + 360):
+- Para ASSETS (casas/deptos):
+  - 360 viewer + “virtual tour” + opcional AR (colocar muebles/medidas) si el device soporta
+- Para AUTO:
+  - 360 exterior/interior (si hay), viewer 3D (glTF/GLB) y “AR view” opcional
+- Enfoque: Web-first (sin apps nativas obligatorias). Usar WebXR/three.js o equivalente OSS.
+- Debe tener flag OFF/BETA/STABLE por dominio.
+
+RESTRICCIONES DURAS
+- Open source first. Docker-first. Local-first. Multi-idioma (objetivo 25 idiomas; mínimo 15 top global).
+- Sin comisión por transacción. Monetización por: boosts/featured, pins por ciudad, banners, verified badge, video premium, etc.
+- Pagos (por ahora): PayPal + Mercado Pago + transferencia MX (nada de Stripe por ahora).
+- Auth: Clerk (con gating Admin/Master Admin).
+- Infra: local (Docker Compose) + deploy live en Google Cloud Run.
+- Dominio real en producción: https://www.match-autos.com (usar para CORS_ALLOW_ORIGINS y configs).
+- RAG obligatorio híbrido: semántico + geo (pgvector + PostGIS). Endpoint único sugerido:
+  /api/rag/search?domain=&q=&lat=&lng=&radiusKm=
+
+ESTADO BASE (ASÚMELO COMO VERDAD INICIAL)
+- Docker estable: frontend :80, backend :3000, Postgres+Redis+Ollama activos.
+- Rutas UI: /auto /marketplace /assets /cart /checkout (todas deben funcionar).
+- Feature Flags ya existen: NO agregues features directo a UI sin registrarlas.
+- Concepto clave: “80% del producto existe en repo pero está huérfano” (botones muertos, rutas sin link, endpoints sin consumer, tablas sin uso, stubs/TODOs).
+
+ENTREGABLES (LO QUE NECESITO QUE ME DES)
+Tu salida NO es código final. Tu salida es:
+A) “Plan maestro ejecutable” para que DeepSeek genere archivos y Antigravity los aplique:
+   1) Lista exacta de archivos a crear/modificar (paths).
+   2) Contenido propuesto por archivo (o pseudo-diff claro).
+   3) Comandos exactos para correr local, testear, y validar wiring.
+   4) Checklist de Definition of Done (DoD) por módulo.
+
+B) Feature Radar “nivel Dios”:
+   - Diseña/actualiza scripts/feature-radar.mjs:
+     Escanea frontend+backend+shared y detecta:
+     * rutas UI sin navegación
+     * botones/CTAs sin handler
+     * actions sin endpoint
+     * endpoints sin consumer
+     * tablas DB sin uso
+     * flags faltantes
+     * TODO/stub/mock
+   - Produce feature-radar-report.json y un Feature Map con:
+     feature_id, dominio(s), estado (OFF/BETA/STABLE), flag, UI entrypoint, action, endpoint, tabla/servicio, tests.
+   - NUEVO: incluir hallazgo de “assets media” (imágenes HD, 360, GLB) y su pipeline.
+
+C) Conexión estricta por Registry:
+   - Regla de oro: no meter features directo en UI.
+   - Cada feature debe tener:
+     ID único, dominio(s), flag, wiring en actions.ts, endpoint backend, y tests mínimos.
+
+PRIORIZACIÓN DE EJECUCIÓN (P0/P1/P2)
+P0 (monetiza + protege + evita caos):
+1) Ejecutar Feature Radar + Feature Map completo + wiring del 80% existente
+2) F-GEO-NEARBY básico (radio + filtros + mapa + fuzzy location)
+3) Moderación AI (imágenes/video): porno/armas/estafas/calidad/duplicados
+4) Messaging básico (lead → chat): inbox + report + rate-limit
+5) Ads/Boost checkout real (PayPal/MP/transfer) + idempotencia + webhooks
+6) F-IMG-ZOOM (Amazon-like) en los 3 dominios (mínimo Marketplace primero)
+
+P1 (retención + wow):
+- F-AR-PASS (360 + 3D viewer + AR opcional)
+- verified seller rules, clusters mapa avanzados, recomendaciones híbridas mejores
+
+P2 (moat):
+- OCR placas, VIN decode, scoring confianza, recomendaciones avanzadas
+
+SEGURIDAD “NIVEL DIOS” (SIN MALWARE)
+Defensa real en capas:
+- WAF/rate-limit/bot mgmt, request validation
+- AuthZ fuerte (roles/scopes), RLS si aplica
+- Anti-scraping: throttling por IP/ASN, paginación segura, tokens por sesión
+- Anti-scam: heurísticas, reputación, límites de links/teléfonos, detección patrones
+- Honeypots legales: campos trampa + honeytokens + alertas
+- Logs/auditoría: eventos críticos, rotación, alertas
+- Secrets: nunca en repo (env + secret manager)
+- Supply chain: lockfiles, pinning, SCA básico
+- “Si inspeccionan”: entregar UI mínima + endpoints sin datos sensibles; todo lo valioso detrás de permisos y rate-limits.
+
+OFFLINE / ONLINE
+- Offline real: browse cache, drafts, cola de mensajes, cola de publicaciones; sync cuando vuelva internet.
+- Online: features completas, pagos, chat, boosts.
+- Define estrategia de sync (conflict policy) y storage local.
+
+WAR ROOM LOCAL (HERRAMIENTAS)
+Asumir:
+- Ollama local: qwen2.5-coder:7b (rápido), qwen2.5-coder:14b (calidad), starcoder2:3b (autocomplete)
+- Aider CLI para refactors grandes
+- Continue en VS Code para chat/edit/apply
+Si “apply” falla o hace cambios locos:
+- Proponer “Safe Mode”: apply deshabilitado, solo chat/edit con diff review, y cambios por PR/patch.
+
+IMPORTANTE (CONTROL DE DAÑOS)
+- Prohibido cambios masivos a ciegas.
+- Todo en branch nueva + commits pequeños.
+- Antes de tocar: smoke tests + linter + typecheck.
+- Cualquier feature huérfana: primero mapear, luego cablear con flag OFF.
+
+SALIDA FORMATO
+1) Resumen ejecutivo (10 bullets max)
+2) Feature Radar plan + output schema
+3) Feature Map inicial (tabla)
+4) Plan P0 en pasos con archivos exactos
+5) Scripts de pruebas (comandos)
+6) Plan deploy Cloud Run
+7) Matriz de seguridad (capas + qué bloquea)
+8) Lista “NO TOCAR” + rollback plan
+
+DATOS FIJOS
+- Dominio: https://www.match-autos.com
+- Pagos: PayPal + Mercado Pago + transfer MX
+- Auth: Clerk
+- DB: Postgres + Redis, pgvector + PostGIS
+- RAG: híbrido semántico + geo
+- 3 UIs: AUTO / MARKETPLACE / ASSETS
+- Un backend compartido
+- Feature flags obligatorias
+
+EMPIEZA YA
+Primero: Feature Radar “nivel Dios” + Feature Map + wiring del 80% oculto.
+Luego: P0 (geo nearby, moderación, messaging, boosts checkout real, zoom).
+Después: AR Pass (P1).

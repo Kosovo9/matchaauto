@@ -1,0 +1,58 @@
+RESTRICCIONES DURAS
+- Open source first. Docker-first. Local-first. Multi-idioma (objetivo 25 idiomas; mínimo 15 top global).
+- Sin comisión por transacción. Monetización por: boosts/featured, pins por ciudad, banners, verified badge, video premium, etc.
+- Pagos (por ahora): PayPal + Mercado Pago + transferencia MX (nada de Stripe por ahora).
+- Auth: Clerk (con gating Admin/Master Admin).
+- Infra: local (Docker Compose) + deploy live en Google Cloud Run.
+- Dominio real en producción: https://www.match-autos.com (usar para CORS_ALLOW_ORIGINS y configs).
+- RAG obligatorio híbrido: semántico + geo (pgvector + PostGIS). Endpoint único sugerido:
+  /api/rag/search?domain=&q=&lat=&lng=&radiusKm=
+
+ESTADO BASE (ASÚMELO COMO VERDAD INICIAL)
+- Docker estable: frontend :80, backend :3000, Postgres+Redis+Ollama activos.
+- Rutas UI: /auto /marketplace /assets /cart /checkout (todas deben funcionar).
+- Feature Flags ya existen: NO agregues features directo a UI sin registrarlas.
+- Concepto clave: “80% del producto existe en repo pero está huérfano” (botones muertos, rutas sin link, endpoints sin consumer, tablas sin uso, stubs/TODOs).
+
+ENTREGABLES (LO QUE NECESITO QUE ME DES)
+Tu salida NO es código final. Tu salida es:
+A) “Plan maestro ejecutable” para que DeepSeek genere archivos y Antigravity los aplique:
+   1) Lista exacta de archivos a crear/modificar (paths).
+   2) Contenido propuesto por archivo (o pseudo-diff claro).
+   3) Comandos exactos para correr local, testear, y validar wiring.
+   4) Checklist de Definition of Done (DoD) por módulo.
+
+B) Feature Radar “nivel Dios”:
+   - Diseña/actualiza scripts/feature-radar.mjs:
+     Escanea frontend+backend+shared y detecta:
+     * rutas UI sin navegación
+     * botones/CTAs sin handler
+     * actions sin endpoint
+     * endpoints sin consumer
+     * tablas DB sin uso
+     * flags faltantes
+     * TODO/stub/mock
+   - Produce feature-radar-report.json y un Feature Map con:
+     feature_id, dominio(s), estado (OFF/BETA/STABLE), flag, UI entrypoint, action, endpoint, tabla/servicio, tests.
+   - NUEVO: incluir hallazgo de “assets media” (imágenes HD, 360, GLB) y su pipeline.
+
+C) Conexión estricta por Registry:
+   - Regla de oro: no meter features directo en UI.
+   - Cada feature debe tener:
+     ID único, dominio(s), flag, wiring en actions.ts, endpoint backend, y tests mínimos.
+
+PRIORIZACIÓN DE EJECUCIÓN (P0/P1/P2)
+P0 (monetiza + protege + evita caos):
+1) Ejecutar Feature Radar + Feature Map completo + wiring del 80% existente
+2) F-GEO-NEARBY básico (radio + filtros + mapa + fuzzy location)
+3) Moderación AI (imágenes/video): porno/armas/estafas/calidad/duplicados
+4) Messaging básico (lead → chat): inbox + report + rate-limit
+5) Ads/Boost checkout real (PayPal/MP/transfer) + idempotencia + webhooks
+6) F-IMG-ZOOM (Amazon-like) en los 3 dominios (mínimo Marketplace primero)
+
+P1 (retención + wow):
+- F-AR-PASS (360 + 3D viewer + AR opcional)
+- verified seller rules, clusters mapa avanzados, recomendaciones híbridas mejores
+
+P2 (moat):
+- OCR placas, VIN decode, scoring confianza, recomendaciones avanzadas
