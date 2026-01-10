@@ -3,10 +3,15 @@
 
 import { motion } from 'framer-motion';
 import { Search, Gauge, Zap, ShieldCheck } from 'lucide-react';
+import SelloComunitario from '../../components/SelloComunitario';
 
 export default function HeroAuto() {
     return (
         <section className="relative min-h-screen bg-[#050505] overflow-hidden flex items-center justify-center pt-20">
+            {/* Sello Comunitario Positioned at Top */}
+            <div className="absolute top-32 left-1/2 -translate-x-1/2 z-20">
+                <SelloComunitario level={12} />
+            </div>
             {/* Background elements */}
             <div className="absolute top-0 left-0 w-full h-full">
                 <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full animate-pulse" />

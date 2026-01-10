@@ -3,10 +3,15 @@
 
 import { motion } from 'framer-motion';
 import { ShoppingBag, Globe, Sparkles, TrendingUp } from 'lucide-react';
+import SelloComunitario from '../../components/SelloComunitario';
 
 export default function HeroMarketplace() {
     return (
         <section className="relative min-h-screen bg-white overflow-hidden flex items-center">
+            {/* Sello Comunitario Top Left */}
+            <div className="absolute top-10 left-10 z-20">
+                <SelloComunitario level={15} />
+            </div>
             {/* Abstract Shapes */}
             <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-emerald-50 rounded-full blur-[100px]" />
             <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-emerald-100/50 rounded-full blur-[80px]" />

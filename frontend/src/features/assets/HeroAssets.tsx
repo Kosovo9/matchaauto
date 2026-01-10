@@ -3,10 +3,15 @@
 
 import { motion } from 'framer-motion';
 import { Building2, Map, BarChart3, Lock } from 'lucide-react';
+import SelloComunitario from '../../components/SelloComunitario';
 
 export default function HeroAssets() {
     return (
         <section className="relative min-h-screen bg-[#0A0A0A] overflow-hidden flex items-center">
+            {/* Sello Comunitario Top Right */}
+            <div className="absolute top-10 right-10 z-20">
+                <SelloComunitario level={20} />
+            </div>
             {/* Background Lighting */}
             <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-amber-500/10 via-amber-500/5 to-transparent" />
 

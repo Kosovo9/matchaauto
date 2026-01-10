@@ -2,6 +2,7 @@
 import HeroAuto from './features/auto/HeroAuto';
 import HeroMarketplace from './features/marketplace/HeroMarketplace';
 import HeroAssets from './features/assets/HeroAssets';
+import CatalogOffline from './features/auto/CatalogOffline';
 import FImgZoom from './features/media/FImgZoom';
 import FGeoNearby from './features/geo/FGeoNearby';
 import FARPass from './features/ar/FARPass';
@@ -11,6 +12,11 @@ export default function App() {
         <div className="min-h-screen bg-black">
             {/* TRINITY DIAMOND PROJECT 1: AUTO */}
             <HeroAuto />
+
+            {/* FEATURE SPOTLIGHT: OFFLINE CATALOG */}
+            <div className="py-20 bg-black px-6">
+                <CatalogOffline />
+            </div>
 
             {/* FEATURE SPOTLIGHT: GEOLOCATION */}
             <div className="py-20 bg-black px-6">
